@@ -12,6 +12,17 @@ type TableRow = Record<string, unknown> & {
   subRows?: TableRow[] | null;
 };
 
+/** Animation variants */
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.02 } },
+};
+
+const rowVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
+
 export const Table = memo(function Table({
   element,
   children,
@@ -34,7 +45,6 @@ export const Table = memo(function Table({
     }>;
   };
 
-  // Normalize columns to support both key/label and accessor/header naming
   const columns = rawColumns.map((col) => ({
     key: col.key ?? col.accessor ?? "",
     label: col.label ?? col.header ?? "",
@@ -48,16 +58,20 @@ export const Table = memo(function Table({
     return (
       <div className="w-full">
         {title && (
-          <h4 className="mb-4 text-sm font-semibold leading-none tracking-tight">
+          <h4 className="mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight">
             {title}
           </h4>
         )}
-        <div className="py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground">
-          <TableIcon className="w-10 h-10 opacity-20 mb-3" />
-          <p className="font-mono text-xs uppercase tracking-widest opacity-50">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-lg sm:rounded-2xl bg-zinc-900/20 text-muted-foreground"
+        >
+          <TableIcon className="w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" />
+          <p className="font-mono text-[0.625rem] sm:text-xs uppercase tracking-widest opacity-50">
             No data available
           </p>
-        </div>
+        </motion.div>
         {children}
       </div>
     );
@@ -76,7 +90,7 @@ export const Table = memo(function Table({
     }
     if (format === "badge") {
       return (
-        <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+        <span className="inline-flex items-center rounded-full border px-2 sm:px-2.5 py-0.5 text-[0.625rem] sm:text-xs font-semibold transition-colors border-transparent bg-secondary text-secondary-foreground">
           {String(value)}
         </span>
       );
@@ -92,9 +106,7 @@ export const Table = memo(function Table({
       const renderedRow = (
         <motion.tr
           key={rowKey}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: index * 0.02 }}
+          variants={rowVariants}
           data-selectable-item
           data-element-key={element.key}
           data-item-id={rowKey}
@@ -104,11 +116,12 @@ export const Table = memo(function Table({
             <td
               key={col.key}
               className={cn(
-                "p-4 align-middle [&:has([role=checkbox])]:pr-0 text-foreground",
+                "p-2.5 sm:p-4 align-middle text-xs sm:text-sm text-foreground",
+                "[&:has([role=checkbox])]:pr-0",
               )}
               style={
                 colIndex === 0 && depth > 0
-                  ? { paddingLeft: `${12 + depth * 16}px` }
+                  ? { paddingLeft: `${0.75 + depth}rem` }
                   : undefined
               }
             >
@@ -117,25 +130,30 @@ export const Table = memo(function Table({
           ))}
         </motion.tr>
       );
-      // Recursion for sub-rows (if supported in design)
       return [renderedRow, ...renderRows(subRows, depth + 1)];
     });
 
   return (
     <div className="w-full">
       {title && (
-        <h4 className="mb-4 text-sm font-semibold leading-none tracking-tight text-foreground">
+        <h4 className="mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight text-foreground">
           {title}
         </h4>
       )}
-      <div className="relative w-full overflow-auto rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm">
-        <table className="w-full caption-bottom text-sm border-collapse">
+      {/* Mobile: horizontal scroll wrapper */}
+      <div className="relative w-full overflow-x-auto rounded-lg sm:rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm -mx-1 px-1 sm:mx-0 sm:px-0">
+        <motion.table
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="w-full min-w-[20rem] caption-bottom text-xs sm:text-sm border-collapse"
+        >
           <thead className="[&_tr]:border-b border-white/10">
-            <tr className="border-b border-white/10 transition-colors hover:bg-white/5 data-[state=selected]:bg-white/10">
+            <tr className="border-b border-white/10 transition-colors">
               {columns.map((col, index) => (
                 <th
                   key={col.key ?? `col-${index}`}
-                  className="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+                  className="h-10 sm:h-12 px-2.5 sm:px-4 text-left align-middle font-medium text-muted-foreground text-[0.625rem] sm:text-xs uppercase tracking-wider"
                 >
                   {col.label}
                 </th>
@@ -145,7 +163,7 @@ export const Table = memo(function Table({
           <tbody className="[&_tr:last-child]:border-0">
             {renderRows(tableRows)}
           </tbody>
-        </table>
+        </motion.table>
       </div>
       {children}
     </div>

@@ -14,6 +14,28 @@ import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 import { LayoutGrid } from "lucide-react";
 
+/** Mobile-first responsive gap classes */
+const GAP_CLASSES: Record<string, string> = {
+  none: "gap-0",
+  sm: "gap-2 sm:gap-3",
+  md: "gap-3 sm:gap-4 lg:gap-5",
+  lg: "gap-4 sm:gap-5 lg:gap-6",
+};
+
+/** Grid animation variants */
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.05 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: "0.5rem" },
+  visible: { opacity: 1, y: 0 },
+};
+
 export const Grid = memo(function Grid({
   element,
   children,
@@ -25,22 +47,10 @@ export const Grid = memo(function Grid({
   const containerRef = useRef<HTMLDivElement>(null);
   const [forceSingleColumn, setForceSingleColumn] = useState(false);
 
-  // Map gap prop to Tailwind classes
-  const gapClass = useMemo(() => {
-    switch (gap) {
-      case "none":
-        return "gap-0";
-      case "sm":
-        return "gap-2";
-      case "lg":
-        return "gap-6";
-      case "md":
-      default:
-        return "gap-4";
-    }
-  }, [gap]);
-
-  const minColumnWidth = 360;
+  const gapClass = useMemo(
+    () => GAP_CLASSES[gap || "md"] || GAP_CLASSES.md,
+    [gap],
+  );
 
   const evaluateLayout = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -54,8 +64,6 @@ export const Grid = memo(function Grid({
       return;
     }
 
-    // Heuristic: specific "tall card" check to switch to single column layout
-    // This helps preventing grid items from becoming too narrow when they are very tall
     const maxHeight = childElements.reduce((acc, child) => {
       const height = child.getBoundingClientRect().height;
       return Math.max(acc, height);
@@ -75,11 +83,8 @@ export const Grid = memo(function Grid({
     evaluateLayout();
 
     if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(() => {
-      evaluateLayout();
-    });
+    const observer = new ResizeObserver(evaluateLayout);
     observer.observe(elementNode);
-    // Also observe children to react to their height changes
     Array.from(elementNode.children).forEach((child) =>
       observer.observe(child),
     );
@@ -89,30 +94,37 @@ export const Grid = memo(function Grid({
 
   if (Children.count(children) === 0) {
     return (
-      <div className="py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground">
-        <LayoutGrid className="w-10 h-10 opacity-20 mb-3" />
-        <p className="font-mono text-xs uppercase tracking-widest opacity-50">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl sm:rounded-2xl bg-zinc-900/20 text-muted-foreground"
+      >
+        <LayoutGrid className="w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" />
+        <p className="font-mono text-[0.625rem] sm:text-xs uppercase tracking-widest opacity-50">
           Empty Grid
         </p>
-      </div>
+      </motion.div>
     );
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ staggerChildren: 0.1 }}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
       ref={containerRef}
       className={cn(
         "grid w-full min-w-0 max-w-full items-stretch justify-items-stretch",
+        // Mobile-first: 1 column, then responsive based on content
         forceSingleColumn
           ? "grid-cols-1"
-          : "grid-cols-[repeat(auto-fit,minmax(360px,1fr))]",
+          : "grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(20rem,1fr))]",
         gapClass,
       )}
     >
-      {children}
+      {Children.map(children, (child) => (
+        <motion.div variants={itemVariants}>{child}</motion.div>
+      ))}
     </motion.div>
   );
 });

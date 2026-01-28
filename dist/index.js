@@ -119,34 +119,42 @@ var import_utils = require("@onegenui/utils");
 var import_react = require("react");
 var import_framer_motion = require("framer-motion");
 var import_jsx_runtime = require("react/jsx-runtime");
+var PADDING_CLASSES = {
+  none: "p-0",
+  sm: "p-2 sm:p-3",
+  md: "p-3 sm:p-4",
+  lg: "p-4 sm:p-5 lg:p-6"
+};
+var cardVariants = {
+  hidden: { opacity: 0, y: "0.625rem" },
+  visible: { opacity: 1, y: 0 }
+};
 var Card = (0, import_react.memo)(function Card2({
   element,
   children
 }) {
   const { title, description, padding } = element.props;
-  const paddingClasses = {
-    none: "p-0",
-    sm: "p-3",
-    md: "p-4",
-    lg: "p-6"
-  };
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
     import_framer_motion.motion.div,
     {
-      initial: { opacity: 0, y: 10 },
-      animate: { opacity: 1, y: 0 },
-      transition: { duration: 0.3 },
+      variants: cardVariants,
+      initial: "hidden",
+      animate: "visible",
+      transition: { duration: 0.3, ease: "easeOut" },
       className: "card-glass w-full min-w-0 flex flex-col",
       children: [
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "gradient-bar-thin opacity-20" }),
-        (title || description) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col space-y-1.5 p-6 pb-4 border-b border-white/5 bg-white/[0.02]", children: [
-          title && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", { className: "text-lg font-bold leading-none tracking-tight text-white", children: title }),
-          description && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-sm text-zinc-400 font-medium", children: description })
+        (title || description) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-1 p-4 sm:p-5 lg:p-6 pb-3 sm:pb-4 border-b border-white/5 bg-white/[0.02]", children: [
+          title && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", { className: "text-base sm:text-lg font-bold leading-tight tracking-tight text-foreground", children: title }),
+          description && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed", children: description })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "div",
           {
-            className: (0, import_utils.cn)("min-w-0 flex-1", paddingClasses[padding || ""] || "p-6"),
+            className: (0, import_utils.cn)(
+              "min-w-0 flex-1",
+              PADDING_CLASSES[padding || ""] || "p-4 sm:p-5 lg:p-6"
+            ),
             children
           }
         )
@@ -174,6 +182,23 @@ var import_react2 = require("react");
 var import_framer_motion2 = require("framer-motion");
 var import_lucide_react = require("lucide-react");
 var import_jsx_runtime2 = require("react/jsx-runtime");
+var GAP_CLASSES = {
+  none: "gap-0",
+  sm: "gap-2 sm:gap-3",
+  md: "gap-3 sm:gap-4 lg:gap-5",
+  lg: "gap-4 sm:gap-5 lg:gap-6"
+};
+var containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.05 }
+  }
+};
+var itemVariants = {
+  hidden: { opacity: 0, y: "0.5rem" },
+  visible: { opacity: 1, y: 0 }
+};
 var Grid = (0, import_react2.memo)(function Grid2({
   element,
   children
@@ -181,20 +206,10 @@ var Grid = (0, import_react2.memo)(function Grid2({
   const { columns, gap } = element.props;
   const containerRef = (0, import_react2.useRef)(null);
   const [forceSingleColumn, setForceSingleColumn] = (0, import_react2.useState)(false);
-  const gapClass = (0, import_react2.useMemo)(() => {
-    switch (gap) {
-      case "none":
-        return "gap-0";
-      case "sm":
-        return "gap-2";
-      case "lg":
-        return "gap-6";
-      case "md":
-      default:
-        return "gap-4";
-    }
-  }, [gap]);
-  const minColumnWidth = 360;
+  const gapClass = (0, import_react2.useMemo)(
+    () => GAP_CLASSES[gap || "md"] || GAP_CLASSES.md,
+    [gap]
+  );
   const evaluateLayout = (0, import_react2.useCallback)(() => {
     if (typeof window === "undefined") return;
     const elementNode = containerRef.current;
@@ -220,9 +235,7 @@ var Grid = (0, import_react2.memo)(function Grid2({
     if (!elementNode) return;
     evaluateLayout();
     if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(() => {
-      evaluateLayout();
-    });
+    const observer = new ResizeObserver(evaluateLayout);
     observer.observe(elementNode);
     Array.from(elementNode.children).forEach(
       (child) => observer.observe(child)
@@ -230,24 +243,33 @@ var Grid = (0, import_react2.memo)(function Grid2({
     return () => observer.disconnect();
   }, [children, columns, evaluateLayout]);
   if (import_react2.Children.count(children) === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_lucide_react.LayoutGrid, { className: "w-10 h-10 opacity-20 mb-3" }),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "Empty Grid" })
-    ] });
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+      import_framer_motion2.motion.div,
+      {
+        initial: { opacity: 0, scale: 0.98 },
+        animate: { opacity: 1, scale: 1 },
+        className: "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_lucide_react.LayoutGrid, { className: "w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "font-mono text-[0.625rem] sm:text-xs uppercase tracking-widest opacity-50", children: "Empty Grid" })
+        ]
+      }
+    );
   }
   return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
     import_framer_motion2.motion.div,
     {
-      initial: { opacity: 0 },
-      animate: { opacity: 1 },
-      transition: { staggerChildren: 0.1 },
+      variants: containerVariants,
+      initial: "hidden",
+      animate: "visible",
       ref: containerRef,
       className: (0, import_utils.cn)(
         "grid w-full min-w-0 max-w-full items-stretch justify-items-stretch",
-        forceSingleColumn ? "grid-cols-1" : "grid-cols-[repeat(auto-fit,minmax(360px,1fr))]",
+        // Mobile-first: 1 column, then responsive based on content
+        forceSingleColumn ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(20rem,1fr))]",
         gapClass
       ),
-      children
+      children: import_react2.Children.map(children, (child) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_framer_motion2.motion.div, { variants: itemVariants, children: child }))
     }
   );
 });
@@ -269,6 +291,22 @@ var GridDefinition = {
 var import_react3 = require("react");
 var import_framer_motion3 = require("framer-motion");
 var import_jsx_runtime3 = require("react/jsx-runtime");
+var GAP_CLASSES2 = {
+  none: "gap-0",
+  sm: "gap-2 sm:gap-3",
+  md: "gap-3 sm:gap-4 lg:gap-5",
+  lg: "gap-4 sm:gap-5 lg:gap-6"
+};
+var ALIGN_CLASSES = {
+  start: "items-start",
+  center: "items-center",
+  end: "items-end",
+  stretch: "items-stretch"
+};
+var stackVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.2 } }
+};
 var Stack = (0, import_react3.memo)(function Stack2({
   element,
   children
@@ -276,21 +314,8 @@ var Stack = (0, import_react3.memo)(function Stack2({
   const { direction, gap, align, wrap } = element.props;
   const containerRef = (0, import_react3.useRef)(null);
   const [forceVertical, setForceVertical] = (0, import_react3.useState)(false);
-  const gapClasses = {
-    none: "gap-0",
-    sm: "gap-2",
-    md: "gap-4",
-    lg: "gap-6"
-  };
-  const alignClasses = {
-    start: "items-start",
-    center: "items-center",
-    end: "items-end",
-    stretch: "items-stretch"
-  };
   const isHorizontal = direction === "horizontal";
   const shouldWrap = wrap !== false && isHorizontal;
-  const effectiveDirection = forceVertical ? "flex-col" : isHorizontal ? "flex-row" : "flex-col";
   const evaluateLayout = (0, import_react3.useCallback)(() => {
     if (typeof window === "undefined") return;
     const node = containerRef.current;
@@ -319,25 +344,25 @@ var Stack = (0, import_react3.memo)(function Stack2({
     if (!node) return;
     evaluateLayout();
     if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(() => {
-      evaluateLayout();
-    });
+    const observer = new ResizeObserver(evaluateLayout);
     observer.observe(node);
     Array.from(node.children).forEach((child) => observer.observe(child));
     return () => observer.disconnect();
   }, [children, evaluateLayout]);
+  const effectiveDirection = forceVertical ? "flex-col" : isHorizontal ? "flex-col sm:flex-row" : "flex-col";
   return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
     import_framer_motion3.motion.div,
     {
-      initial: { opacity: 0 },
-      animate: { opacity: 1 },
+      variants: stackVariants,
+      initial: "hidden",
+      animate: "visible",
       ref: containerRef,
       className: (0, import_utils.cn)(
         "flex w-full min-w-0 max-w-full",
         effectiveDirection,
-        shouldWrap && !forceVertical ? "flex-wrap" : "flex-nowrap",
-        gapClasses[gap || "md"],
-        alignClasses[align || "stretch"]
+        shouldWrap && !forceVertical ? "sm:flex-wrap" : "flex-nowrap",
+        GAP_CLASSES2[gap || "md"] || GAP_CLASSES2.md,
+        ALIGN_CLASSES[align || "stretch"] || ALIGN_CLASSES.stretch
       ),
       children
     }
@@ -362,6 +387,18 @@ var StackDefinition = {
 var import_react4 = require("react");
 var import_framer_motion4 = require("framer-motion");
 var import_jsx_runtime4 = require("react/jsx-runtime");
+var horizontalVariants = {
+  hidden: { opacity: 0, scaleX: 0.8 },
+  visible: { opacity: 1, scaleX: 1 }
+};
+var verticalVariants = {
+  hidden: { opacity: 0, scaleY: 0 },
+  visible: { opacity: 1, scaleY: 1 }
+};
+var labelledVariants = {
+  hidden: { opacity: 0, scaleX: 0.9 },
+  visible: { opacity: 1, scaleX: 1 }
+};
 var Divider = (0, import_react4.memo)(function Divider2({
   element,
   children
@@ -371,11 +408,13 @@ var Divider = (0, import_react4.memo)(function Divider2({
     return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
       import_framer_motion4.motion.div,
       {
-        initial: { height: 0 },
-        animate: { height: "100%" },
+        variants: verticalVariants,
+        initial: "hidden",
+        animate: "visible",
+        transition: { duration: 0.3, ease: "easeOut" },
         className: "flex flex-col h-full",
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-[1px] bg-white/10 self-stretch h-full" }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-px bg-white/10 self-stretch h-full" }),
           children
         ]
       }
@@ -385,13 +424,15 @@ var Divider = (0, import_react4.memo)(function Divider2({
     return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
       import_framer_motion4.motion.div,
       {
-        initial: { opacity: 0, scaleX: 0.9 },
-        animate: { opacity: 1, scaleX: 1 },
-        className: "flex items-center gap-3 my-4 w-full",
+        variants: labelledVariants,
+        initial: "hidden",
+        animate: "visible",
+        transition: { duration: 0.3, ease: "easeOut" },
+        className: "flex items-center gap-2 sm:gap-3 my-3 sm:my-4 w-full",
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex-1 h-[1px] bg-white/10" }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "text-[0.625rem] uppercase font-bold tracking-wider text-muted-foreground", children: label }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex-1 h-[1px] bg-white/10" }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex-1 h-px bg-white/10" }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "text-[0.5625rem] sm:text-[0.625rem] uppercase font-bold tracking-wider text-muted-foreground whitespace-nowrap", children: label }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex-1 h-px bg-white/10" }),
           children
         ]
       }
@@ -400,8 +441,10 @@ var Divider = (0, import_react4.memo)(function Divider2({
   return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
     import_framer_motion4.motion.div,
     {
-      initial: { opacity: 0, width: 0 },
-      animate: { opacity: 1, width: "100%" },
+      variants: horizontalVariants,
+      initial: "hidden",
+      animate: "visible",
+      transition: { duration: 0.3, ease: "easeOut" },
       className: "w-full",
       children: [
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "divider-perforated" }),
@@ -428,6 +471,16 @@ var DividerDefinition = {
 var import_react5 = require("react");
 var import_framer_motion5 = require("framer-motion");
 var import_jsx_runtime5 = require("react/jsx-runtime");
+var headingVariants = {
+  hidden: { opacity: 0, y: "-0.3125rem" },
+  visible: { opacity: 1, y: 0 }
+};
+var HEADING_SIZES = {
+  h1: "text-2xl sm:text-3xl lg:text-4xl",
+  h2: "text-xl sm:text-2xl lg:text-3xl",
+  h3: "text-lg sm:text-xl lg:text-2xl",
+  h4: "text-base sm:text-lg lg:text-xl"
+};
 var Heading = (0, import_react5.memo)(function Heading2({
   element,
   children,
@@ -459,14 +512,14 @@ var Heading = (0, import_react5.memo)(function Heading2({
   return /* @__PURE__ */ (0, import_jsx_runtime5.jsxs)(
     Tag,
     {
-      initial: { opacity: 0, y: -5 },
-      animate: { opacity: 1, y: 0 },
-      className: (0, import_utils.cn)("font-semibold tracking-tight mb-4 text-foreground", {
-        "text-3xl": normalizedLevel === "h1",
-        "text-2xl": normalizedLevel === "h2",
-        "text-xl": normalizedLevel === "h3",
-        "text-lg": normalizedLevel === "h4"
-      }),
+      variants: headingVariants,
+      initial: "hidden",
+      animate: "visible",
+      transition: { duration: 0.25, ease: "easeOut" },
+      className: (0, import_utils.cn)(
+        "font-semibold tracking-tight mb-3 sm:mb-4 text-foreground",
+        HEADING_SIZES[normalizedLevel]
+      ),
       children: [
         render(text, { inline: true }),
         children
@@ -496,6 +549,24 @@ var HeadingDefinition = {
 var import_react6 = require("react");
 var import_framer_motion6 = require("framer-motion");
 var import_jsx_runtime6 = require("react/jsx-runtime");
+var textVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 }
+};
+var VARIANT_CLASSES = {
+  body: "text-xs sm:text-sm",
+  caption: "text-[0.625rem] sm:text-xs",
+  label: "text-[0.6875rem] sm:text-[0.8125rem]"
+};
+var COLOR_CLASSES = {
+  default: "text-foreground",
+  muted: "text-muted-foreground",
+  info: "text-muted-foreground",
+  success: "text-emerald-500",
+  warning: "text-amber-500",
+  danger: "text-rose-500",
+  error: "text-rose-500"
+};
 var Text = (0, import_react6.memo)(function Text2({
   element,
   children,
@@ -508,18 +579,15 @@ var Text = (0, import_react6.memo)(function Text2({
   return /* @__PURE__ */ (0, import_jsx_runtime6.jsxs)(
     import_framer_motion6.motion.div,
     {
-      initial: { opacity: 0 },
-      animate: { opacity: 1 },
-      className: (0, import_utils.cn)("m-0", {
-        "text-sm": resolvedVariant === "body",
-        "text-xs": resolvedVariant === "caption",
-        "text-[13px]": resolvedVariant === "label",
-        "text-foreground": resolvedColor === "default",
-        "text-muted-foreground": resolvedColor === "muted" || resolvedColor === "info",
-        "text-emerald-500": resolvedColor === "success",
-        "text-amber-500": resolvedColor === "warning",
-        "text-rose-500": resolvedColor === "danger" || resolvedColor === "error"
-      }),
+      variants: textVariants,
+      initial: "hidden",
+      animate: "visible",
+      transition: { duration: 0.2 },
+      className: (0, import_utils.cn)(
+        "m-0 leading-relaxed",
+        VARIANT_CLASSES[resolvedVariant] || VARIANT_CLASSES.body,
+        COLOR_CLASSES[resolvedColor] || COLOR_CLASSES.default
+      ),
       children: [
         render(content, { inline: true }),
         children
@@ -547,6 +615,19 @@ var import_react7 = require("react");
 var import_framer_motion7 = require("framer-motion");
 var import_lucide_react2 = require("lucide-react");
 var import_jsx_runtime7 = require("react/jsx-runtime");
+var containerVariants2 = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.05 } }
+};
+var itemVariants2 = {
+  hidden: { opacity: 0, y: "0.625rem" },
+  visible: { opacity: 1, y: 0 }
+};
+var expandVariants = {
+  hidden: { height: 0, opacity: 0 },
+  visible: { height: "auto", opacity: 1 },
+  exit: { height: 0, opacity: 0 }
+};
 var CodeBlock = (0, import_react7.memo)(function CodeBlock2({
   element,
   children
@@ -554,65 +635,74 @@ var CodeBlock = (0, import_react7.memo)(function CodeBlock2({
   const { title, snippets = [] } = element.props;
   const [expandedId, setExpandedId] = (0, import_react7.useState)(null);
   if (!snippets || snippets.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "text-muted-foreground text-sm italic", children: "No code snippets" });
+    return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "text-muted-foreground text-xs sm:text-sm italic p-3 sm:p-4", children: "No code snippets" });
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex flex-col gap-4", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("h3", { className: "text-lg font-semibold tracking-tight m-0", children: title }),
-    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex flex-col gap-3", children: snippets.map((snippet, index) => {
-      const snippetId = snippet.id ?? `${index}`;
-      const isExpanded = expandedId === snippetId;
-      return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
-        import_framer_motion7.motion.div,
-        {
-          initial: { opacity: 0, y: 10 },
-          animate: { opacity: 1, y: 0 },
-          transition: { delay: index * 0.05 },
-          "data-selectable-item": true,
-          "data-element-key": element.key,
-          "data-item-id": snippetId,
-          className: "rounded-xl border border-white/10 card-glass overflow-hidden shadow-lg",
-          children: [
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
-              "button",
-              {
-                type: "button",
-                onClick: () => setExpandedId(isExpanded ? null : snippetId),
-                className: (0, import_utils.cn)(
-                  "w-full flex items-center justify-between p-4 text-left border-0 bg-transparent cursor-pointer transition-colors hover:bg-white/5",
-                  isExpanded && "bg-white/5"
+  return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+    import_framer_motion7.motion.div,
+    {
+      variants: containerVariants2,
+      initial: "hidden",
+      animate: "visible",
+      className: "flex flex-col gap-3 sm:gap-4",
+      children: [
+        title && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("h3", { className: "text-base sm:text-lg font-semibold tracking-tight m-0", children: title }),
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex flex-col gap-2 sm:gap-3", children: snippets.map((snippet, index) => {
+          const snippetId = snippet.id ?? `${index}`;
+          const isExpanded = expandedId === snippetId;
+          return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+            import_framer_motion7.motion.div,
+            {
+              variants: itemVariants2,
+              "data-selectable-item": true,
+              "data-element-key": element.key,
+              "data-item-id": snippetId,
+              className: "rounded-lg sm:rounded-xl border border-white/10 card-glass overflow-hidden shadow-lg",
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => setExpandedId(isExpanded ? null : snippetId),
+                    className: (0, import_utils.cn)(
+                      "w-full flex items-center justify-between p-3 sm:p-4 text-left border-0 bg-transparent cursor-pointer transition-colors hover:bg-white/5 min-h-[2.75rem]",
+                      isExpanded && "bg-white/5"
+                    ),
+                    children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex flex-col gap-0.5 sm:gap-1 min-w-0 flex-1", children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("span", { className: "text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground truncate", children: [
+                          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_lucide_react2.Code2, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" }),
+                          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "truncate", children: snippet.title ?? "Untitled snippet" })
+                        ] }),
+                        snippet.summary && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-[0.625rem] sm:text-xs text-muted-foreground line-clamp-1", children: snippet.summary })
+                      ] }),
+                      /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-2", children: [
+                        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "hidden sm:inline text-[0.5625rem] sm:text-[0.625rem] font-bold uppercase tracking-wider text-muted-foreground bg-white/5 px-1.5 sm:px-2 py-0.5 rounded-full border border-white/10", children: snippet.language ?? "Code" }),
+                        isExpanded ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_lucide_react2.ChevronUp, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" }) : /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_lucide_react2.ChevronDown, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" })
+                      ] })
+                    ]
+                  }
                 ),
-                children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex flex-col gap-1", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("span", { className: "text-sm font-semibold flex items-center gap-2 text-foreground", children: [
-                      /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_lucide_react2.Code2, { size: 16, className: "text-muted-foreground" }),
-                      snippet.title ?? "Untitled snippet"
-                    ] }),
-                    snippet.summary && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-xs text-muted-foreground", children: snippet.summary })
-                  ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)("div", { className: "flex items-center gap-3", children: [
-                    /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", { className: "text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-white/5 px-2 py-0.5 rounded-full border border-white/10", children: snippet.language ?? "Code" }),
-                    isExpanded ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_lucide_react2.ChevronUp, { size: 16, className: "text-muted-foreground" }) : /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_lucide_react2.ChevronDown, { size: 16, className: "text-muted-foreground" })
-                  ] })
-                ]
-              }
-            ),
-            /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_framer_motion7.AnimatePresence, { children: isExpanded && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
-              import_framer_motion7.motion.div,
-              {
-                initial: { height: 0, opacity: 0 },
-                animate: { height: "auto", opacity: 1 },
-                exit: { height: 0, opacity: 0 },
-                className: "relative border-t border-white/10 bg-black/20",
-                children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("pre", { className: "m-0 p-4 text-xs overflow-x-auto font-mono leading-relaxed text-foreground", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("code", { children: snippet.content }) })
-              }
-            ) })
-          ]
-        },
-        snippetId
-      );
-    }) }),
-    children
-  ] });
+                /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_framer_motion7.AnimatePresence, { children: isExpanded && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(
+                  import_framer_motion7.motion.div,
+                  {
+                    variants: expandVariants,
+                    initial: "hidden",
+                    animate: "visible",
+                    exit: "exit",
+                    transition: { duration: 0.2 },
+                    className: "relative border-t border-white/10 bg-black/20",
+                    children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("pre", { className: "m-0 p-3 sm:p-4 text-[0.625rem] sm:text-xs overflow-x-auto font-mono leading-relaxed text-foreground", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("code", { children: snippet.content }) })
+                  }
+                ) })
+              ]
+            },
+            snippetId
+          );
+        }) }),
+        children
+      ]
+    }
+  );
 });
 
 // src/typography/CodeBlock/schema.ts
@@ -630,6 +720,14 @@ var import_react8 = require("react");
 var import_framer_motion8 = require("framer-motion");
 var import_lucide_react3 = require("lucide-react");
 var import_jsx_runtime8 = require("react/jsx-runtime");
+var containerVariants3 = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.05 } }
+};
+var itemVariants3 = {
+  hidden: { opacity: 0, y: "0.625rem" },
+  visible: { opacity: 1, y: 0 }
+};
 var Document = (0, import_react8.memo)(function Document2({
   element,
   children,
@@ -638,80 +736,102 @@ var Document = (0, import_react8.memo)(function Document2({
   const { title, documents = [] } = element.props;
   const render = renderText ?? ((value) => value);
   if (!documents || documents.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex flex-col gap-4 p-5 rounded-xl border border-white/10 card-glass", children: [
-      title && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("h3", { className: "text-lg font-semibold tracking-tight m-0", children: render(title, { inline: true }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex flex-col gap-3 animate-pulse", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "h-4 bg-white/10 rounded w-3/4" }),
-        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "h-4 bg-white/5 rounded w-1/2" }),
-        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "h-4 bg-white/5 rounded w-2/3" })
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("p", { className: "text-xs text-muted-foreground italic", children: "Document content is loading or was not provided by the AI..." })
-    ] });
+    return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(
+      import_framer_motion8.motion.div,
+      {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        className: "flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass",
+        children: [
+          title && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("h3", { className: "text-base sm:text-lg font-semibold tracking-tight m-0", children: render(title, { inline: true }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex flex-col gap-2 sm:gap-3 animate-pulse", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "h-3 sm:h-4 bg-white/10 rounded w-3/4" }),
+            /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "h-3 sm:h-4 bg-white/5 rounded w-1/2" }),
+            /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "h-3 sm:h-4 bg-white/5 rounded w-2/3" })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("p", { className: "text-[0.625rem] sm:text-xs text-muted-foreground italic", children: "Document content is loading or was not provided by the AI..." })
+        ]
+      }
+    );
   }
-  return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex flex-col gap-4", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("h3", { className: "text-lg font-semibold tracking-tight m-0", children: render(title, { inline: true }) }),
-    /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "flex flex-col gap-4", children: documents.map((rawDoc, index) => {
-      const doc = {
-        ...rawDoc,
-        sections: rawDoc.sections?.length ? rawDoc.sections : rawDoc.content ? [{ title: "Overview", content: rawDoc.content }] : []
-      };
-      return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(
-        import_framer_motion8.motion.div,
-        {
-          initial: { opacity: 0, y: 10 },
-          animate: { opacity: 1, y: 0 },
-          transition: { delay: index * 0.05 },
-          "data-selectable-item": true,
-          "data-element-key": element.key,
-          "data-item-id": doc.id ?? `${index}`,
-          className: "flex flex-col gap-4 p-5 rounded-xl border border-white/10 card-glass shadow-lg hover:shadow-xl",
-          children: [
-            /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex justify-between items-start gap-4", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex-1 space-y-1", children: [
-                /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex items-center gap-2", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_lucide_react3.FileText, { size: 18, className: "text-primary/70" }),
-                  /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("h4", { className: "text-base font-semibold leading-none text-foreground", children: render(doc.title, { inline: true }) })
+  return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(
+    import_framer_motion8.motion.div,
+    {
+      variants: containerVariants3,
+      initial: "hidden",
+      animate: "visible",
+      className: "flex flex-col gap-3 sm:gap-4",
+      children: [
+        title && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("h3", { className: "text-base sm:text-lg font-semibold tracking-tight m-0", children: render(title, { inline: true }) }),
+        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "flex flex-col gap-3 sm:gap-4", children: documents.map((rawDoc, index) => {
+          const doc = {
+            ...rawDoc,
+            sections: rawDoc.sections?.length ? rawDoc.sections : rawDoc.content ? [{ title: "Overview", content: rawDoc.content }] : []
+          };
+          return /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(
+            import_framer_motion8.motion.div,
+            {
+              variants: itemVariants3,
+              "data-selectable-item": true,
+              "data-element-key": element.key,
+              "data-item-id": doc.id ?? `${index}`,
+              className: "flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass shadow-lg hover:shadow-xl transition-shadow",
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4", children: [
+                  /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex-1 space-y-1 min-w-0", children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex items-center gap-1.5 sm:gap-2", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_lucide_react3.FileText, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem] text-primary/70 flex-shrink-0" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("h4", { className: "text-sm sm:text-base font-semibold leading-tight text-foreground truncate", children: render(doc.title, { inline: true }) })
+                    ] }),
+                    doc.summary && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2 sm:line-clamp-none", children: render(doc.summary) })
+                  ] }),
+                  /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground flex sm:flex-col items-center sm:items-end gap-2 sm:gap-1 flex-shrink-0", children: [
+                    doc.author && /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_lucide_react3.User, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { children: doc.author })
+                    ] }),
+                    doc.createdAt && /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex items-center gap-1 sm:gap-1.5 opacity-80", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_lucide_react3.Calendar, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3" }),
+                      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { children: doc.createdAt })
+                    ] })
+                  ] })
                 ] }),
-                doc.summary && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "text-sm text-muted-foreground leading-relaxed", children: render(doc.summary) })
-              ] }),
-              /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "text-xs text-muted-foreground flex flex-col items-end gap-1 shrink-0", children: [
-                doc.author && /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex items-center gap-1.5", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_lucide_react3.User, { size: 12 }),
-                  /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { children: doc.author })
-                ] }),
-                doc.createdAt && /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "flex items-center gap-1.5 opacity-80", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_lucide_react3.Calendar, { size: 12 }),
-                  /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("span", { children: doc.createdAt })
-                ] })
-              ] })
-            ] }),
-            doc.sections && doc.sections.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "flex flex-col gap-4 mt-2 pl-1 border-l-2 border-white/10 ml-2", children: doc.sections.map((section, sectionIndex) => /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)("div", { className: "pl-4", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("h5", { className: "text-sm font-semibold mb-1 text-foreground", children: render(section.title, { inline: true }) }),
-              section.content && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "text-sm text-muted-foreground leading-relaxed", children: render(section.content) }),
-              section.highlights && section.highlights.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("ul", { className: "mt-2 list-disc list-outside pl-4 space-y-1", children: section.highlights.map((item) => /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
-                "li",
-                {
-                  className: "text-xs text-muted-foreground/90",
-                  children: render(item, { inline: true })
-                },
-                item
-              )) })
-            ] }, section.id ?? `${sectionIndex}`)) }),
-            doc.tags && doc.tags.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "flex flex-wrap gap-2 mt-1", children: doc.tags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
-              "span",
-              {
-                className: "px-2.5 py-0.5 rounded-full bg-white/5 text-muted-foreground text-[10px] font-medium uppercase tracking-wide border border-white/10",
-                children: tag
-              },
-              tag
-            )) })
-          ]
-        },
-        doc.id ?? `${doc.title}-${index}`
-      );
-    }) }),
-    children
-  ] });
+                doc.sections && doc.sections.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "flex flex-col gap-3 sm:gap-4 mt-1 sm:mt-2 pl-2 sm:pl-1 border-l-2 border-white/10 ml-1 sm:ml-2", children: doc.sections.map((section, sectionIndex) => /* @__PURE__ */ (0, import_jsx_runtime8.jsxs)(
+                  "div",
+                  {
+                    className: "pl-3 sm:pl-4",
+                    children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("h5", { className: "text-xs sm:text-sm font-semibold mb-1 text-foreground", children: render(section.title, { inline: true }) }),
+                      section.content && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "text-xs sm:text-sm text-muted-foreground leading-relaxed", children: render(section.content) }),
+                      section.highlights && section.highlights.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("ul", { className: "mt-1.5 sm:mt-2 list-disc list-outside pl-3 sm:pl-4 space-y-0.5 sm:space-y-1", children: section.highlights.map((item) => /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+                        "li",
+                        {
+                          className: "text-[0.625rem] sm:text-xs text-muted-foreground/90",
+                          children: render(item, { inline: true })
+                        },
+                        item
+                      )) })
+                    ]
+                  },
+                  section.id ?? `${sectionIndex}`
+                )) }),
+                doc.tags && doc.tags.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "flex flex-wrap gap-1.5 sm:gap-2 mt-0.5 sm:mt-1", children: doc.tags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(
+                  "span",
+                  {
+                    className: "px-2 sm:px-2.5 py-0.5 rounded-full bg-white/5 text-muted-foreground text-[0.5625rem] sm:text-[0.625rem] font-medium uppercase tracking-wide border border-white/10",
+                    children: tag
+                  },
+                  tag
+                )) })
+              ]
+            },
+            doc.id ?? `${doc.title}-${index}`
+          );
+        }) }),
+        children
+      ]
+    }
+  );
 });
 
 // src/typography/Document/schema.ts
@@ -756,6 +876,25 @@ var import_utils2 = require("@onegenui/utils");
 
 // src/status/Badge/component.tsx
 var import_jsx_runtime9 = require("react/jsx-runtime");
+var badgeVariants = {
+  hidden: { scale: 0.9, opacity: 0 },
+  visible: { scale: 1, opacity: 1 },
+  hover: { scale: 1.05 }
+};
+var DOT_CLASSES = {
+  default: "bg-zinc-500",
+  success: "bg-emerald-400",
+  warning: "bg-amber-400",
+  error: "bg-rose-400",
+  info: "bg-sky-400"
+};
+var STATUS_CLASSES = {
+  default: "status-neutral",
+  success: "status-success",
+  warning: "status-warning",
+  error: "status-error",
+  info: "status-info"
+};
 var Badge = (0, import_react9.memo)(function Badge2({
   element,
   children
@@ -767,27 +906,21 @@ var Badge = (0, import_react9.memo)(function Badge2({
   return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(
     import_framer_motion9.motion.span,
     {
-      initial: { scale: 0.9, opacity: 0 },
-      animate: { scale: 1, opacity: 1 },
-      whileHover: { scale: 1.05 },
-      className: (0, import_utils.cn)("inline-flex items-center gap-1.5 transition-all", {
-        "status-neutral": tone === "default",
-        "status-success": tone === "success",
-        "status-warning": tone === "warning",
-        "status-error": tone === "error",
-        "status-info": tone === "info"
-      }),
+      variants: badgeVariants,
+      initial: "hidden",
+      animate: "visible",
+      whileHover: "hover",
+      className: (0, import_utils.cn)(
+        "inline-flex items-center gap-1 sm:gap-1.5 transition-all text-[0.5625rem] sm:text-[0.625rem]",
+        STATUS_CLASSES[tone] || STATUS_CLASSES.default
+      ),
       children: [
         /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
           "span",
           {
             className: (0, import_utils.cn)(
-              "w-1.5 h-1.5 rounded-full",
-              tone === "default" && "bg-zinc-500",
-              tone === "success" && "bg-emerald-400",
-              tone === "warning" && "bg-amber-400",
-              tone === "error" && "bg-rose-400",
-              tone === "info" && "bg-sky-400"
+              "w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full flex-shrink-0",
+              DOT_CLASSES[tone] || DOT_CLASSES.default
             )
           }
         ),
@@ -817,6 +950,23 @@ var import_react12 = require("@onegenui/react");
 var import_framer_motion10 = require("framer-motion");
 var import_lucide_react4 = require("lucide-react");
 var import_jsx_runtime10 = require("react/jsx-runtime");
+var alertVariants = {
+  hidden: { opacity: 0, height: 0, marginBottom: 0 },
+  visible: { opacity: 1, height: "auto", marginBottom: "1rem" },
+  exit: { opacity: 0, height: 0, marginBottom: 0 }
+};
+var ICON_MAP = {
+  info: import_lucide_react4.Info,
+  success: import_lucide_react4.CheckCircle2,
+  warning: import_lucide_react4.AlertTriangle,
+  error: import_lucide_react4.AlertCircle
+};
+var TONE_CLASSES = {
+  info: "bg-blue-500/10 border-blue-500/20 text-blue-500",
+  success: "bg-emerald-500/10 border-emerald-500/20 text-emerald-500",
+  warning: "bg-amber-500/10 border-amber-500/20 text-amber-500",
+  error: "bg-rose-500/10 border-rose-500/20 text-rose-500"
+};
 var Alert = (0, import_react11.memo)(function Alert2({
   element,
   children
@@ -827,33 +977,24 @@ var Alert = (0, import_react11.memo)(function Alert2({
   const [dismissed, setDismissed] = (0, import_react11.useState)(false);
   const tone = type ?? variant ?? "info";
   const hasMessage = resolvedMessage !== void 0 && resolvedMessage !== null;
-  const Icon = {
-    info: import_lucide_react4.Info,
-    success: import_lucide_react4.CheckCircle2,
-    warning: import_lucide_react4.AlertTriangle,
-    error: import_lucide_react4.AlertCircle
-  }[tone] || import_lucide_react4.Info;
+  const Icon = ICON_MAP[tone] || import_lucide_react4.Info;
   return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_framer_motion10.AnimatePresence, { children: !dismissed && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
     import_framer_motion10.motion.div,
     {
-      initial: { opacity: 0, height: 0, marginBottom: 0 },
-      animate: { opacity: 1, height: "auto", marginBottom: 16 },
-      exit: { opacity: 0, height: 0, marginBottom: 0 },
+      variants: alertVariants,
+      initial: "hidden",
+      animate: "visible",
+      exit: "exit",
       transition: { duration: 0.2 },
       className: (0, import_utils.cn)(
-        "relative w-full rounded-xl border p-4 text-sm shadow-lg backdrop-blur-md overflow-hidden",
-        {
-          "bg-blue-500/10 border-blue-500/20 text-blue-500": tone === "info",
-          "bg-emerald-500/10 border-emerald-500/20 text-emerald-500": tone === "success",
-          "bg-amber-500/10 border-amber-500/20 text-amber-500": tone === "warning",
-          "bg-rose-500/10 border-rose-500/20 text-rose-500": tone === "error"
-        }
+        "relative w-full rounded-lg sm:rounded-xl border p-3 sm:p-4 text-xs sm:text-sm shadow-lg backdrop-blur-md overflow-hidden",
+        TONE_CLASSES[tone] || TONE_CLASSES.info
       ),
-      children: /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Icon, { size: 20, className: "shrink-0 mt-0.5" }),
-        /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex-1 space-y-1", children: [
-          title && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("h5", { className: "font-semibold leading-none tracking-tight", children: title }),
-          hasMessage && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("div", { className: "text-sm opacity-90 leading-relaxed", children: String(resolvedMessage) }),
+      children: /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex gap-2 sm:gap-3", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Icon, { className: "w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5" }),
+        /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex-1 space-y-0.5 sm:space-y-1 min-w-0", children: [
+          title && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("h5", { className: "font-semibold leading-tight tracking-tight text-xs sm:text-sm", children: title }),
+          hasMessage && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("div", { className: "text-xs sm:text-sm opacity-90 leading-relaxed", children: String(resolvedMessage) }),
           children
         ] }),
         dismissible && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
@@ -861,11 +1002,11 @@ var Alert = (0, import_react11.memo)(function Alert2({
           {
             onClick: () => setDismissed(true),
             className: (0, import_utils.cn)(
-              "absolute top-3 right-3 p-1 rounded-md opacity-70 hover:opacity-100 transition-opacity",
-              "hover:bg-black/5 dark:hover:bg-white/10"
+              "absolute top-2 right-2 sm:top-3 sm:right-3 p-1 rounded-md opacity-70 hover:opacity-100 transition-opacity",
+              "hover:bg-black/5 dark:hover:bg-white/10 min-h-[2rem] min-w-[2rem] flex items-center justify-center"
             ),
             title: "Dismiss",
-            children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react4.X, { size: 16 })
+            children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react4.X, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" })
           }
         )
       ] })
@@ -1039,6 +1180,15 @@ var BrowserActionDefinition = {
 var import_react15 = require("react");
 var import_framer_motion13 = require("framer-motion");
 var import_jsx_runtime13 = require("react/jsx-runtime");
+var buttonVariants = {
+  tap: { scale: 0.95 },
+  hover: { scale: 1.03 }
+};
+var SIZE_CLASSES = {
+  sm: "min-h-[2.25rem] sm:h-8 px-2.5 sm:px-3 text-[0.625rem]",
+  md: "min-h-[2.75rem] sm:h-9 px-3 sm:px-4 text-xs sm:text-sm",
+  lg: "min-h-[3rem] sm:h-11 px-4 sm:px-8 text-sm"
+};
 var Button = (0, import_react15.memo)(function Button2({
   element,
   onAction,
@@ -1050,18 +1200,22 @@ var Button = (0, import_react15.memo)(function Button2({
   return /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(
     import_framer_motion13.motion.button,
     {
-      whileTap: { scale: 0.95 },
-      whileHover: { scale: 1.05 },
+      variants: buttonVariants,
+      whileTap: "tap",
+      whileHover: "hover",
       onClick: () => !disabled && resolvedAction && onAction?.(resolvedAction),
       disabled: !!disabled || loading,
       className: (0, import_utils.cn)(
-        "relative inline-flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 overflow-hidden",
+        "relative inline-flex items-center justify-center transition-all",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        "disabled:pointer-events-none disabled:opacity-50 overflow-hidden",
+        "active:scale-95 touch-manipulation",
         variant === "primary" || !variant ? "btn-primary" : variant === "secondary" ? "btn-secondary" : variant === "danger" ? "btn-accent bg-destructive hover:bg-destructive/90 shadow-destructive/20" : variant === "ghost" ? "btn-ghost" : "",
-        size === "sm" ? "h-8 px-3 text-[0.625rem]" : size === "lg" ? "h-11 px-8 text-sm" : "h-9 px-4"
+        SIZE_CLASSES[size || "md"]
       ),
       children: [
-        variant === "primary" && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "absolute inset-0 -translate-x-[100%] group-hover:translate-x-[100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000" }),
-        loading ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "mr-2 animate-spin", children: "\u23F3" }) : null,
+        variant === "primary" && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000" }),
+        loading ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "mr-1.5 sm:mr-2 animate-spin text-[0.625rem] sm:text-xs", children: "\u23F3" }) : null,
         loading ? "Loading..." : label,
         !loading && children
       ]
@@ -1091,6 +1245,10 @@ var import_react16 = require("react");
 var import_react17 = require("@onegenui/react");
 var import_framer_motion14 = require("framer-motion");
 var import_jsx_runtime14 = require("react/jsx-runtime");
+var fieldVariants = {
+  hidden: { opacity: 0, y: "0.3125rem" },
+  visible: { opacity: 1, y: 0 }
+};
 var TextField = (0, import_react16.memo)(function TextField2({
   element,
   children
@@ -1123,11 +1281,13 @@ var TextField = (0, import_react16.memo)(function TextField2({
   return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(
     import_framer_motion14.motion.div,
     {
-      initial: { opacity: 0, y: 5 },
-      animate: { opacity: 1, y: 0 },
-      className: "flex flex-col gap-2 w-full group",
+      variants: fieldVariants,
+      initial: "hidden",
+      animate: "visible",
+      transition: { duration: 0.2 },
+      className: "flex flex-col gap-1.5 sm:gap-2 w-full group",
       children: [
-        label && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("label", { className: "text-label group-focus-within:text-primary transition-colors duration-300", children: label }),
+        label && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("label", { className: "text-label text-[0.5625rem] sm:text-[0.625rem] group-focus-within:text-primary transition-colors duration-300", children: label }),
         /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "relative", children: [
           /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
             "input",
@@ -1147,22 +1307,22 @@ var TextField = (0, import_react16.memo)(function TextField2({
               },
               placeholder: placeholder ?? "",
               className: (0, import_utils.cn)(
-                "glass-surface flex h-10 w-full rounded-lg px-3 py-1 text-sm text-foreground shadow-sm transition-all duration-300",
+                "glass-surface flex min-h-[2.75rem] sm:h-10 w-full rounded-lg px-3 py-2 text-xs sm:text-sm text-foreground shadow-sm transition-all duration-300",
                 "hover:border-white/20 hover:bg-white/10",
-                "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 focus-visible:border-primary/50",
-                "placeholder:text-muted-foreground",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary/50",
+                "placeholder:text-muted-foreground touch-manipulation",
                 errors.length > 0 ? "border-destructive/50 focus-visible:ring-destructive/50 text-destructive" : ""
               )
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "absolute top-0 right-0 p-1 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "w-1.5 h-1.5 border-t border-r border-primary rounded-tr-sm" }) })
+          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "absolute top-0 right-0 p-1 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "w-1 h-1 sm:w-1.5 sm:h-1.5 border-t border-r border-primary rounded-tr-sm" }) })
         ] }),
         errors.map((error, i) => /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(
           "span",
           {
-            className: "text-[10px] font-mono font-bold text-destructive flex items-center gap-1.5",
+            className: "text-[0.5625rem] sm:text-[0.625rem] font-mono font-bold text-destructive flex items-center gap-1 sm:gap-1.5",
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "w-1 h-1 bg-destructive rounded-full" }),
+              /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "w-1 h-1 bg-destructive rounded-full flex-shrink-0" }),
               " ",
               error
             ]
@@ -1204,6 +1364,10 @@ var import_react18 = require("react");
 var import_react19 = require("@onegenui/react");
 var import_framer_motion15 = require("framer-motion");
 var import_jsx_runtime15 = require("react/jsx-runtime");
+var selectVariants = {
+  hidden: { opacity: 0, y: "0.3125rem" },
+  visible: { opacity: 1, y: 0 }
+};
 var Select = (0, import_react18.memo)(function Select2({
   element,
   children
@@ -1219,20 +1383,23 @@ var Select = (0, import_react18.memo)(function Select2({
   return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(
     import_framer_motion15.motion.div,
     {
-      initial: { opacity: 0, y: 5 },
-      animate: { opacity: 1, y: 0 },
-      className: "flex flex-col gap-1.5",
+      variants: selectVariants,
+      initial: "hidden",
+      animate: "visible",
+      transition: { duration: 0.2 },
+      className: "flex flex-col gap-1 sm:gap-1.5 w-full",
       children: [
-        label && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("label", { className: "text-label", children: label }),
+        label && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("label", { className: "text-label text-[0.5625rem] sm:text-[0.625rem]", children: label }),
         /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(
           "select",
           {
             value: resolvedValue ?? "",
             onChange: (e) => resolvedPath && set(resolvedPath, e.target.value),
             className: (0, import_utils.cn)(
-              "glass-surface flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground",
-              "focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50",
-              "disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 appearance-none",
+              "glass-surface flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground",
+              "min-h-[2.75rem] sm:h-10",
+              "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50",
+              "disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 appearance-none touch-manipulation",
               !resolvedValue && "text-muted-foreground"
             ),
             children: [
@@ -1282,6 +1449,10 @@ var import_react20 = require("react");
 var import_react21 = require("@onegenui/react");
 var import_framer_motion16 = require("framer-motion");
 var import_jsx_runtime16 = require("react/jsx-runtime");
+var dateVariants = {
+  hidden: { opacity: 0, y: "0.3125rem" },
+  visible: { opacity: 1, y: 0 }
+};
 var DatePicker = (0, import_react20.memo)(function DatePicker2({
   element,
   children
@@ -1297,11 +1468,13 @@ var DatePicker = (0, import_react20.memo)(function DatePicker2({
   return /* @__PURE__ */ (0, import_jsx_runtime16.jsxs)(
     import_framer_motion16.motion.div,
     {
-      initial: { opacity: 0, y: 5 },
-      animate: { opacity: 1, y: 0 },
-      className: "flex flex-col gap-1.5",
+      variants: dateVariants,
+      initial: "hidden",
+      animate: "visible",
+      transition: { duration: 0.2 },
+      className: "flex flex-col gap-1 sm:gap-1.5 w-full",
       children: [
-        label && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("label", { className: "text-label", children: label }),
+        label && /* @__PURE__ */ (0, import_jsx_runtime16.jsx)("label", { className: "text-label text-[0.5625rem] sm:text-[0.625rem]", children: label }),
         /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
           "input",
           {
@@ -1310,9 +1483,9 @@ var DatePicker = (0, import_react20.memo)(function DatePicker2({
             placeholder: placeholder ?? "",
             onChange: (e) => resolvedPath && set(resolvedPath, e.target.value),
             className: (0, import_utils.cn)(
-              "glass-surface flex h-10 w-full rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground",
-              "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 focus-visible:border-primary/50",
-              "disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+              "glass-surface flex min-h-[2.75rem] sm:h-10 w-full rounded-lg px-3 py-2 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary/50",
+              "disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 touch-manipulation"
             )
           }
         ),
@@ -1343,6 +1516,10 @@ var import_react22 = require("react");
 var import_react23 = require("@onegenui/react");
 var import_framer_motion17 = require("framer-motion");
 var import_jsx_runtime17 = require("react/jsx-runtime");
+var metricVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1 }
+};
 var Metric = (0, import_react22.memo)(function Metric2({
   element,
   children
@@ -1367,17 +1544,19 @@ var Metric = (0, import_react22.memo)(function Metric2({
   return /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
     import_framer_motion17.motion.div,
     {
-      initial: { opacity: 0, scale: 0.95 },
-      animate: { opacity: 1, scale: 1 },
-      className: "flex flex-col gap-1 w-full min-w-0",
+      variants: metricVariants,
+      initial: "hidden",
+      animate: "visible",
+      transition: { duration: 0.2 },
+      className: "flex flex-col gap-0.5 sm:gap-1 w-full min-w-0",
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "text-label", children: label }),
-        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "text-display text-2xl", children: displayValue }),
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "text-label text-[0.5625rem] sm:text-[0.625rem]", children: label }),
+        /* @__PURE__ */ (0, import_jsx_runtime17.jsx)("span", { className: "text-display text-xl sm:text-2xl", children: displayValue }),
         (trend || trendValue) && /* @__PURE__ */ (0, import_jsx_runtime17.jsxs)(
           "span",
           {
             className: (0, import_utils.cn)(
-              "text-xs font-medium flex items-center gap-1",
+              "text-[0.625rem] sm:text-xs font-medium flex items-center gap-1",
               trend === "up" ? "text-emerald-400" : trend === "down" ? "text-rose-400" : "text-muted-foreground"
             ),
             children: [
@@ -1415,6 +1594,14 @@ var import_react25 = require("@onegenui/react");
 var import_framer_motion18 = require("framer-motion");
 var import_lucide_react5 = require("lucide-react");
 var import_jsx_runtime18 = require("react/jsx-runtime");
+var containerVariants4 = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.02 } }
+};
+var rowVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 }
+};
 var Table = (0, import_react24.memo)(function Table2({
   element,
   children
@@ -1434,11 +1621,19 @@ var Table = (0, import_react24.memo)(function Table2({
   const tableRows = (0, import_utils2.resolveArrayProp)(data, rows, dataPath);
   if (!tableRows || tableRows.length === 0) {
     return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "w-full", children: [
-      title && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("h4", { className: "mb-4 text-sm font-semibold leading-none tracking-tight", children: title }),
-      /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react5.Table, { className: "w-10 h-10 opacity-20 mb-3" }),
-        /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No data available" })
-      ] }),
+      title && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("h4", { className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight", children: title }),
+      /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(
+        import_framer_motion18.motion.div,
+        {
+          initial: { opacity: 0 },
+          animate: { opacity: 1 },
+          className: "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-lg sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react5.Table, { className: "w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" }),
+            /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("p", { className: "font-mono text-[0.625rem] sm:text-xs uppercase tracking-widest opacity-50", children: "No data available" })
+          ]
+        }
+      ),
       children
     ] });
   }
@@ -1454,7 +1649,7 @@ var Table = (0, import_react24.memo)(function Table2({
       return new Date(value).toLocaleDateString();
     }
     if (format === "badge") {
-      return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80", children: String(value) });
+      return /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("span", { className: "inline-flex items-center rounded-full border px-2 sm:px-2.5 py-0.5 text-[0.625rem] sm:text-xs font-semibold transition-colors border-transparent bg-secondary text-secondary-foreground", children: String(value) });
     }
     return String(value);
   };
@@ -1464,9 +1659,7 @@ var Table = (0, import_react24.memo)(function Table2({
     const renderedRow = /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
       import_framer_motion18.motion.tr,
       {
-        initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        transition: { delay: index * 0.02 },
+        variants: rowVariants,
         "data-selectable-item": true,
         "data-element-key": element.key,
         "data-item-id": rowKey,
@@ -1475,9 +1668,10 @@ var Table = (0, import_react24.memo)(function Table2({
           "td",
           {
             className: (0, import_utils.cn)(
-              "p-4 align-middle [&:has([role=checkbox])]:pr-0 text-foreground"
+              "p-2.5 sm:p-4 align-middle text-xs sm:text-sm text-foreground",
+              "[&:has([role=checkbox])]:pr-0"
             ),
-            style: colIndex === 0 && depth > 0 ? { paddingLeft: `${12 + depth * 16}px` } : void 0,
+            style: colIndex === 0 && depth > 0 ? { paddingLeft: `${0.75 + depth}rem` } : void 0,
             children: formatCell(row[col.key], col.format)
           },
           col.key
@@ -1488,18 +1682,27 @@ var Table = (0, import_react24.memo)(function Table2({
     return [renderedRow, ...renderRows(subRows, depth + 1)];
   });
   return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "w-full", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("h4", { className: "mb-4 text-sm font-semibold leading-none tracking-tight text-foreground", children: title }),
-    /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "relative w-full overflow-auto rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("table", { className: "w-full caption-bottom text-sm border-collapse", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("thead", { className: "[&_tr]:border-b border-white/10", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("tr", { className: "border-b border-white/10 transition-colors hover:bg-white/5 data-[state=selected]:bg-white/10", children: columns.map((col, index) => /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
-        "th",
-        {
-          className: "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
-          children: col.label
-        },
-        col.key ?? `col-${index}`
-      )) }) }),
-      /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("tbody", { className: "[&_tr:last-child]:border-0", children: renderRows(tableRows) })
-    ] }) }),
+    title && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("h4", { className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight text-foreground", children: title }),
+    /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "relative w-full overflow-x-auto rounded-lg sm:rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm -mx-1 px-1 sm:mx-0 sm:px-0", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(
+      import_framer_motion18.motion.table,
+      {
+        variants: containerVariants4,
+        initial: "hidden",
+        animate: "visible",
+        className: "w-full min-w-[20rem] caption-bottom text-xs sm:text-sm border-collapse",
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("thead", { className: "[&_tr]:border-b border-white/10", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("tr", { className: "border-b border-white/10 transition-colors", children: columns.map((col, index) => /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
+            "th",
+            {
+              className: "h-10 sm:h-12 px-2.5 sm:px-4 text-left align-middle font-medium text-muted-foreground text-[0.625rem] sm:text-xs uppercase tracking-wider",
+              children: col.label
+            },
+            col.key ?? `col-${index}`
+          )) }) }),
+          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("tbody", { className: "[&_tr:last-child]:border-0", children: renderRows(tableRows) })
+        ]
+      }
+    ) }),
     children
   ] });
 });

@@ -11,19 +11,19 @@ CLI Cleaning output folder
 CJS Build start
 ESM Build start
 CJS dist/definitions.js     36.12 KB
-CJS dist/index.js           208.00 KB
+CJS dist/index.js           214.93 KB
 CJS dist/definitions.js.map 63.32 KB
-CJS dist/index.js.map       311.26 KB
-CJS ⚡️ Build success in 149ms
+CJS dist/index.js.map       320.77 KB
+CJS ⚡️ Build success in 58ms
 ESM dist/definitions.mjs        2.58 KB
-ESM dist/index.mjs              156.17 KB
+ESM dist/index.mjs              162.90 KB
 ESM dist/chunk-42KZEVSX.mjs     28.75 KB
 ESM dist/definitions.mjs.map    71.00 B
-ESM dist/index.mjs.map          252.55 KB
+ESM dist/index.mjs.map          262.09 KB
 ESM dist/chunk-42KZEVSX.mjs.map 59.74 KB
-ESM ⚡️ Build success in 154ms
+ESM ⚡️ Build success in 59ms
 DTS Build start
-DTS ⚡️ Build success in 3552ms
+DTS ⚡️ Build success in 3087ms
 DTS dist/index.d.ts        4.90 KB
 DTS dist/definitions.d.ts  54.78 KB
 DTS dist/index.d.mts       4.90 KB

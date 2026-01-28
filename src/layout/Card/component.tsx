@@ -5,6 +5,20 @@ import { type ComponentRenderProps } from "@onegenui/react";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 
+/** Mobile-first responsive padding classes */
+const PADDING_CLASSES: Record<string, string> = {
+  none: "p-0",
+  sm: "p-2 sm:p-3",
+  md: "p-3 sm:p-4",
+  lg: "p-4 sm:p-5 lg:p-6",
+};
+
+/** Card animation variants */
+const cardVariants = {
+  hidden: { opacity: 0, y: "0.625rem" },
+  visible: { opacity: 1, y: 0 },
+};
+
 export const Card = memo(function Card({
   element,
   children,
@@ -15,37 +29,36 @@ export const Card = memo(function Card({
     padding?: "none" | "sm" | "md" | "lg" | null;
   };
 
-  const paddingClasses: Record<string, string> = {
-    none: "p-0",
-    sm: "p-3",
-    md: "p-4",
-    lg: "p-6",
-  };
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.3, ease: "easeOut" }}
       className="card-glass w-full min-w-0 flex flex-col"
     >
-      {/* Flight Accent Bar - Optional based on context, kept subtle for generic card */}
       <div className="gradient-bar-thin opacity-20" />
 
       {(title || description) && (
-        <div className="flex flex-col space-y-1.5 p-6 pb-4 border-b border-white/5 bg-white/[0.02]">
+        <div className="flex flex-col gap-1 p-4 sm:p-5 lg:p-6 pb-3 sm:pb-4 border-b border-white/5 bg-white/[0.02]">
           {title && (
-            <h3 className="text-lg font-bold leading-none tracking-tight text-white">
+            <h3 className="text-base sm:text-lg font-bold leading-tight tracking-tight text-foreground">
               {title}
             </h3>
           )}
           {description && (
-            <p className="text-sm text-zinc-400 font-medium">{description}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed">
+              {description}
+            </p>
           )}
         </div>
       )}
+
       <div
-        className={cn("min-w-0 flex-1", paddingClasses[padding || ""] || "p-6")}
+        className={cn(
+          "min-w-0 flex-1",
+          PADDING_CLASSES[padding || ""] || "p-4 sm:p-5 lg:p-6",
+        )}
       >
         {children}
       </div>

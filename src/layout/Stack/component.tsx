@@ -5,6 +5,28 @@ import { type ComponentRenderProps } from "@onegenui/react";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 
+/** Mobile-first responsive gap classes */
+const GAP_CLASSES: Record<string, string> = {
+  none: "gap-0",
+  sm: "gap-2 sm:gap-3",
+  md: "gap-3 sm:gap-4 lg:gap-5",
+  lg: "gap-4 sm:gap-5 lg:gap-6",
+};
+
+/** Alignment classes */
+const ALIGN_CLASSES: Record<string, string> = {
+  start: "items-start",
+  center: "items-center",
+  end: "items-end",
+  stretch: "items-stretch",
+};
+
+/** Stack animation variants */
+const stackVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.2 } },
+};
+
 export const Stack = memo(function Stack({
   element,
   children,
@@ -18,28 +40,8 @@ export const Stack = memo(function Stack({
   const containerRef = useRef<HTMLDivElement>(null);
   const [forceVertical, setForceVertical] = useState(false);
 
-  const gapClasses: Record<string, string> = {
-    none: "gap-0",
-    sm: "gap-2",
-    md: "gap-4",
-    lg: "gap-6",
-  };
-
-  const alignClasses: Record<string, string> = {
-    start: "items-start",
-    center: "items-center",
-    end: "items-end",
-    stretch: "items-stretch",
-  };
-
   const isHorizontal = direction === "horizontal";
-  // Default to wrap for horizontal stacks to prevent overflow
   const shouldWrap = wrap !== false && isHorizontal;
-  const effectiveDirection = forceVertical
-    ? "flex-col"
-    : isHorizontal
-      ? "flex-row"
-      : "flex-col";
 
   const evaluateLayout = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -75,26 +77,32 @@ export const Stack = memo(function Stack({
     evaluateLayout();
 
     if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(() => {
-      evaluateLayout();
-    });
+    const observer = new ResizeObserver(evaluateLayout);
     observer.observe(node);
     Array.from(node.children).forEach((child) => observer.observe(child));
 
     return () => observer.disconnect();
   }, [children, evaluateLayout]);
 
+  // Mobile-first: vertical by default on mobile for horizontal stacks
+  const effectiveDirection = forceVertical
+    ? "flex-col"
+    : isHorizontal
+      ? "flex-col sm:flex-row"
+      : "flex-col";
+
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      variants={stackVariants}
+      initial="hidden"
+      animate="visible"
       ref={containerRef}
       className={cn(
         "flex w-full min-w-0 max-w-full",
         effectiveDirection,
-        shouldWrap && !forceVertical ? "flex-wrap" : "flex-nowrap",
-        gapClasses[gap || "md"],
-        alignClasses[align || "stretch"],
+        shouldWrap && !forceVertical ? "sm:flex-wrap" : "flex-nowrap",
+        GAP_CLASSES[gap || "md"] || GAP_CLASSES.md,
+        ALIGN_CLASSES[align || "stretch"] || ALIGN_CLASSES.stretch,
       )}
     >
       {children}

@@ -6,6 +6,12 @@ import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 import { resolveValueProp } from "../../utils/data-utils";
 
+/** Animation variants */
+const selectVariants = {
+  hidden: { opacity: 0, y: "0.3125rem" },
+  visible: { opacity: 1, y: 0 },
+};
+
 export const Select = memo(function Select({
   element,
   children,
@@ -30,18 +36,25 @@ export const Select = memo(function Select({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 5 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-1.5"
+      variants={selectVariants}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.2 }}
+      className="flex flex-col gap-1 sm:gap-1.5 w-full"
     >
-      {label && <label className="text-label">{label}</label>}
+      {label && (
+        <label className="text-label text-[0.5625rem] sm:text-[0.625rem]">
+          {label}
+        </label>
+      )}
       <select
         value={resolvedValue ?? ""}
         onChange={(e) => resolvedPath && set(resolvedPath, e.target.value)}
         className={cn(
-          "glass-surface flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground",
-          "focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50",
-          "disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 appearance-none",
+          "glass-surface flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground",
+          "min-h-[2.75rem] sm:h-10",
+          "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50",
+          "disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 appearance-none touch-manipulation",
           !resolvedValue && "text-muted-foreground",
         )}
       >

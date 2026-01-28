@@ -6,6 +6,29 @@ import { motion } from "framer-motion";
 import { resolveValueProp } from "../../utils/data-utils";
 import { cn } from "../../utils/cn";
 
+/** Animation variants */
+const badgeVariants = {
+  hidden: { scale: 0.9, opacity: 0 },
+  visible: { scale: 1, opacity: 1 },
+  hover: { scale: 1.05 },
+};
+
+const DOT_CLASSES: Record<string, string> = {
+  default: "bg-zinc-500",
+  success: "bg-emerald-400",
+  warning: "bg-amber-400",
+  error: "bg-rose-400",
+  info: "bg-sky-400",
+};
+
+const STATUS_CLASSES: Record<string, string> = {
+  default: "status-neutral",
+  success: "status-success",
+  warning: "status-warning",
+  error: "status-error",
+  info: "status-info",
+};
+
 export const Badge = memo(function Badge({
   element,
   children,
@@ -27,29 +50,21 @@ export const Badge = memo(function Badge({
 
   return (
     <motion.span
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      whileHover={{ scale: 1.05 }}
-      className={cn("inline-flex items-center gap-1.5 transition-all", {
-        "status-neutral": tone === "default",
-        "status-success": tone === "success",
-        "status-warning": tone === "warning",
-        "status-error": tone === "error",
-        "status-info": tone === "info",
-      })}
+      variants={badgeVariants}
+      initial="hidden"
+      animate="visible"
+      whileHover="hover"
+      className={cn(
+        "inline-flex items-center gap-1 sm:gap-1.5 transition-all text-[0.5625rem] sm:text-[0.625rem]",
+        STATUS_CLASSES[tone] || STATUS_CLASSES.default,
+      )}
     >
-      {/* Tiny Status Dot */}
       <span
         className={cn(
-          "w-1.5 h-1.5 rounded-full",
-          tone === "default" && "bg-zinc-500",
-          tone === "success" && "bg-emerald-400",
-          tone === "warning" && "bg-amber-400",
-          tone === "error" && "bg-rose-400",
-          tone === "info" && "bg-sky-400",
+          "w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full flex-shrink-0",
+          DOT_CLASSES[tone] || DOT_CLASSES.default,
         )}
       />
-
       {resolvedText}
       {children}
     </motion.span>

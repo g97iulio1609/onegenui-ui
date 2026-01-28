@@ -3,6 +3,29 @@ import { type ComponentRenderProps } from "@onegenui/react";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 
+/** Text animation variants */
+const textVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
+
+/** Mobile-first responsive text sizes */
+const VARIANT_CLASSES: Record<string, string> = {
+  body: "text-xs sm:text-sm",
+  caption: "text-[0.625rem] sm:text-xs",
+  label: "text-[0.6875rem] sm:text-[0.8125rem]",
+};
+
+const COLOR_CLASSES: Record<string, string> = {
+  default: "text-foreground",
+  muted: "text-muted-foreground",
+  info: "text-muted-foreground",
+  success: "text-emerald-500",
+  warning: "text-amber-500",
+  danger: "text-rose-500",
+  error: "text-rose-500",
+};
+
 export const Text = memo(function Text({
   element,
   children,
@@ -18,25 +41,17 @@ export const Text = memo(function Text({
   const resolvedVariant = variant || "body";
   const resolvedColor = color || "default";
 
-  // Use div instead of p to avoid hydration errors when content contains block elements
-  // (markdown can generate <ol>, <ul>, <pre> etc. which cannot be inside <p>)
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className={cn("m-0", {
-        "text-sm": resolvedVariant === "body",
-        "text-xs": resolvedVariant === "caption",
-        "text-[13px]": resolvedVariant === "label",
-
-        "text-foreground": resolvedColor === "default",
-        "text-muted-foreground":
-          resolvedColor === "muted" || resolvedColor === "info",
-        "text-emerald-500": resolvedColor === "success",
-        "text-amber-500": resolvedColor === "warning",
-        "text-rose-500":
-          resolvedColor === "danger" || resolvedColor === "error",
-      })}
+      variants={textVariants}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.2 }}
+      className={cn(
+        "m-0 leading-relaxed",
+        VARIANT_CLASSES[resolvedVariant] || VARIANT_CLASSES.body,
+        COLOR_CLASSES[resolvedColor] || COLOR_CLASSES.default,
+      )}
     >
       {render(content, { inline: true })}
       {children}

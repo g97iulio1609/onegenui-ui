@@ -6,6 +6,12 @@ import { motion } from "framer-motion";
 import { resolveValueProp } from "../../utils/data-utils";
 import { cn } from "../../utils/cn";
 
+/** Animation variants */
+const metricVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1 },
+};
+
 export const Metric = memo(function Metric({
   element,
   children,
@@ -40,16 +46,20 @@ export const Metric = memo(function Metric({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col gap-1 w-full min-w-0"
+      variants={metricVariants}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 0.2 }}
+      className="flex flex-col gap-0.5 sm:gap-1 w-full min-w-0"
     >
-      <span className="text-label">{label}</span>
-      <span className="text-display text-2xl">{displayValue}</span>
+      <span className="text-label text-[0.5625rem] sm:text-[0.625rem]">
+        {label}
+      </span>
+      <span className="text-display text-xl sm:text-2xl">{displayValue}</span>
       {(trend || trendValue) && (
         <span
           className={cn(
-            "text-xs font-medium flex items-center gap-1",
+            "text-[0.625rem] sm:text-xs font-medium flex items-center gap-1",
             trend === "up"
               ? "text-emerald-400"
               : trend === "down"
