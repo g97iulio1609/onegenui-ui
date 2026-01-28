@@ -11,20 +11,20 @@
 [34mCLI[39m Cleaning output folder
 [34mCJS[39m Build start
 [34mESM[39m Build start
+[32mESM[39m [1mdist/definitions.mjs        [22m[32m2.58 KB[39m
+[32mESM[39m [1mdist/index.mjs              [22m[32m162.90 KB[39m
+[32mESM[39m [1mdist/chunk-42KZEVSX.mjs     [22m[32m28.75 KB[39m
+[32mESM[39m [1mdist/index.mjs.map          [22m[32m262.09 KB[39m
+[32mESM[39m [1mdist/chunk-42KZEVSX.mjs.map [22m[32m59.74 KB[39m
+[32mESM[39m [1mdist/definitions.mjs.map    [22m[32m71.00 B[39m
+[32mESM[39m ⚡️ Build success in 226ms
 [32mCJS[39m [1mdist/definitions.js     [22m[32m36.12 KB[39m
 [32mCJS[39m [1mdist/index.js           [22m[32m214.93 KB[39m
 [32mCJS[39m [1mdist/definitions.js.map [22m[32m63.32 KB[39m
 [32mCJS[39m [1mdist/index.js.map       [22m[32m320.77 KB[39m
-[32mCJS[39m ⚡️ Build success in 70ms
-[32mESM[39m [1mdist/definitions.mjs        [22m[32m2.58 KB[39m
-[32mESM[39m [1mdist/chunk-42KZEVSX.mjs     [22m[32m28.75 KB[39m
-[32mESM[39m [1mdist/index.mjs              [22m[32m162.90 KB[39m
-[32mESM[39m [1mdist/chunk-42KZEVSX.mjs.map [22m[32m59.74 KB[39m
-[32mESM[39m [1mdist/definitions.mjs.map    [22m[32m71.00 B[39m
-[32mESM[39m [1mdist/index.mjs.map          [22m[32m262.09 KB[39m
-[32mESM[39m ⚡️ Build success in 70ms
+[32mCJS[39m ⚡️ Build success in 228ms
 DTS Build start
-DTS ⚡️ Build success in 2931ms
+DTS ⚡️ Build success in 5558ms
 DTS dist/index.d.ts        4.90 KB
 DTS dist/definitions.d.ts  54.78 KB
 DTS dist/index.d.mts       4.90 KB
