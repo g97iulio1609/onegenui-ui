@@ -1,0 +1,132 @@
+import { memo, useState } from "react";
+import { type ComponentRenderProps } from "@onegenui/react";
+import type { SearchResultsProps } from "./schema";
+import { Globe, Sparkles } from "lucide-react";
+import {
+  SynthesisSection,
+  MediaGallery,
+  SourcesSidebar,
+  RichResultCard,
+  type MediaItem,
+} from "./components";
+
+export const SearchResults = memo(function SearchResults({
+  element,
+  children,
+}: ComponentRenderProps) {
+  const { query, results, totalResults, searchTime, sources, synthesis } =
+    element.props as SearchResultsProps;
+  const [sourcesExpanded, setSourcesExpanded] = useState(false);
+
+  const resultCount = results?.length ?? 0;
+  const hasSources = sources && sources.length > 0;
+  const hasSynthesis = synthesis && synthesis.summary;
+  // Extract images/videos for gallery - show more media
+  const carouselMedia: MediaItem[] =
+    results
+      ?.filter((r) => r.image || r.video)
+      .slice(0, 10)
+      .map((r) => {
+        if (r.video) {
+          return {
+            type: "video" as const,
+            url: r.video.url,
+            thumbnail: r.video.thumbnail || undefined,
+            title: r.title,
+            source: r.source || undefined,
+            provider: r.video.provider || undefined,
+            duration: r.video.duration || undefined,
+          };
+        }
+        return {
+          type: "image" as const,
+          url: r.image!,
+          title: r.title,
+          source: r.source || undefined,
+        };
+      }) || [];
+
+  return (
+    <div className="flex flex-col w-full">
+      {/* AI-style header */}
+      <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/20 to-violet-500/20 border border-primary/30">
+          <Sparkles size={14} className="text-primary" />
+          <span className="text-xs font-medium text-primary">Web Search</span>
+        </div>
+        <span className="text-sm text-muted-foreground">{query}</span>
+      </div>
+
+      {/* Responsive two-column layout */}
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+        {/* Main content */}
+        <div className="flex-1 min-w-0 order-1">
+          {/* AI Synthesis (Perplexity-style) */}
+          {hasSynthesis && (
+            <SynthesisSection synthesis={synthesis} sources={sources || []} />
+          )}
+
+          {/* Media gallery */}
+          {carouselMedia.length > 0 && <MediaGallery items={carouselMedia} />}
+
+          {/* Results */}
+          {resultCount > 0 ? (
+            <div className="flex flex-col divide-y divide-white/5">
+              {results.map((result, index) => (
+                <div
+                  key={result.url || index}
+                  className="py-4 first:pt-0 last:pb-0"
+                >
+                  <RichResultCard result={result} index={index} />
+                </div>
+              ))}
+            </div>
+          ) : !hasSynthesis ? (
+            <div className="p-8 text-center">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-white/5 flex items-center justify-center">
+                <Globe size={20} className="text-white/30" />
+              </div>
+              <p className="text-muted-foreground">
+                No results found for &quot;{query}&quot;
+              </p>
+            </div>
+          ) : null}
+
+          {/* Footer stats */}
+          {resultCount > 0 && (
+            <div className="mt-4 pt-4 border-t border-white/5">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground/60">
+                <span>{totalResults ?? resultCount} results</span>
+                {searchTime && <span>{(searchTime / 1000).toFixed(2)}s</span>}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Sources sidebar - responsive width */}
+        {hasSources && (
+          <div className="hidden lg:block w-[240px] xl:w-[280px] shrink-0 order-2">
+            <SourcesSidebar
+              sources={sources}
+              expanded={sourcesExpanded}
+              onToggle={() => setSourcesExpanded(!sourcesExpanded)}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Mobile sources */}
+      {hasSources && (
+        <div className="lg:hidden mt-6 pt-4 border-t border-white/10">
+          <SourcesSidebar
+            sources={sources}
+            expanded={sourcesExpanded}
+            onToggle={() => setSourcesExpanded(!sourcesExpanded)}
+          />
+        </div>
+      )}
+
+      {children}
+    </div>
+  );
+});
