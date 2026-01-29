@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { type ComponentRenderProps, useData } from "@onegenui/react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { resolveArrayProp } from "../../utils/data-utils";
 import { cn } from "../../utils/cn";
 import { Table as TableIcon } from "lucide-react";
@@ -21,6 +21,7 @@ const containerVariants = {
 const rowVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
+  exit: { opacity: 0 },
 };
 
 export const Table = memo(function Table({
@@ -107,6 +108,9 @@ export const Table = memo(function Table({
         <motion.tr
           key={rowKey}
           variants={rowVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
           data-selectable-item
           data-element-key={element.key}
           data-item-id={rowKey}
@@ -161,7 +165,9 @@ export const Table = memo(function Table({
             </tr>
           </thead>
           <tbody className="[&_tr:last-child]:border-0">
-            {renderRows(tableRows)}
+            <AnimatePresence mode="popLayout">
+              {renderRows(tableRows)}
+            </AnimatePresence>
           </tbody>
         </motion.table>
       </div>

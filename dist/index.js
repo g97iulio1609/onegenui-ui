@@ -1622,7 +1622,8 @@ var containerVariants4 = {
 };
 var rowVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1 }
+  visible: { opacity: 1 },
+  exit: { opacity: 0 }
 };
 var Table = (0, import_react24.memo)(function Table2({
   element,
@@ -1682,6 +1683,9 @@ var Table = (0, import_react24.memo)(function Table2({
       import_framer_motion18.motion.tr,
       {
         variants: rowVariants,
+        initial: "hidden",
+        animate: "visible",
+        exit: "exit",
         "data-selectable-item": true,
         "data-element-key": element.key,
         "data-item-id": rowKey,
@@ -1721,7 +1725,7 @@ var Table = (0, import_react24.memo)(function Table2({
             },
             col.key ?? `col-${index}`
           )) }) }),
-          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("tbody", { className: "[&_tr:last-child]:border-0", children: renderRows(tableRows) })
+          /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("tbody", { className: "[&_tr:last-child]:border-0", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_framer_motion18.AnimatePresence, { mode: "popLayout", children: renderRows(tableRows) }) })
         ]
       }
     ) }),

@@ -1291,7 +1291,7 @@ var Metric = memo17(function Metric2({
 // src/data-display/Table/component.tsx
 import { memo as memo18 } from "react";
 import { useData as useData7 } from "@onegenui/react";
-import { motion as motion18 } from "framer-motion";
+import { motion as motion18, AnimatePresence as AnimatePresence5 } from "framer-motion";
 import { Table as TableIcon } from "lucide-react";
 import { jsx as jsx16, jsxs as jsxs17 } from "react/jsx-runtime";
 var containerVariants4 = {
@@ -1300,7 +1300,8 @@ var containerVariants4 = {
 };
 var rowVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1 }
+  visible: { opacity: 1 },
+  exit: { opacity: 0 }
 };
 var Table = memo18(function Table2({
   element,
@@ -1360,6 +1361,9 @@ var Table = memo18(function Table2({
       motion18.tr,
       {
         variants: rowVariants,
+        initial: "hidden",
+        animate: "visible",
+        exit: "exit",
         "data-selectable-item": true,
         "data-element-key": element.key,
         "data-item-id": rowKey,
@@ -1399,7 +1403,7 @@ var Table = memo18(function Table2({
             },
             col.key ?? `col-${index}`
           )) }) }),
-          /* @__PURE__ */ jsx16("tbody", { className: "[&_tr:last-child]:border-0", children: renderRows(tableRows) })
+          /* @__PURE__ */ jsx16("tbody", { className: "[&_tr:last-child]:border-0", children: /* @__PURE__ */ jsx16(AnimatePresence5, { mode: "popLayout", children: renderRows(tableRows) }) })
         ]
       }
     ) }),
@@ -1683,7 +1687,7 @@ var TextWithCitations = memo22(function TextWithCitations2({
 
 // src/data-display/SearchResults/components/synthesis-section.tsx
 import { memo as memo23, useState as useState6 } from "react";
-import { motion as motion21, AnimatePresence as AnimatePresence5 } from "framer-motion";
+import { motion as motion21, AnimatePresence as AnimatePresence6 } from "framer-motion";
 import { ChevronDown as ChevronDown2, BookOpen, Lightbulb, MessageSquare } from "lucide-react";
 import { jsx as jsx21, jsxs as jsxs21 } from "react/jsx-runtime";
 var SynthesisSection = memo23(function SynthesisSection2({
@@ -1796,7 +1800,7 @@ var SynthesisSection = memo23(function SynthesisSection2({
               ]
             }
           ),
-          /* @__PURE__ */ jsx21(AnimatePresence5, { children: expandedSections.has(idx) && /* @__PURE__ */ jsx21(
+          /* @__PURE__ */ jsx21(AnimatePresence6, { children: expandedSections.has(idx) && /* @__PURE__ */ jsx21(
             motion21.div,
             {
               initial: { height: 0, opacity: 0 },
@@ -2336,7 +2340,7 @@ var DriveFile = memo29(function DriveFile2({
 
 // src/data-display/DriveFileList/component.tsx
 import { memo as memo31, useState as useState12 } from "react";
-import { AnimatePresence as AnimatePresence6, motion as motion28 } from "framer-motion";
+import { AnimatePresence as AnimatePresence7, motion as motion28 } from "framer-motion";
 
 // src/data-display/DriveFileList/components/file-views.tsx
 import { memo as memo30 } from "react";
@@ -2715,7 +2719,7 @@ var DriveFileList = memo31(function DriveFileList2({
       {
         layout: true,
         className: "grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4 p-5",
-        children: /* @__PURE__ */ jsx30(AnimatePresence6, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
+        children: /* @__PURE__ */ jsx30(AnimatePresence7, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
           FileGridCard,
           {
             file,
@@ -2732,7 +2736,7 @@ var DriveFileList = memo31(function DriveFileList2({
         /* @__PURE__ */ jsx30("div", { className: "min-w-24 text-right", children: "Modificato" }),
         /* @__PURE__ */ jsx30("div", { className: "w-20" })
       ] }),
-      /* @__PURE__ */ jsx30(AnimatePresence6, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
+      /* @__PURE__ */ jsx30(AnimatePresence7, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
         FileListRow,
         {
           file,
@@ -2948,7 +2952,7 @@ var Weather = memo32(function Weather2({
 
 // src/data-display/DocumentIndex/component.tsx
 import { memo as memo33, useState as useState13, useCallback as useCallback4 } from "react";
-import { motion as motion30, AnimatePresence as AnimatePresence7 } from "framer-motion";
+import { motion as motion30, AnimatePresence as AnimatePresence8 } from "framer-motion";
 import {
   FileText as FileText2,
   ChevronRight as ChevronRight2,
@@ -3062,7 +3066,7 @@ var DocumentIndex = memo33(function DocumentIndex2({
             " pages)"
           ] })
         ] }),
-        /* @__PURE__ */ jsx32("div", { className: "space-y-0.5", children: /* @__PURE__ */ jsx32(AnimatePresence7, { mode: "popLayout", children: nodes.map((node, idx) => /* @__PURE__ */ jsx32(IndexNode, { node, depth: 0 }, node.id || idx)) }) })
+        /* @__PURE__ */ jsx32("div", { className: "space-y-0.5", children: /* @__PURE__ */ jsx32(AnimatePresence8, { mode: "popLayout", children: nodes.map((node, idx) => /* @__PURE__ */ jsx32(IndexNode, { node, depth: 0 }, node.id || idx)) }) })
       ] }),
       currentStatus === "complete" && (!nodes || nodes.length === 0) && /* @__PURE__ */ jsxs32("div", { className: "py-8 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl", children: [
         /* @__PURE__ */ jsx32(FileText2, { className: "w-10 h-10 opacity-20 mb-3" }),
@@ -3126,7 +3130,7 @@ var IndexNode = memo33(function IndexNode2({
             ]
           }
         ),
-        /* @__PURE__ */ jsx32(AnimatePresence7, { children: node.summary && expanded && /* @__PURE__ */ jsx32(
+        /* @__PURE__ */ jsx32(AnimatePresence8, { children: node.summary && expanded && /* @__PURE__ */ jsx32(
           motion30.div,
           {
             initial: { opacity: 0, height: 0 },
@@ -3137,7 +3141,7 @@ var IndexNode = memo33(function IndexNode2({
             children: node.summary
           }
         ) }),
-        /* @__PURE__ */ jsx32(AnimatePresence7, { children: expanded && hasChildren && /* @__PURE__ */ jsx32(
+        /* @__PURE__ */ jsx32(AnimatePresence8, { children: expanded && hasChildren && /* @__PURE__ */ jsx32(
           motion30.div,
           {
             initial: { opacity: 0, height: 0 },
