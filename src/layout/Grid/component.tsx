@@ -8,9 +8,10 @@ import {
   useRef,
   useState,
   Children,
+  isValidElement,
 } from "react";
 import { type ComponentRenderProps } from "@onegenui/react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../../utils/cn";
 import { LayoutGrid } from "lucide-react";
 
@@ -34,6 +35,7 @@ const containerVariants = {
 const itemVariants = {
   hidden: { opacity: 0, y: "0.5rem" },
   visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-0.5rem" },
 };
 
 export const Grid = memo(function Grid({
@@ -122,9 +124,25 @@ export const Grid = memo(function Grid({
         gapClass,
       )}
     >
-      {Children.map(children, (child) => (
-        <motion.div variants={itemVariants}>{child}</motion.div>
-      ))}
+      <AnimatePresence mode="popLayout">
+        {Children.map(children, (child, index) => {
+          // Extract key from child element if available
+          const childKey = isValidElement(child) 
+            ? (child.key ?? `grid-item-${index}`)
+            : `grid-item-${index}`;
+          return (
+            <motion.div 
+              key={childKey}
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              {child}
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
     </motion.div>
   );
 });

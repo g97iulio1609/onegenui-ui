@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { type ComponentRenderProps } from "@onegenui/react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Calendar, User } from "lucide-react";
 
 type DocumentSection = {
@@ -30,6 +30,7 @@ const containerVariants = {
 const itemVariants = {
   hidden: { opacity: 0, y: "0.625rem" },
   visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-0.625rem" },
 };
 
 export const Document = memo(function Document({
@@ -80,25 +81,29 @@ export const Document = memo(function Document({
         </h3>
       )}
       <div className="flex flex-col gap-3 sm:gap-4">
-        {documents.map((rawDoc, index) => {
-          const doc = {
-            ...rawDoc,
-            sections: rawDoc.sections?.length
-              ? rawDoc.sections
-              : rawDoc.content
-                ? [{ title: "Overview", content: rawDoc.content }]
-                : [],
-          };
+        <AnimatePresence mode="popLayout">
+          {documents.map((rawDoc, index) => {
+            const doc = {
+              ...rawDoc,
+              sections: rawDoc.sections?.length
+                ? rawDoc.sections
+                : rawDoc.content
+                  ? [{ title: "Overview", content: rawDoc.content }]
+                  : [],
+            };
 
-          return (
-            <motion.div
-              variants={itemVariants}
-              key={doc.id ?? `${doc.title}-${index}`}
-              data-selectable-item
-              data-element-key={element.key}
-              data-item-id={doc.id ?? `${index}`}
-              className="flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass shadow-lg hover:shadow-xl transition-shadow"
-            >
+            return (
+              <motion.div
+                variants={itemVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                key={doc.id ?? `${doc.title}-${index}`}
+                data-selectable-item
+                data-element-key={element.key}
+                data-item-id={doc.id ?? `${index}`}
+                className="flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass shadow-lg hover:shadow-xl transition-shadow"
+              >
               {/* Header - stacks on mobile */}
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4">
                 <div className="flex-1 space-y-1 min-w-0">
@@ -178,8 +183,9 @@ export const Document = memo(function Document({
                 </div>
               )}
             </motion.div>
-          );
-        })}
+            );
+          })}
+        </AnimatePresence>
       </div>
       {children}
     </motion.div>
