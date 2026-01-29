@@ -197,7 +197,8 @@ var containerVariants = {
 };
 var itemVariants = {
   hidden: { opacity: 0, y: "0.5rem" },
-  visible: { opacity: 1, y: 0 }
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-0.5rem" }
 };
 var Grid = (0, import_react2.memo)(function Grid2({
   element,
@@ -269,7 +270,20 @@ var Grid = (0, import_react2.memo)(function Grid2({
         forceSingleColumn ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(20rem,1fr))]",
         gapClass
       ),
-      children: import_react2.Children.map(children, (child) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_framer_motion2.motion.div, { variants: itemVariants, children: child }))
+      children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_framer_motion2.AnimatePresence, { mode: "popLayout", children: import_react2.Children.map(children, (child, index) => {
+        const childKey = (0, import_react2.isValidElement)(child) ? child.key ?? `grid-item-${index}` : `grid-item-${index}`;
+        return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+          import_framer_motion2.motion.div,
+          {
+            variants: itemVariants,
+            initial: "hidden",
+            animate: "visible",
+            exit: "exit",
+            children: child
+          },
+          childKey
+        );
+      }) })
     }
   );
 });
@@ -621,7 +635,8 @@ var containerVariants2 = {
 };
 var itemVariants2 = {
   hidden: { opacity: 0, y: "0.625rem" },
-  visible: { opacity: 1, y: 0 }
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-0.625rem" }
 };
 var expandVariants = {
   hidden: { height: 0, opacity: 0 },
@@ -646,13 +661,16 @@ var CodeBlock = (0, import_react7.memo)(function CodeBlock2({
       className: "flex flex-col gap-3 sm:gap-4",
       children: [
         title && /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("h3", { className: "text-base sm:text-lg font-semibold tracking-tight m-0", children: title }),
-        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex flex-col gap-2 sm:gap-3", children: snippets.map((snippet, index) => {
+        /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("div", { className: "flex flex-col gap-2 sm:gap-3", children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(import_framer_motion7.AnimatePresence, { mode: "popLayout", children: snippets.map((snippet, index) => {
           const snippetId = snippet.id ?? `${index}`;
           const isExpanded = expandedId === snippetId;
           return /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(
             import_framer_motion7.motion.div,
             {
               variants: itemVariants2,
+              initial: "hidden",
+              animate: "visible",
+              exit: "exit",
               "data-selectable-item": true,
               "data-element-key": element.key,
               "data-item-id": snippetId,
@@ -698,7 +716,7 @@ var CodeBlock = (0, import_react7.memo)(function CodeBlock2({
             },
             snippetId
           );
-        }) }),
+        }) }) }),
         children
       ]
     }
@@ -726,7 +744,8 @@ var containerVariants3 = {
 };
 var itemVariants3 = {
   hidden: { opacity: 0, y: "0.625rem" },
-  visible: { opacity: 1, y: 0 }
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-0.625rem" }
 };
 var Document = (0, import_react8.memo)(function Document2({
   element,
@@ -763,7 +782,7 @@ var Document = (0, import_react8.memo)(function Document2({
       className: "flex flex-col gap-3 sm:gap-4",
       children: [
         title && /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("h3", { className: "text-base sm:text-lg font-semibold tracking-tight m-0", children: render(title, { inline: true }) }),
-        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "flex flex-col gap-3 sm:gap-4", children: documents.map((rawDoc, index) => {
+        /* @__PURE__ */ (0, import_jsx_runtime8.jsx)("div", { className: "flex flex-col gap-3 sm:gap-4", children: /* @__PURE__ */ (0, import_jsx_runtime8.jsx)(import_framer_motion8.AnimatePresence, { mode: "popLayout", children: documents.map((rawDoc, index) => {
           const doc = {
             ...rawDoc,
             sections: rawDoc.sections?.length ? rawDoc.sections : rawDoc.content ? [{ title: "Overview", content: rawDoc.content }] : []
@@ -772,6 +791,9 @@ var Document = (0, import_react8.memo)(function Document2({
             import_framer_motion8.motion.div,
             {
               variants: itemVariants3,
+              initial: "hidden",
+              animate: "visible",
+              exit: "exit",
               "data-selectable-item": true,
               "data-element-key": element.key,
               "data-item-id": doc.id ?? `${index}`,
@@ -827,7 +849,7 @@ var Document = (0, import_react8.memo)(function Document2({
             },
             doc.id ?? `${doc.title}-${index}`
           );
-        }) }),
+        }) }) }),
         children
       ]
     }

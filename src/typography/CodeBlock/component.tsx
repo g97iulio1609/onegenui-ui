@@ -23,6 +23,7 @@ const containerVariants = {
 const itemVariants = {
   hidden: { opacity: 0, y: "0.625rem" },
   visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-0.625rem" },
 };
 
 const expandVariants = {
@@ -62,26 +63,30 @@ export const CodeBlock = memo(function CodeBlock({
         </h3>
       )}
       <div className="flex flex-col gap-2 sm:gap-3">
-        {snippets.map((snippet, index) => {
-          const snippetId = snippet.id ?? `${index}`;
-          const isExpanded = expandedId === snippetId;
-          return (
-            <motion.div
-              variants={itemVariants}
-              key={snippetId}
-              data-selectable-item
-              data-element-key={element.key}
-              data-item-id={snippetId}
-              className="rounded-lg sm:rounded-xl border border-white/10 card-glass overflow-hidden shadow-lg"
-            >
-              <button
-                type="button"
-                onClick={() => setExpandedId(isExpanded ? null : snippetId)}
-                className={cn(
-                  "w-full flex items-center justify-between p-3 sm:p-4 text-left border-0 bg-transparent cursor-pointer transition-colors hover:bg-white/5 min-h-[2.75rem]",
-                  isExpanded && "bg-white/5",
-                )}
+        <AnimatePresence mode="popLayout">
+          {snippets.map((snippet, index) => {
+            const snippetId = snippet.id ?? `${index}`;
+            const isExpanded = expandedId === snippetId;
+            return (
+              <motion.div
+                variants={itemVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                key={snippetId}
+                data-selectable-item
+                data-element-key={element.key}
+                data-item-id={snippetId}
+                className="rounded-lg sm:rounded-xl border border-white/10 card-glass overflow-hidden shadow-lg"
               >
+                <button
+                  type="button"
+                  onClick={() => setExpandedId(isExpanded ? null : snippetId)}
+                  className={cn(
+                    "w-full flex items-center justify-between p-3 sm:p-4 text-left border-0 bg-transparent cursor-pointer transition-colors hover:bg-white/5 min-h-[2.75rem]",
+                    isExpanded && "bg-white/5",
+                  )}
+                >
                 <div className="flex flex-col gap-0.5 sm:gap-1 min-w-0 flex-1">
                   <span className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground truncate">
                     <Code2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
@@ -126,6 +131,7 @@ export const CodeBlock = memo(function CodeBlock({
             </motion.div>
           );
         })}
+        </AnimatePresence>
       </div>
       {children}
     </motion.div>

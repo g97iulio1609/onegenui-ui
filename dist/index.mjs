@@ -119,9 +119,10 @@ import {
   useMemo,
   useRef,
   useState,
-  Children
+  Children,
+  isValidElement
 } from "react";
-import { motion as motion2 } from "framer-motion";
+import { motion as motion2, AnimatePresence } from "framer-motion";
 import { LayoutGrid } from "lucide-react";
 import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 var GAP_CLASSES = {
@@ -139,7 +140,8 @@ var containerVariants = {
 };
 var itemVariants = {
   hidden: { opacity: 0, y: "0.5rem" },
-  visible: { opacity: 1, y: 0 }
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-0.5rem" }
 };
 var Grid = memo2(function Grid2({
   element,
@@ -211,7 +213,20 @@ var Grid = memo2(function Grid2({
         forceSingleColumn ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(20rem,1fr))]",
         gapClass
       ),
-      children: Children.map(children, (child) => /* @__PURE__ */ jsx2(motion2.div, { variants: itemVariants, children: child }))
+      children: /* @__PURE__ */ jsx2(AnimatePresence, { mode: "popLayout", children: Children.map(children, (child, index) => {
+        const childKey = isValidElement(child) ? child.key ?? `grid-item-${index}` : `grid-item-${index}`;
+        return /* @__PURE__ */ jsx2(
+          motion2.div,
+          {
+            variants: itemVariants,
+            initial: "hidden",
+            animate: "visible",
+            exit: "exit",
+            children: child
+          },
+          childKey
+        );
+      }) })
     }
   );
 });
@@ -483,7 +498,7 @@ var Text = memo6(function Text2({
 
 // src/typography/CodeBlock/component.tsx
 import { memo as memo7, useState as useState3 } from "react";
-import { motion as motion7, AnimatePresence } from "framer-motion";
+import { motion as motion7, AnimatePresence as AnimatePresence2 } from "framer-motion";
 import { ChevronDown, ChevronUp, Code2 } from "lucide-react";
 import { jsx as jsx5, jsxs as jsxs6 } from "react/jsx-runtime";
 var containerVariants2 = {
@@ -492,7 +507,8 @@ var containerVariants2 = {
 };
 var itemVariants2 = {
   hidden: { opacity: 0, y: "0.625rem" },
-  visible: { opacity: 1, y: 0 }
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-0.625rem" }
 };
 var expandVariants = {
   hidden: { height: 0, opacity: 0 },
@@ -517,13 +533,16 @@ var CodeBlock = memo7(function CodeBlock2({
       className: "flex flex-col gap-3 sm:gap-4",
       children: [
         title && /* @__PURE__ */ jsx5("h3", { className: "text-base sm:text-lg font-semibold tracking-tight m-0", children: title }),
-        /* @__PURE__ */ jsx5("div", { className: "flex flex-col gap-2 sm:gap-3", children: snippets.map((snippet, index) => {
+        /* @__PURE__ */ jsx5("div", { className: "flex flex-col gap-2 sm:gap-3", children: /* @__PURE__ */ jsx5(AnimatePresence2, { mode: "popLayout", children: snippets.map((snippet, index) => {
           const snippetId = snippet.id ?? `${index}`;
           const isExpanded = expandedId === snippetId;
           return /* @__PURE__ */ jsxs6(
             motion7.div,
             {
               variants: itemVariants2,
+              initial: "hidden",
+              animate: "visible",
+              exit: "exit",
               "data-selectable-item": true,
               "data-element-key": element.key,
               "data-item-id": snippetId,
@@ -553,7 +572,7 @@ var CodeBlock = memo7(function CodeBlock2({
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsx5(AnimatePresence, { children: isExpanded && /* @__PURE__ */ jsx5(
+                /* @__PURE__ */ jsx5(AnimatePresence2, { children: isExpanded && /* @__PURE__ */ jsx5(
                   motion7.div,
                   {
                     variants: expandVariants,
@@ -569,7 +588,7 @@ var CodeBlock = memo7(function CodeBlock2({
             },
             snippetId
           );
-        }) }),
+        }) }) }),
         children
       ]
     }
@@ -578,7 +597,7 @@ var CodeBlock = memo7(function CodeBlock2({
 
 // src/typography/Document/component.tsx
 import { memo as memo8 } from "react";
-import { motion as motion8 } from "framer-motion";
+import { motion as motion8, AnimatePresence as AnimatePresence3 } from "framer-motion";
 import { FileText, Calendar, User } from "lucide-react";
 import { jsx as jsx6, jsxs as jsxs7 } from "react/jsx-runtime";
 var containerVariants3 = {
@@ -587,7 +606,8 @@ var containerVariants3 = {
 };
 var itemVariants3 = {
   hidden: { opacity: 0, y: "0.625rem" },
-  visible: { opacity: 1, y: 0 }
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: "-0.625rem" }
 };
 var Document = memo8(function Document2({
   element,
@@ -624,7 +644,7 @@ var Document = memo8(function Document2({
       className: "flex flex-col gap-3 sm:gap-4",
       children: [
         title && /* @__PURE__ */ jsx6("h3", { className: "text-base sm:text-lg font-semibold tracking-tight m-0", children: render(title, { inline: true }) }),
-        /* @__PURE__ */ jsx6("div", { className: "flex flex-col gap-3 sm:gap-4", children: documents.map((rawDoc, index) => {
+        /* @__PURE__ */ jsx6("div", { className: "flex flex-col gap-3 sm:gap-4", children: /* @__PURE__ */ jsx6(AnimatePresence3, { mode: "popLayout", children: documents.map((rawDoc, index) => {
           const doc = {
             ...rawDoc,
             sections: rawDoc.sections?.length ? rawDoc.sections : rawDoc.content ? [{ title: "Overview", content: rawDoc.content }] : []
@@ -633,6 +653,9 @@ var Document = memo8(function Document2({
             motion8.div,
             {
               variants: itemVariants3,
+              initial: "hidden",
+              animate: "visible",
+              exit: "exit",
               "data-selectable-item": true,
               "data-element-key": element.key,
               "data-item-id": doc.id ?? `${index}`,
@@ -688,7 +711,7 @@ var Document = memo8(function Document2({
             },
             doc.id ?? `${doc.title}-${index}`
           );
-        }) }),
+        }) }) }),
         children
       ]
     }
@@ -767,7 +790,7 @@ var Badge = memo9(function Badge2({
 // src/status/Alert/component.tsx
 import { memo as memo10, useState as useState4 } from "react";
 import { useData as useData2 } from "@onegenui/react";
-import { motion as motion10, AnimatePresence as AnimatePresence2 } from "framer-motion";
+import { motion as motion10, AnimatePresence as AnimatePresence4 } from "framer-motion";
 import {
   X,
   Info,
@@ -804,7 +827,7 @@ var Alert = memo10(function Alert2({
   const tone = type ?? variant ?? "info";
   const hasMessage = resolvedMessage !== void 0 && resolvedMessage !== null;
   const Icon = ICON_MAP[tone] || Info;
-  return /* @__PURE__ */ jsx8(AnimatePresence2, { children: !dismissed && /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx8(AnimatePresence4, { children: !dismissed && /* @__PURE__ */ jsx8(
     motion10.div,
     {
       variants: alertVariants,
@@ -1660,7 +1683,7 @@ var TextWithCitations = memo22(function TextWithCitations2({
 
 // src/data-display/SearchResults/components/synthesis-section.tsx
 import { memo as memo23, useState as useState6 } from "react";
-import { motion as motion21, AnimatePresence as AnimatePresence3 } from "framer-motion";
+import { motion as motion21, AnimatePresence as AnimatePresence5 } from "framer-motion";
 import { ChevronDown as ChevronDown2, BookOpen, Lightbulb, MessageSquare } from "lucide-react";
 import { jsx as jsx21, jsxs as jsxs21 } from "react/jsx-runtime";
 var SynthesisSection = memo23(function SynthesisSection2({
@@ -1773,7 +1796,7 @@ var SynthesisSection = memo23(function SynthesisSection2({
               ]
             }
           ),
-          /* @__PURE__ */ jsx21(AnimatePresence3, { children: expandedSections.has(idx) && /* @__PURE__ */ jsx21(
+          /* @__PURE__ */ jsx21(AnimatePresence5, { children: expandedSections.has(idx) && /* @__PURE__ */ jsx21(
             motion21.div,
             {
               initial: { height: 0, opacity: 0 },
@@ -2313,7 +2336,7 @@ var DriveFile = memo29(function DriveFile2({
 
 // src/data-display/DriveFileList/component.tsx
 import { memo as memo31, useState as useState12 } from "react";
-import { AnimatePresence as AnimatePresence4, motion as motion28 } from "framer-motion";
+import { AnimatePresence as AnimatePresence6, motion as motion28 } from "framer-motion";
 
 // src/data-display/DriveFileList/components/file-views.tsx
 import { memo as memo30 } from "react";
@@ -2692,7 +2715,7 @@ var DriveFileList = memo31(function DriveFileList2({
       {
         layout: true,
         className: "grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4 p-5",
-        children: /* @__PURE__ */ jsx30(AnimatePresence4, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
+        children: /* @__PURE__ */ jsx30(AnimatePresence6, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
           FileGridCard,
           {
             file,
@@ -2709,7 +2732,7 @@ var DriveFileList = memo31(function DriveFileList2({
         /* @__PURE__ */ jsx30("div", { className: "min-w-24 text-right", children: "Modificato" }),
         /* @__PURE__ */ jsx30("div", { className: "w-20" })
       ] }),
-      /* @__PURE__ */ jsx30(AnimatePresence4, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
+      /* @__PURE__ */ jsx30(AnimatePresence6, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
         FileListRow,
         {
           file,
@@ -2925,7 +2948,7 @@ var Weather = memo32(function Weather2({
 
 // src/data-display/DocumentIndex/component.tsx
 import { memo as memo33, useState as useState13, useCallback as useCallback4 } from "react";
-import { motion as motion30, AnimatePresence as AnimatePresence5 } from "framer-motion";
+import { motion as motion30, AnimatePresence as AnimatePresence7 } from "framer-motion";
 import {
   FileText as FileText2,
   ChevronRight as ChevronRight2,
@@ -3039,7 +3062,7 @@ var DocumentIndex = memo33(function DocumentIndex2({
             " pages)"
           ] })
         ] }),
-        /* @__PURE__ */ jsx32("div", { className: "space-y-0.5", children: /* @__PURE__ */ jsx32(AnimatePresence5, { mode: "popLayout", children: nodes.map((node, idx) => /* @__PURE__ */ jsx32(IndexNode, { node, depth: 0 }, node.id || idx)) }) })
+        /* @__PURE__ */ jsx32("div", { className: "space-y-0.5", children: /* @__PURE__ */ jsx32(AnimatePresence7, { mode: "popLayout", children: nodes.map((node, idx) => /* @__PURE__ */ jsx32(IndexNode, { node, depth: 0 }, node.id || idx)) }) })
       ] }),
       currentStatus === "complete" && (!nodes || nodes.length === 0) && /* @__PURE__ */ jsxs32("div", { className: "py-8 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl", children: [
         /* @__PURE__ */ jsx32(FileText2, { className: "w-10 h-10 opacity-20 mb-3" }),
@@ -3103,7 +3126,7 @@ var IndexNode = memo33(function IndexNode2({
             ]
           }
         ),
-        /* @__PURE__ */ jsx32(AnimatePresence5, { children: node.summary && expanded && /* @__PURE__ */ jsx32(
+        /* @__PURE__ */ jsx32(AnimatePresence7, { children: node.summary && expanded && /* @__PURE__ */ jsx32(
           motion30.div,
           {
             initial: { opacity: 0, height: 0 },
@@ -3114,7 +3137,7 @@ var IndexNode = memo33(function IndexNode2({
             children: node.summary
           }
         ) }),
-        /* @__PURE__ */ jsx32(AnimatePresence5, { children: expanded && hasChildren && /* @__PURE__ */ jsx32(
+        /* @__PURE__ */ jsx32(AnimatePresence7, { children: expanded && hasChildren && /* @__PURE__ */ jsx32(
           motion30.div,
           {
             initial: { opacity: 0, height: 0 },
