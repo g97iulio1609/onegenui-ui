@@ -133,20 +133,39 @@ var Card = (0, import_react.memo)(function Card2({
   element,
   children
 }) {
-  const { title, description, padding } = element.props;
+  const { title, description, padding, role, ariaLabelledBy } = element.props;
+  const titleId = (0, import_react.useId)();
+  const descriptionId = (0, import_react.useId)();
+  const accessibleLabelledBy = ariaLabelledBy ?? (title ? `${titleId}${description ? ` ${descriptionId}` : ""}` : void 0);
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
-    import_framer_motion.motion.div,
+    import_framer_motion.motion.section,
     {
       variants: cardVariants,
       initial: "hidden",
       animate: "visible",
       transition: { duration: 0.3, ease: "easeOut" },
-      className: "card-glass w-full min-w-0 flex flex-col",
+      role: role ?? void 0,
+      "aria-labelledby": accessibleLabelledBy,
+      className: "card-glass w-full min-w-0 flex flex-col motion-reduce:transition-none",
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "gradient-bar-thin opacity-20" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "gradient-bar-thin opacity-20", "aria-hidden": "true" }),
         (title || description) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-1 p-4 sm:p-5 lg:p-6 pb-3 sm:pb-4 border-b border-white/5 bg-white/[0.02]", children: [
-          title && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", { className: "text-base sm:text-lg font-bold leading-tight tracking-tight text-foreground", children: title }),
-          description && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { className: "text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed", children: description })
+          title && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            "h3",
+            {
+              id: titleId,
+              className: "text-base sm:text-lg font-bold leading-tight tracking-tight text-foreground",
+              children: title
+            }
+          ),
+          description && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            "p",
+            {
+              id: descriptionId,
+              className: "text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed",
+              children: description
+            }
+          )
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
           "div",
@@ -1217,8 +1236,18 @@ var Button = (0, import_react15.memo)(function Button2({
   loading,
   children
 }) {
-  const { label, variant, size, action, actionParams, disabled } = element.props;
+  const {
+    label,
+    variant,
+    size,
+    action,
+    actionParams,
+    disabled,
+    ariaLabel,
+    ariaDescribedBy
+  } = element.props;
   const resolvedAction = typeof action === "string" ? { name: action, params: actionParams ?? void 0 } : action ?? void 0;
+  const accessibleLabel = ariaLabel || label || void 0;
   return /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)(
     import_framer_motion13.motion.button,
     {
@@ -1227,17 +1256,36 @@ var Button = (0, import_react15.memo)(function Button2({
       whileHover: "hover",
       onClick: () => !disabled && resolvedAction && onAction?.(resolvedAction),
       disabled: !!disabled || loading,
+      "aria-label": accessibleLabel,
+      "aria-describedby": ariaDescribedBy ?? void 0,
+      "aria-busy": loading || void 0,
+      "aria-disabled": !!disabled || loading || void 0,
       className: (0, import_utils.cn)(
         "relative inline-flex items-center justify-center transition-all",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50 overflow-hidden",
         "active:scale-95 touch-manipulation",
+        // Reduced motion support
+        "motion-reduce:transition-none motion-reduce:transform-none",
         variant === "primary" || !variant ? "btn-primary" : variant === "secondary" ? "btn-secondary" : variant === "danger" ? "btn-accent bg-destructive hover:bg-destructive/90 shadow-destructive/20" : variant === "ghost" ? "btn-ghost" : "",
         SIZE_CLASSES[size || "md"]
       ),
       children: [
-        variant === "primary" && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("div", { className: "absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000" }),
-        loading ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("span", { className: "mr-1.5 sm:mr-2 animate-spin text-[0.625rem] sm:text-xs", children: "\u23F3" }) : null,
+        variant === "primary" && /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
+          "div",
+          {
+            className: "absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 motion-reduce:hidden",
+            "aria-hidden": "true"
+          }
+        ),
+        loading ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
+          "span",
+          {
+            className: "mr-1.5 sm:mr-2 animate-spin text-[0.625rem] sm:text-xs motion-reduce:animate-none",
+            "aria-hidden": "true",
+            children: "\u23F3"
+          }
+        ) : null,
         loading ? "Loading..." : label,
         !loading && children
       ]
@@ -1283,7 +1331,9 @@ var TextField = (0, import_react16.memo)(function TextField2({
     placeholder,
     type,
     checks,
-    validateOn
+    validateOn,
+    required,
+    ariaLabel
   } = element.props;
   const { data, set } = (0, import_react17.useData)();
   const resolvedPath = bindPath ?? valuePath ?? null;
@@ -1300,6 +1350,9 @@ var TextField = (0, import_react16.memo)(function TextField2({
       validateOn: validateOn ?? "blur"
     }
   );
+  const inputId = (0, import_react16.useId)();
+  const errorId = (0, import_react16.useId)();
+  const hasErrors = errors.length > 0;
   return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(
     import_framer_motion14.motion.div,
     {
@@ -1307,13 +1360,24 @@ var TextField = (0, import_react16.memo)(function TextField2({
       initial: "hidden",
       animate: "visible",
       transition: { duration: 0.2 },
-      className: "flex flex-col gap-1.5 sm:gap-2 w-full group",
+      className: "flex flex-col gap-1.5 sm:gap-2 w-full group motion-reduce:transition-none",
       children: [
-        label && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("label", { className: "text-label text-[0.5625rem] sm:text-[0.625rem] group-focus-within:text-primary transition-colors duration-300", children: label }),
+        label && /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(
+          "label",
+          {
+            htmlFor: inputId,
+            className: "text-label text-[0.5625rem] sm:text-[0.625rem] group-focus-within:text-primary transition-colors duration-300",
+            children: [
+              label,
+              required && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "text-destructive ml-0.5", "aria-hidden": "true", children: "*" })
+            ]
+          }
+        ),
         /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "relative", children: [
           /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
             "input",
             {
+              id: inputId,
               type: type || "text",
               value: resolvedValue ?? "",
               onChange: (e) => {
@@ -1328,29 +1392,42 @@ var TextField = (0, import_react16.memo)(function TextField2({
                 if (validateOn === "blur" || !validateOn) validate();
               },
               placeholder: placeholder ?? "",
+              required: required ?? void 0,
+              "aria-label": ariaLabel ?? void 0,
+              "aria-invalid": hasErrors || void 0,
+              "aria-describedby": hasErrors ? errorId : void 0,
+              "aria-required": required ?? void 0,
               className: (0, import_utils.cn)(
                 "glass-surface flex min-h-[2.75rem] sm:h-10 w-full rounded-lg px-3 py-2 text-xs sm:text-sm text-foreground shadow-sm transition-all duration-300",
                 "hover:border-white/20 hover:bg-white/10",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary/50",
                 "placeholder:text-muted-foreground touch-manipulation",
-                errors.length > 0 ? "border-destructive/50 focus-visible:ring-destructive/50 text-destructive" : ""
+                "motion-reduce:transition-none",
+                hasErrors ? "border-destructive/50 focus-visible:ring-destructive/50 text-destructive" : ""
               )
             }
           ),
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "absolute top-0 right-0 p-1 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "w-1 h-1 sm:w-1.5 sm:h-1.5 border-t border-r border-primary rounded-tr-sm" }) })
+          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+            "div",
+            {
+              className: "absolute top-0 right-0 p-1 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none",
+              "aria-hidden": "true",
+              children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "w-1 h-1 sm:w-1.5 sm:h-1.5 border-t border-r border-primary rounded-tr-sm" })
+            }
+          )
         ] }),
-        errors.map((error, i) => /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(
+        hasErrors && /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { id: errorId, role: "alert", "aria-live": "polite", children: errors.map((error, i) => /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(
           "span",
           {
             className: "text-[0.5625rem] sm:text-[0.625rem] font-mono font-bold text-destructive flex items-center gap-1 sm:gap-1.5",
             children: [
-              /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "w-1 h-1 bg-destructive rounded-full flex-shrink-0" }),
+              /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("span", { className: "w-1 h-1 bg-destructive rounded-full flex-shrink-0", "aria-hidden": "true" }),
               " ",
               error
             ]
           },
           i
-        )),
+        )) }),
         children
       ]
     }

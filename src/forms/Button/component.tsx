@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import type { Action } from "@onegenui/core";
 import { cn } from "../../utils/cn";
 
-/** Animation variants */
+/** Animation variants with reduced-motion support */
 const buttonVariants = {
   tap: { scale: 0.95 },
   hover: { scale: 1.03 },
@@ -25,20 +25,33 @@ export const Button = memo(function Button({
   loading,
   children,
 }: ComponentRenderProps) {
-  const { label, variant, size, action, actionParams, disabled } =
-    element.props as {
-      label?: string | null;
-      variant?: "primary" | "secondary" | "danger" | "ghost" | null;
-      size?: "sm" | "md" | "lg" | null;
-      action?: string | Action | null;
-      actionParams?: Record<string, unknown> | null;
-      disabled?: boolean | null;
-    };
+  const { 
+    label, 
+    variant, 
+    size, 
+    action, 
+    actionParams, 
+    disabled,
+    ariaLabel,
+    ariaDescribedBy,
+  } = element.props as {
+    label?: string | null;
+    variant?: "primary" | "secondary" | "danger" | "ghost" | null;
+    size?: "sm" | "md" | "lg" | null;
+    action?: string | Action | null;
+    actionParams?: Record<string, unknown> | null;
+    disabled?: boolean | null;
+    ariaLabel?: string | null;
+    ariaDescribedBy?: string | null;
+  };
 
   const resolvedAction: Action | undefined =
     typeof action === "string"
       ? { name: action, params: actionParams ?? undefined }
       : (action ?? undefined);
+
+  // Use ariaLabel if provided, otherwise use label for accessibility
+  const accessibleLabel = ariaLabel || label || undefined;
 
   return (
     <motion.button
@@ -47,11 +60,17 @@ export const Button = memo(function Button({
       whileHover="hover"
       onClick={() => !disabled && resolvedAction && onAction?.(resolvedAction)}
       disabled={!!disabled || loading}
+      aria-label={accessibleLabel}
+      aria-describedby={ariaDescribedBy ?? undefined}
+      aria-busy={loading || undefined}
+      aria-disabled={!!disabled || loading || undefined}
       className={cn(
         "relative inline-flex items-center justify-center transition-all",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50 overflow-hidden",
         "active:scale-95 touch-manipulation",
+        // Reduced motion support
+        "motion-reduce:transition-none motion-reduce:transform-none",
         variant === "primary" || !variant
           ? "btn-primary"
           : variant === "secondary"
@@ -65,11 +84,17 @@ export const Button = memo(function Button({
       )}
     >
       {variant === "primary" && (
-        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000" />
+        <div 
+          className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 motion-reduce:hidden" 
+          aria-hidden="true"
+        />
       )}
 
       {loading ? (
-        <span className="mr-1.5 sm:mr-2 animate-spin text-[0.625rem] sm:text-xs">
+        <span 
+          className="mr-1.5 sm:mr-2 animate-spin text-[0.625rem] sm:text-xs motion-reduce:animate-none"
+          aria-hidden="true"
+        >
           ⏳
         </span>
       ) : null}

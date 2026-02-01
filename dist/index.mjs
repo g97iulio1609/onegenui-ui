@@ -64,7 +64,7 @@ import {
 import { cn } from "@onegenui/utils";
 
 // src/layout/Card/component.tsx
-import { memo } from "react";
+import { memo, useId } from "react";
 import { motion } from "framer-motion";
 import { jsx, jsxs } from "react/jsx-runtime";
 var PADDING_CLASSES = {
@@ -81,20 +81,39 @@ var Card = memo(function Card2({
   element,
   children
 }) {
-  const { title, description, padding } = element.props;
+  const { title, description, padding, role, ariaLabelledBy } = element.props;
+  const titleId = useId();
+  const descriptionId = useId();
+  const accessibleLabelledBy = ariaLabelledBy ?? (title ? `${titleId}${description ? ` ${descriptionId}` : ""}` : void 0);
   return /* @__PURE__ */ jsxs(
-    motion.div,
+    motion.section,
     {
       variants: cardVariants,
       initial: "hidden",
       animate: "visible",
       transition: { duration: 0.3, ease: "easeOut" },
-      className: "card-glass w-full min-w-0 flex flex-col",
+      role: role ?? void 0,
+      "aria-labelledby": accessibleLabelledBy,
+      className: "card-glass w-full min-w-0 flex flex-col motion-reduce:transition-none",
       children: [
-        /* @__PURE__ */ jsx("div", { className: "gradient-bar-thin opacity-20" }),
+        /* @__PURE__ */ jsx("div", { className: "gradient-bar-thin opacity-20", "aria-hidden": "true" }),
         (title || description) && /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-1 p-4 sm:p-5 lg:p-6 pb-3 sm:pb-4 border-b border-white/5 bg-white/[0.02]", children: [
-          title && /* @__PURE__ */ jsx("h3", { className: "text-base sm:text-lg font-bold leading-tight tracking-tight text-foreground", children: title }),
-          description && /* @__PURE__ */ jsx("p", { className: "text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed", children: description })
+          title && /* @__PURE__ */ jsx(
+            "h3",
+            {
+              id: titleId,
+              className: "text-base sm:text-lg font-bold leading-tight tracking-tight text-foreground",
+              children: title
+            }
+          ),
+          description && /* @__PURE__ */ jsx(
+            "p",
+            {
+              id: descriptionId,
+              className: "text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed",
+              children: description
+            }
+          )
         ] }),
         /* @__PURE__ */ jsx(
           "div",
@@ -988,8 +1007,18 @@ var Button = memo13(function Button2({
   loading,
   children
 }) {
-  const { label, variant, size, action, actionParams, disabled } = element.props;
+  const {
+    label,
+    variant,
+    size,
+    action,
+    actionParams,
+    disabled,
+    ariaLabel,
+    ariaDescribedBy
+  } = element.props;
   const resolvedAction = typeof action === "string" ? { name: action, params: actionParams ?? void 0 } : action ?? void 0;
+  const accessibleLabel = ariaLabel || label || void 0;
   return /* @__PURE__ */ jsxs12(
     motion13.button,
     {
@@ -998,17 +1027,36 @@ var Button = memo13(function Button2({
       whileHover: "hover",
       onClick: () => !disabled && resolvedAction && onAction?.(resolvedAction),
       disabled: !!disabled || loading,
+      "aria-label": accessibleLabel,
+      "aria-describedby": ariaDescribedBy ?? void 0,
+      "aria-busy": loading || void 0,
+      "aria-disabled": !!disabled || loading || void 0,
       className: cn(
         "relative inline-flex items-center justify-center transition-all",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50 overflow-hidden",
         "active:scale-95 touch-manipulation",
+        // Reduced motion support
+        "motion-reduce:transition-none motion-reduce:transform-none",
         variant === "primary" || !variant ? "btn-primary" : variant === "secondary" ? "btn-secondary" : variant === "danger" ? "btn-accent bg-destructive hover:bg-destructive/90 shadow-destructive/20" : variant === "ghost" ? "btn-ghost" : "",
         SIZE_CLASSES[size || "md"]
       ),
       children: [
-        variant === "primary" && /* @__PURE__ */ jsx11("div", { className: "absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000" }),
-        loading ? /* @__PURE__ */ jsx11("span", { className: "mr-1.5 sm:mr-2 animate-spin text-[0.625rem] sm:text-xs", children: "\u23F3" }) : null,
+        variant === "primary" && /* @__PURE__ */ jsx11(
+          "div",
+          {
+            className: "absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 motion-reduce:hidden",
+            "aria-hidden": "true"
+          }
+        ),
+        loading ? /* @__PURE__ */ jsx11(
+          "span",
+          {
+            className: "mr-1.5 sm:mr-2 animate-spin text-[0.625rem] sm:text-xs motion-reduce:animate-none",
+            "aria-hidden": "true",
+            children: "\u23F3"
+          }
+        ) : null,
         loading ? "Loading..." : label,
         !loading && children
       ]
@@ -1017,7 +1065,7 @@ var Button = memo13(function Button2({
 });
 
 // src/forms/TextField/component.tsx
-import { memo as memo14 } from "react";
+import { memo as memo14, useId as useId2 } from "react";
 import {
   useData as useData3,
   useFieldValidation
@@ -1040,7 +1088,9 @@ var TextField = memo14(function TextField2({
     placeholder,
     type,
     checks,
-    validateOn
+    validateOn,
+    required,
+    ariaLabel
   } = element.props;
   const { data, set } = useData3();
   const resolvedPath = bindPath ?? valuePath ?? null;
@@ -1057,6 +1107,9 @@ var TextField = memo14(function TextField2({
       validateOn: validateOn ?? "blur"
     }
   );
+  const inputId = useId2();
+  const errorId = useId2();
+  const hasErrors = errors.length > 0;
   return /* @__PURE__ */ jsxs13(
     motion14.div,
     {
@@ -1064,13 +1117,24 @@ var TextField = memo14(function TextField2({
       initial: "hidden",
       animate: "visible",
       transition: { duration: 0.2 },
-      className: "flex flex-col gap-1.5 sm:gap-2 w-full group",
+      className: "flex flex-col gap-1.5 sm:gap-2 w-full group motion-reduce:transition-none",
       children: [
-        label && /* @__PURE__ */ jsx12("label", { className: "text-label text-[0.5625rem] sm:text-[0.625rem] group-focus-within:text-primary transition-colors duration-300", children: label }),
+        label && /* @__PURE__ */ jsxs13(
+          "label",
+          {
+            htmlFor: inputId,
+            className: "text-label text-[0.5625rem] sm:text-[0.625rem] group-focus-within:text-primary transition-colors duration-300",
+            children: [
+              label,
+              required && /* @__PURE__ */ jsx12("span", { className: "text-destructive ml-0.5", "aria-hidden": "true", children: "*" })
+            ]
+          }
+        ),
         /* @__PURE__ */ jsxs13("div", { className: "relative", children: [
           /* @__PURE__ */ jsx12(
             "input",
             {
+              id: inputId,
               type: type || "text",
               value: resolvedValue ?? "",
               onChange: (e) => {
@@ -1085,29 +1149,42 @@ var TextField = memo14(function TextField2({
                 if (validateOn === "blur" || !validateOn) validate();
               },
               placeholder: placeholder ?? "",
+              required: required ?? void 0,
+              "aria-label": ariaLabel ?? void 0,
+              "aria-invalid": hasErrors || void 0,
+              "aria-describedby": hasErrors ? errorId : void 0,
+              "aria-required": required ?? void 0,
               className: cn(
                 "glass-surface flex min-h-[2.75rem] sm:h-10 w-full rounded-lg px-3 py-2 text-xs sm:text-sm text-foreground shadow-sm transition-all duration-300",
                 "hover:border-white/20 hover:bg-white/10",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary/50",
                 "placeholder:text-muted-foreground touch-manipulation",
-                errors.length > 0 ? "border-destructive/50 focus-visible:ring-destructive/50 text-destructive" : ""
+                "motion-reduce:transition-none",
+                hasErrors ? "border-destructive/50 focus-visible:ring-destructive/50 text-destructive" : ""
               )
             }
           ),
-          /* @__PURE__ */ jsx12("div", { className: "absolute top-0 right-0 p-1 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none", children: /* @__PURE__ */ jsx12("div", { className: "w-1 h-1 sm:w-1.5 sm:h-1.5 border-t border-r border-primary rounded-tr-sm" }) })
+          /* @__PURE__ */ jsx12(
+            "div",
+            {
+              className: "absolute top-0 right-0 p-1 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none",
+              "aria-hidden": "true",
+              children: /* @__PURE__ */ jsx12("div", { className: "w-1 h-1 sm:w-1.5 sm:h-1.5 border-t border-r border-primary rounded-tr-sm" })
+            }
+          )
         ] }),
-        errors.map((error, i) => /* @__PURE__ */ jsxs13(
+        hasErrors && /* @__PURE__ */ jsx12("div", { id: errorId, role: "alert", "aria-live": "polite", children: errors.map((error, i) => /* @__PURE__ */ jsxs13(
           "span",
           {
             className: "text-[0.5625rem] sm:text-[0.625rem] font-mono font-bold text-destructive flex items-center gap-1 sm:gap-1.5",
             children: [
-              /* @__PURE__ */ jsx12("span", { className: "w-1 h-1 bg-destructive rounded-full flex-shrink-0" }),
+              /* @__PURE__ */ jsx12("span", { className: "w-1 h-1 bg-destructive rounded-full flex-shrink-0", "aria-hidden": "true" }),
               " ",
               error
             ]
           },
           i
-        )),
+        )) }),
         children
       ]
     }
