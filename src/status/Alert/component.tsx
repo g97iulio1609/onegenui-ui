@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useState } from "react";
+import { memo, useState, useId } from "react";
 import { type ComponentRenderProps, useData } from "@onegenui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { resolveValueProp } from "../../utils/data-utils";
@@ -34,6 +34,13 @@ const TONE_CLASSES: Record<string, string> = {
   error: "bg-rose-500/10 border-rose-500/20 text-rose-500",
 };
 
+const ARIA_ROLES: Record<string, "alert" | "status"> = {
+  info: "status",
+  success: "status",
+  warning: "alert",
+  error: "alert",
+};
+
 export const Alert = memo(function Alert({
   element,
   children,
@@ -48,6 +55,7 @@ export const Alert = memo(function Alert({
   const { data } = useData();
   const resolvedMessage = resolveValueProp<string>(data, message ?? null);
   const [dismissed, setDismissed] = useState(false);
+  const titleId = useId();
 
   const tone = (type ?? variant ?? "info") as
     | "info"
@@ -57,11 +65,15 @@ export const Alert = memo(function Alert({
 
   const hasMessage = resolvedMessage !== undefined && resolvedMessage !== null;
   const Icon = ICON_MAP[tone] || Info;
+  const ariaRole = ARIA_ROLES[tone] ?? "status";
 
   return (
     <AnimatePresence>
       {!dismissed && (
         <motion.div
+          role={ariaRole}
+          aria-live={ariaRole === "alert" ? "assertive" : "polite"}
+          aria-labelledby={title ? titleId : undefined}
           variants={alertVariants}
           initial="hidden"
           animate="visible"
@@ -69,15 +81,22 @@ export const Alert = memo(function Alert({
           transition={{ duration: 0.2 }}
           className={cn(
             "relative w-full rounded-lg sm:rounded-xl border p-3 sm:p-4 text-xs sm:text-sm shadow-lg backdrop-blur-md overflow-hidden",
+            "motion-reduce:transition-none motion-reduce:animate-none",
             TONE_CLASSES[tone] || TONE_CLASSES.info,
           )}
         >
           <div className="flex gap-2 sm:gap-3">
-            <Icon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5" />
+            <Icon
+              className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5"
+              aria-hidden="true"
+            />
 
             <div className="flex-1 space-y-0.5 sm:space-y-1 min-w-0">
               {title && (
-                <h5 className="font-semibold leading-tight tracking-tight text-xs sm:text-sm">
+                <h5
+                  id={titleId}
+                  className="font-semibold leading-tight tracking-tight text-xs sm:text-sm"
+                >
                   {title}
                 </h5>
               )}
@@ -91,14 +110,16 @@ export const Alert = memo(function Alert({
 
             {dismissible && (
               <button
+                type="button"
                 onClick={() => setDismissed(true)}
+                aria-label="Dismiss alert"
                 className={cn(
                   "absolute top-2 right-2 sm:top-3 sm:right-3 p-1 rounded-md opacity-70 hover:opacity-100 transition-opacity",
                   "hover:bg-black/5 dark:hover:bg-white/10 min-h-[2rem] min-w-[2rem] flex items-center justify-center",
+                  "motion-reduce:transition-none",
                 )}
-                title="Dismiss"
               >
-                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
               </button>
             )}
           </div>

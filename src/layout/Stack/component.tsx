@@ -93,6 +93,8 @@ export const Stack = memo(function Stack({
 
   return (
     <motion.div
+      role="group"
+      aria-label="Stack layout"
       variants={stackVariants}
       initial="hidden"
       animate="visible"
@@ -103,6 +105,7 @@ export const Stack = memo(function Stack({
         shouldWrap && !forceVertical ? "sm:flex-wrap" : "flex-nowrap",
         GAP_CLASSES[gap || "md"] || GAP_CLASSES.md,
         ALIGN_CLASSES[align || "stretch"] || ALIGN_CLASSES.stretch,
+        "motion-reduce:animate-none",
       )}
     >
       {children}

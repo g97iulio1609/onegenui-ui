@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useId } from "react";
 import { type ComponentRenderProps, useData } from "@onegenui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { resolveArrayProp } from "../../utils/data-utils";
@@ -54,21 +54,27 @@ export const Table = memo(function Table({
 
   const { data } = useData();
   const tableRows = resolveArrayProp<TableRow>(data, rows, dataPath);
+  const titleId = useId();
+  const tableId = useId();
 
   if (!tableRows || tableRows.length === 0) {
     return (
-      <div className="w-full">
+      <div className="w-full" role="region" aria-labelledby={title ? titleId : undefined}>
         {title && (
-          <h4 className="mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight">
+          <h4 id={titleId} className="mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight">
             {title}
           </h4>
         )}
         <motion.div
+          role="status"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-lg sm:rounded-2xl bg-zinc-900/20 text-muted-foreground"
+          className={cn(
+            "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-lg sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+            "motion-reduce:animate-none",
+          )}
         >
-          <TableIcon className="w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" />
+          <TableIcon className="w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" aria-hidden="true" />
           <p className="font-mono text-[0.625rem] sm:text-xs uppercase tracking-widest opacity-50">
             No data available
           </p>
@@ -114,7 +120,10 @@ export const Table = memo(function Table({
           data-selectable-item
           data-element-key={element.key}
           data-item-id={rowKey}
-          className="border-b border-white/5 transition-colors hover:bg-white/5 data-[state=selected]:bg-white/10"
+          className={cn(
+            "border-b border-white/5 transition-colors hover:bg-white/5 data-[state=selected]:bg-white/10",
+            "motion-reduce:transition-none",
+          )}
         >
           {columns.map((col, colIndex) => (
             <td
@@ -138,25 +147,31 @@ export const Table = memo(function Table({
     });
 
   return (
-    <div className="w-full">
+    <div className="w-full" role="region" aria-labelledby={title ? titleId : undefined}>
       {title && (
-        <h4 className="mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight text-foreground">
+        <h4 id={titleId} className="mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight text-foreground">
           {title}
         </h4>
       )}
       {/* Mobile: horizontal scroll wrapper */}
       <div className="relative w-full overflow-x-auto rounded-lg sm:rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm -mx-1 px-1 sm:mx-0 sm:px-0">
         <motion.table
+          id={tableId}
+          aria-label={title ?? "Data table"}
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="w-full min-w-[20rem] caption-bottom text-xs sm:text-sm border-collapse"
+          className={cn(
+            "w-full min-w-[20rem] caption-bottom text-xs sm:text-sm border-collapse",
+            "motion-reduce:animate-none",
+          )}
         >
           <thead className="[&_tr]:border-b border-white/10">
             <tr className="border-b border-white/10 transition-colors">
               {columns.map((col, index) => (
                 <th
                   key={col.key ?? `col-${index}`}
+                  scope="col"
                   className="h-10 sm:h-12 px-2.5 sm:px-4 text-left align-middle font-medium text-muted-foreground text-[0.625rem] sm:text-xs uppercase tracking-wider"
                 >
                   {col.label}

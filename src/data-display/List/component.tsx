@@ -30,8 +30,11 @@ export const List = memo(function List({
 
   if ((!listData || listData.length === 0) && !children) {
     return (
-      <div className="py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground">
-        <ListIcon className="w-10 h-10 opacity-20 mb-3" />
+      <div
+        role="status"
+        className="py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground"
+      >
+        <ListIcon className="w-10 h-10 opacity-20 mb-3" aria-hidden="true" />
         <p className="font-mono text-xs uppercase tracking-widest opacity-50">
           {emptyMessage ?? "No items"}
         </p>
@@ -40,7 +43,11 @@ export const List = memo(function List({
   }
 
   const renderItems = (itemsToRender: Array<ListItem | string>, depth = 0) => (
-    <div className="flex flex-col gap-2">
+    <ul
+      role="list"
+      className="flex flex-col gap-2"
+      aria-label={depth === 0 ? "List items" : undefined}
+    >
       {itemsToRender.map((item, index) => {
         const raw =
           typeof item === "string" ? { text: item } : (item as ListItem);
@@ -58,7 +65,7 @@ export const List = memo(function List({
           : [];
 
         return (
-          <motion.div
+          <motion.li
             key={itemId}
             className="flex flex-col"
             initial={{ opacity: 0, x: -10 }}
@@ -73,6 +80,7 @@ export const List = memo(function List({
                 "flex items-center gap-2 px-3 py-2 rounded-lg",
                 "bg-white/5 border border-white/10",
                 "transition-colors hover:border-white/20 hover:bg-white/10",
+                "motion-reduce:transition-none motion-reduce:animate-none",
               )}
               style={
                 {
@@ -80,7 +88,10 @@ export const List = memo(function List({
                 } as React.CSSProperties
               }
             >
-              <div className="w-2 h-2 rounded-full bg-foreground/60 shrink-0" />
+              <div
+                className="w-2 h-2 rounded-full bg-foreground/60 shrink-0"
+                aria-hidden="true"
+              />
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium truncate text-foreground">
                   {normalized.text}
@@ -98,16 +109,16 @@ export const List = memo(function List({
               )}
             </div>
             {subItems.length > 0 && renderItems(subItems, depth + 1)}
-          </motion.div>
+          </motion.li>
         );
       })}
-    </div>
+    </ul>
   );
 
   return (
-    <div>
+    <nav aria-label="List navigation">
       {listData && listData.length > 0 && renderItems(listData)}
       {children}
-    </div>
+    </nav>
   );
 });

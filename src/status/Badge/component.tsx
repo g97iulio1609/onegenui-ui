@@ -50,12 +50,14 @@ export const Badge = memo(function Badge({
 
   return (
     <motion.span
+      role="status"
       variants={badgeVariants}
       initial="hidden"
       animate="visible"
       whileHover="hover"
       className={cn(
         "inline-flex items-center gap-1 sm:gap-1.5 transition-all text-[0.5625rem] sm:text-[0.625rem]",
+        "motion-reduce:transition-none motion-reduce:animate-none",
         STATUS_CLASSES[tone] || STATUS_CLASSES.default,
       )}
     >
@@ -64,6 +66,7 @@ export const Badge = memo(function Badge({
           "w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full flex-shrink-0",
           DOT_CLASSES[tone] || DOT_CLASSES.default,
         )}
+        aria-hidden="true"
       />
       {resolvedText}
       {children}

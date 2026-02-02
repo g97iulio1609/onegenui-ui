@@ -23,9 +23,14 @@ export const Empty = memo(function Empty({
 
   return (
     <motion.div
+      role="status"
+      aria-label={title}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col items-center justify-center p-10 text-center"
+      className={cn(
+        "flex flex-col items-center justify-center p-10 text-center",
+        "motion-reduce:animate-none",
+      )}
     >
       <h3 className="mb-2 text-base font-semibold tracking-tight text-foreground">
         {title}
@@ -35,8 +40,9 @@ export const Empty = memo(function Empty({
       )}
       {resolvedAction && actionLabel && (
         <button
+          type="button"
           onClick={() => onAction?.(resolvedAction)}
-          className={cn("mt-4 btn-secondary")}
+          className={cn("mt-4 btn-secondary", "motion-reduce:transition-none")}
         >
           {actionLabel}
         </button>

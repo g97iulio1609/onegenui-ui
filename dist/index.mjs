@@ -209,11 +209,15 @@ var Grid = memo2(function Grid2({
     return /* @__PURE__ */ jsxs2(
       motion2.div,
       {
+        role: "status",
         initial: { opacity: 0, scale: 0.98 },
         animate: { opacity: 1, scale: 1 },
-        className: "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+        className: cn(
+          "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+          "motion-reduce:animate-none"
+        ),
         children: [
-          /* @__PURE__ */ jsx2(LayoutGrid, { className: "w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" }),
+          /* @__PURE__ */ jsx2(LayoutGrid, { className: "w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3", "aria-hidden": "true" }),
           /* @__PURE__ */ jsx2("p", { className: "font-mono text-[0.625rem] sm:text-xs uppercase tracking-widest opacity-50", children: "Empty Grid" })
         ]
       }
@@ -222,6 +226,8 @@ var Grid = memo2(function Grid2({
   return /* @__PURE__ */ jsx2(
     motion2.div,
     {
+      role: "grid",
+      "aria-label": "Grid layout",
       variants: containerVariants,
       initial: "hidden",
       animate: "visible",
@@ -230,17 +236,20 @@ var Grid = memo2(function Grid2({
         "grid w-full min-w-0 max-w-full items-stretch justify-items-stretch",
         // Mobile-first: 1 column, then responsive based on content
         forceSingleColumn ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(20rem,1fr))]",
-        gapClass
+        gapClass,
+        "motion-reduce:animate-none"
       ),
       children: /* @__PURE__ */ jsx2(AnimatePresence, { mode: "popLayout", children: Children.map(children, (child, index) => {
         const childKey = isValidElement(child) ? child.key ?? `grid-item-${index}` : `grid-item-${index}`;
         return /* @__PURE__ */ jsx2(
           motion2.div,
           {
+            role: "gridcell",
             variants: itemVariants,
             initial: "hidden",
             animate: "visible",
             exit: "exit",
+            className: "motion-reduce:animate-none",
             children: child
           },
           childKey
@@ -316,6 +325,8 @@ var Stack = memo3(function Stack2({
   return /* @__PURE__ */ jsx3(
     motion3.div,
     {
+      role: "group",
+      "aria-label": "Stack layout",
       variants: stackVariants,
       initial: "hidden",
       animate: "visible",
@@ -325,7 +336,8 @@ var Stack = memo3(function Stack2({
         effectiveDirection,
         shouldWrap && !forceVertical ? "sm:flex-wrap" : "flex-nowrap",
         GAP_CLASSES2[gap || "md"] || GAP_CLASSES2.md,
-        ALIGN_CLASSES[align || "stretch"] || ALIGN_CLASSES.stretch
+        ALIGN_CLASSES[align || "stretch"] || ALIGN_CLASSES.stretch,
+        "motion-reduce:animate-none"
       ),
       children
     }
@@ -357,13 +369,15 @@ var Divider = memo4(function Divider2({
     return /* @__PURE__ */ jsxs3(
       motion4.div,
       {
+        role: "separator",
+        "aria-orientation": "vertical",
         variants: verticalVariants,
         initial: "hidden",
         animate: "visible",
         transition: { duration: 0.3, ease: "easeOut" },
-        className: "flex flex-col h-full",
+        className: cn("flex flex-col h-full", "motion-reduce:animate-none"),
         children: [
-          /* @__PURE__ */ jsx4("div", { className: "w-px bg-white/10 self-stretch h-full" }),
+          /* @__PURE__ */ jsx4("div", { className: "w-px bg-white/10 self-stretch h-full", "aria-hidden": "true" }),
           children
         ]
       }
@@ -373,15 +387,20 @@ var Divider = memo4(function Divider2({
     return /* @__PURE__ */ jsxs3(
       motion4.div,
       {
+        role: "separator",
+        "aria-orientation": "horizontal",
         variants: labelledVariants,
         initial: "hidden",
         animate: "visible",
         transition: { duration: 0.3, ease: "easeOut" },
-        className: "flex items-center gap-2 sm:gap-3 my-3 sm:my-4 w-full",
+        className: cn(
+          "flex items-center gap-2 sm:gap-3 my-3 sm:my-4 w-full",
+          "motion-reduce:animate-none"
+        ),
         children: [
-          /* @__PURE__ */ jsx4("div", { className: "flex-1 h-px bg-white/10" }),
+          /* @__PURE__ */ jsx4("div", { className: "flex-1 h-px bg-white/10", "aria-hidden": "true" }),
           /* @__PURE__ */ jsx4("span", { className: "text-[0.5625rem] sm:text-[0.625rem] uppercase font-bold tracking-wider text-muted-foreground whitespace-nowrap", children: label }),
-          /* @__PURE__ */ jsx4("div", { className: "flex-1 h-px bg-white/10" }),
+          /* @__PURE__ */ jsx4("div", { className: "flex-1 h-px bg-white/10", "aria-hidden": "true" }),
           children
         ]
       }
@@ -390,13 +409,15 @@ var Divider = memo4(function Divider2({
   return /* @__PURE__ */ jsxs3(
     motion4.div,
     {
+      role: "separator",
+      "aria-orientation": "horizontal",
       variants: horizontalVariants,
       initial: "hidden",
       animate: "visible",
       transition: { duration: 0.3, ease: "easeOut" },
-      className: "w-full",
+      className: cn("w-full", "motion-reduce:animate-none"),
       children: [
-        /* @__PURE__ */ jsx4("div", { className: "divider-perforated" }),
+        /* @__PURE__ */ jsx4("div", { className: "divider-perforated", "aria-hidden": "true" }),
         children
       ]
     }
@@ -781,12 +802,14 @@ var Badge = memo9(function Badge2({
   return /* @__PURE__ */ jsxs8(
     motion9.span,
     {
+      role: "status",
       variants: badgeVariants,
       initial: "hidden",
       animate: "visible",
       whileHover: "hover",
       className: cn(
         "inline-flex items-center gap-1 sm:gap-1.5 transition-all text-[0.5625rem] sm:text-[0.625rem]",
+        "motion-reduce:transition-none motion-reduce:animate-none",
         STATUS_CLASSES[tone] || STATUS_CLASSES.default
       ),
       children: [
@@ -796,7 +819,8 @@ var Badge = memo9(function Badge2({
             className: cn(
               "w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full flex-shrink-0",
               DOT_CLASSES[tone] || DOT_CLASSES.default
-            )
+            ),
+            "aria-hidden": "true"
           }
         ),
         resolvedText,
@@ -807,7 +831,7 @@ var Badge = memo9(function Badge2({
 });
 
 // src/status/Alert/component.tsx
-import { memo as memo10, useState as useState4 } from "react";
+import { memo as memo10, useState as useState4, useId as useId2 } from "react";
 import { useData as useData2 } from "@onegenui/react";
 import { motion as motion10, AnimatePresence as AnimatePresence4 } from "framer-motion";
 import {
@@ -835,6 +859,12 @@ var TONE_CLASSES = {
   warning: "bg-amber-500/10 border-amber-500/20 text-amber-500",
   error: "bg-rose-500/10 border-rose-500/20 text-rose-500"
 };
+var ARIA_ROLES = {
+  info: "status",
+  success: "status",
+  warning: "alert",
+  error: "alert"
+};
 var Alert = memo10(function Alert2({
   element,
   children
@@ -843,12 +873,17 @@ var Alert = memo10(function Alert2({
   const { data } = useData2();
   const resolvedMessage = resolveValueProp(data, message ?? null);
   const [dismissed, setDismissed] = useState4(false);
+  const titleId = useId2();
   const tone = type ?? variant ?? "info";
   const hasMessage = resolvedMessage !== void 0 && resolvedMessage !== null;
   const Icon = ICON_MAP[tone] || Info;
+  const ariaRole = ARIA_ROLES[tone] ?? "status";
   return /* @__PURE__ */ jsx8(AnimatePresence4, { children: !dismissed && /* @__PURE__ */ jsx8(
     motion10.div,
     {
+      role: ariaRole,
+      "aria-live": ariaRole === "alert" ? "assertive" : "polite",
+      "aria-labelledby": title ? titleId : void 0,
       variants: alertVariants,
       initial: "hidden",
       animate: "visible",
@@ -856,25 +891,41 @@ var Alert = memo10(function Alert2({
       transition: { duration: 0.2 },
       className: cn(
         "relative w-full rounded-lg sm:rounded-xl border p-3 sm:p-4 text-xs sm:text-sm shadow-lg backdrop-blur-md overflow-hidden",
+        "motion-reduce:transition-none motion-reduce:animate-none",
         TONE_CLASSES[tone] || TONE_CLASSES.info
       ),
       children: /* @__PURE__ */ jsxs9("div", { className: "flex gap-2 sm:gap-3", children: [
-        /* @__PURE__ */ jsx8(Icon, { className: "w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5" }),
+        /* @__PURE__ */ jsx8(
+          Icon,
+          {
+            className: "w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5",
+            "aria-hidden": "true"
+          }
+        ),
         /* @__PURE__ */ jsxs9("div", { className: "flex-1 space-y-0.5 sm:space-y-1 min-w-0", children: [
-          title && /* @__PURE__ */ jsx8("h5", { className: "font-semibold leading-tight tracking-tight text-xs sm:text-sm", children: title }),
+          title && /* @__PURE__ */ jsx8(
+            "h5",
+            {
+              id: titleId,
+              className: "font-semibold leading-tight tracking-tight text-xs sm:text-sm",
+              children: title
+            }
+          ),
           hasMessage && /* @__PURE__ */ jsx8("div", { className: "text-xs sm:text-sm opacity-90 leading-relaxed", children: String(resolvedMessage) }),
           children
         ] }),
         dismissible && /* @__PURE__ */ jsx8(
           "button",
           {
+            type: "button",
             onClick: () => setDismissed(true),
+            "aria-label": "Dismiss alert",
             className: cn(
               "absolute top-2 right-2 sm:top-3 sm:right-3 p-1 rounded-md opacity-70 hover:opacity-100 transition-opacity",
-              "hover:bg-black/5 dark:hover:bg-white/10 min-h-[2rem] min-w-[2rem] flex items-center justify-center"
+              "hover:bg-black/5 dark:hover:bg-white/10 min-h-[2rem] min-w-[2rem] flex items-center justify-center",
+              "motion-reduce:transition-none"
             ),
-            title: "Dismiss",
-            children: /* @__PURE__ */ jsx8(X, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" })
+            children: /* @__PURE__ */ jsx8(X, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4", "aria-hidden": "true" })
           }
         )
       ] })
@@ -896,17 +947,23 @@ var Empty = memo11(function Empty2({
   return /* @__PURE__ */ jsxs10(
     motion11.div,
     {
+      role: "status",
+      "aria-label": title,
       initial: { opacity: 0, scale: 0.95 },
       animate: { opacity: 1, scale: 1 },
-      className: "flex flex-col items-center justify-center p-10 text-center",
+      className: cn(
+        "flex flex-col items-center justify-center p-10 text-center",
+        "motion-reduce:animate-none"
+      ),
       children: [
         /* @__PURE__ */ jsx9("h3", { className: "mb-2 text-base font-semibold tracking-tight text-foreground", children: title }),
         description && /* @__PURE__ */ jsx9("p", { className: "m-0 text-sm text-muted-foreground", children: description }),
         resolvedAction && actionLabel && /* @__PURE__ */ jsx9(
           "button",
           {
+            type: "button",
             onClick: () => onAction?.(resolvedAction),
-            className: cn("mt-4 btn-secondary"),
+            className: cn("mt-4 btn-secondary", "motion-reduce:transition-none"),
             children: actionLabel
           }
         ),
@@ -1065,7 +1122,7 @@ var Button = memo13(function Button2({
 });
 
 // src/forms/TextField/component.tsx
-import { memo as memo14, useId as useId2 } from "react";
+import { memo as memo14, useId as useId3 } from "react";
 import {
   useData as useData3,
   useFieldValidation
@@ -1107,8 +1164,8 @@ var TextField = memo14(function TextField2({
       validateOn: validateOn ?? "blur"
     }
   );
-  const inputId = useId2();
-  const errorId = useId2();
+  const inputId = useId3();
+  const errorId = useId3();
   const hasErrors = errors.length > 0;
   return /* @__PURE__ */ jsxs13(
     motion14.div,
@@ -1192,7 +1249,7 @@ var TextField = memo14(function TextField2({
 });
 
 // src/forms/Select/component.tsx
-import { memo as memo15 } from "react";
+import { memo as memo15, useId as useId4 } from "react";
 import { useData as useData4 } from "@onegenui/react";
 import { motion as motion15 } from "framer-motion";
 import { jsx as jsx13, jsxs as jsxs14 } from "react/jsx-runtime";
@@ -1204,14 +1261,17 @@ var Select = memo15(function Select2({
   element,
   children
 }) {
-  const { label, bindPath, valuePath, value, options, placeholder } = element.props;
+  const { label, bindPath, valuePath, value, options, placeholder, required, disabled, error } = element.props;
   const { data, set } = useData4();
+  const selectId = useId4();
+  const errorId = useId4();
   const resolvedPath = bindPath ?? valuePath ?? null;
   const resolvedValue = resolveValueProp(
     data,
     value ?? null,
     resolvedPath
   );
+  const hasError = Boolean(error);
   return /* @__PURE__ */ jsxs14(
     motion15.div,
     {
@@ -1219,20 +1279,41 @@ var Select = memo15(function Select2({
       initial: "hidden",
       animate: "visible",
       transition: { duration: 0.2 },
-      className: "flex flex-col gap-1 sm:gap-1.5 w-full",
+      className: cn(
+        "flex flex-col gap-1 sm:gap-1.5 w-full",
+        "motion-reduce:transition-none motion-reduce:animate-none"
+      ),
       children: [
-        label && /* @__PURE__ */ jsx13("label", { className: "text-label text-[0.5625rem] sm:text-[0.625rem]", children: label }),
+        label && /* @__PURE__ */ jsxs14(
+          "label",
+          {
+            htmlFor: selectId,
+            className: "text-label text-[0.5625rem] sm:text-[0.625rem]",
+            children: [
+              label,
+              required && /* @__PURE__ */ jsx13("span", { className: "text-destructive ml-0.5", children: "*" })
+            ]
+          }
+        ),
         /* @__PURE__ */ jsxs14(
           "select",
           {
+            id: selectId,
             value: resolvedValue ?? "",
             onChange: (e) => resolvedPath && set(resolvedPath, e.target.value),
+            required,
+            disabled,
+            "aria-invalid": hasError || void 0,
+            "aria-describedby": hasError ? errorId : void 0,
+            "aria-required": required || void 0,
             className: cn(
               "glass-surface flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground",
               "min-h-[2.75rem] sm:h-10",
               "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50",
               "disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 appearance-none touch-manipulation",
-              !resolvedValue && "text-muted-foreground"
+              "motion-reduce:transition-none",
+              !resolvedValue && "text-muted-foreground",
+              hasError && "border-destructive focus:ring-destructive/50"
             ),
             children: [
               placeholder && /* @__PURE__ */ jsx13("option", { value: "", disabled: true, children: placeholder }),
@@ -1246,6 +1327,15 @@ var Select = memo15(function Select2({
                 opt.value
               ))
             ]
+          }
+        ),
+        error && /* @__PURE__ */ jsx13(
+          "span",
+          {
+            id: errorId,
+            role: "alert",
+            className: "text-destructive text-[0.5625rem] sm:text-[0.625rem]",
+            children: error
           }
         ),
         children
@@ -1366,7 +1456,7 @@ var Metric = memo17(function Metric2({
 });
 
 // src/data-display/Table/component.tsx
-import { memo as memo18 } from "react";
+import { memo as memo18, useId as useId5 } from "react";
 import { useData as useData7 } from "@onegenui/react";
 import { motion as motion18, AnimatePresence as AnimatePresence5 } from "framer-motion";
 import { Table as TableIcon } from "lucide-react";
@@ -1397,17 +1487,23 @@ var Table = memo18(function Table2({
   }));
   const { data } = useData7();
   const tableRows = resolveArrayProp(data, rows, dataPath);
+  const titleId = useId5();
+  const tableId = useId5();
   if (!tableRows || tableRows.length === 0) {
-    return /* @__PURE__ */ jsxs17("div", { className: "w-full", children: [
-      title && /* @__PURE__ */ jsx16("h4", { className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight", children: title }),
+    return /* @__PURE__ */ jsxs17("div", { className: "w-full", role: "region", "aria-labelledby": title ? titleId : void 0, children: [
+      title && /* @__PURE__ */ jsx16("h4", { id: titleId, className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight", children: title }),
       /* @__PURE__ */ jsxs17(
         motion18.div,
         {
+          role: "status",
           initial: { opacity: 0 },
           animate: { opacity: 1 },
-          className: "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-lg sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+          className: cn(
+            "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-lg sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+            "motion-reduce:animate-none"
+          ),
           children: [
-            /* @__PURE__ */ jsx16(TableIcon, { className: "w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" }),
+            /* @__PURE__ */ jsx16(TableIcon, { className: "w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3", "aria-hidden": "true" }),
             /* @__PURE__ */ jsx16("p", { className: "font-mono text-[0.625rem] sm:text-xs uppercase tracking-widest opacity-50", children: "No data available" })
           ]
         }
@@ -1444,7 +1540,10 @@ var Table = memo18(function Table2({
         "data-selectable-item": true,
         "data-element-key": element.key,
         "data-item-id": rowKey,
-        className: "border-b border-white/5 transition-colors hover:bg-white/5 data-[state=selected]:bg-white/10",
+        className: cn(
+          "border-b border-white/5 transition-colors hover:bg-white/5 data-[state=selected]:bg-white/10",
+          "motion-reduce:transition-none"
+        ),
         children: columns.map((col, colIndex) => /* @__PURE__ */ jsx16(
           "td",
           {
@@ -1462,19 +1561,25 @@ var Table = memo18(function Table2({
     );
     return [renderedRow, ...renderRows(subRows, depth + 1)];
   });
-  return /* @__PURE__ */ jsxs17("div", { className: "w-full", children: [
-    title && /* @__PURE__ */ jsx16("h4", { className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight text-foreground", children: title }),
+  return /* @__PURE__ */ jsxs17("div", { className: "w-full", role: "region", "aria-labelledby": title ? titleId : void 0, children: [
+    title && /* @__PURE__ */ jsx16("h4", { id: titleId, className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight text-foreground", children: title }),
     /* @__PURE__ */ jsx16("div", { className: "relative w-full overflow-x-auto rounded-lg sm:rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm -mx-1 px-1 sm:mx-0 sm:px-0", children: /* @__PURE__ */ jsxs17(
       motion18.table,
       {
+        id: tableId,
+        "aria-label": title ?? "Data table",
         variants: containerVariants4,
         initial: "hidden",
         animate: "visible",
-        className: "w-full min-w-[20rem] caption-bottom text-xs sm:text-sm border-collapse",
+        className: cn(
+          "w-full min-w-[20rem] caption-bottom text-xs sm:text-sm border-collapse",
+          "motion-reduce:animate-none"
+        ),
         children: [
           /* @__PURE__ */ jsx16("thead", { className: "[&_tr]:border-b border-white/10", children: /* @__PURE__ */ jsx16("tr", { className: "border-b border-white/10 transition-colors", children: columns.map((col, index) => /* @__PURE__ */ jsx16(
             "th",
             {
+              scope: "col",
               className: "h-10 sm:h-12 px-2.5 sm:px-4 text-left align-middle font-medium text-muted-foreground text-[0.625rem] sm:text-xs uppercase tracking-wider",
               children: col.label
             },
@@ -1502,61 +1607,83 @@ var List = memo19(function List2({
   const { data } = useData8();
   const listData = resolveArrayProp(data, items, dataPath);
   if ((!listData || listData.length === 0) && !children) {
-    return /* @__PURE__ */ jsxs18("div", { className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground", children: [
-      /* @__PURE__ */ jsx17(ListIcon, { className: "w-10 h-10 opacity-20 mb-3" }),
-      /* @__PURE__ */ jsx17("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: emptyMessage ?? "No items" })
-    ] });
-  }
-  const renderItems = (itemsToRender, depth = 0) => /* @__PURE__ */ jsx17("div", { className: "flex flex-col gap-2", children: itemsToRender.map((item, index) => {
-    const raw = typeof item === "string" ? { text: item } : item;
-    const normalized = {
-      id: raw.id,
-      text: raw.text ?? raw.primary ?? "",
-      description: raw.description ?? raw.secondary ?? null,
-      status: raw.status,
-      subItems: raw.subItems
-    };
-    const itemId = normalized.id ?? `item-${depth}-${index}`;
-    const subItems = Array.isArray(normalized.subItems) ? normalized.subItems : [];
     return /* @__PURE__ */ jsxs18(
-      motion19.div,
+      "div",
       {
-        className: "flex flex-col",
-        initial: { opacity: 0, x: -10 },
-        animate: { opacity: 1, x: 0 },
-        transition: { delay: index * 0.05 },
+        role: "status",
+        className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground",
         children: [
-          /* @__PURE__ */ jsxs18(
-            "div",
-            {
-              "data-selectable-item": true,
-              "data-element-key": element.key,
-              "data-item-id": itemId,
-              className: cn(
-                "flex items-center gap-2 px-3 py-2 rounded-lg",
-                "bg-white/5 border border-white/10",
-                "transition-colors hover:border-white/20 hover:bg-white/10"
-              ),
-              style: {
-                marginLeft: `${depth * 16}px`
-              },
-              children: [
-                /* @__PURE__ */ jsx17("div", { className: "w-2 h-2 rounded-full bg-foreground/60 shrink-0" }),
-                /* @__PURE__ */ jsxs18("div", { className: "flex-1 min-w-0", children: [
-                  /* @__PURE__ */ jsx17("div", { className: "text-sm font-medium truncate text-foreground", children: normalized.text }),
-                  normalized.description && /* @__PURE__ */ jsx17("div", { className: "text-xs text-muted-foreground truncate", children: normalized.description })
-                ] }),
-                normalized.status && /* @__PURE__ */ jsx17("span", { className: "text-xs text-muted-foreground shrink-0", children: normalized.status })
-              ]
-            }
-          ),
-          subItems.length > 0 && renderItems(subItems, depth + 1)
+          /* @__PURE__ */ jsx17(ListIcon, { className: "w-10 h-10 opacity-20 mb-3", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx17("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: emptyMessage ?? "No items" })
         ]
-      },
-      itemId
+      }
     );
-  }) });
-  return /* @__PURE__ */ jsxs18("div", { children: [
+  }
+  const renderItems = (itemsToRender, depth = 0) => /* @__PURE__ */ jsx17(
+    "ul",
+    {
+      role: "list",
+      className: "flex flex-col gap-2",
+      "aria-label": depth === 0 ? "List items" : void 0,
+      children: itemsToRender.map((item, index) => {
+        const raw = typeof item === "string" ? { text: item } : item;
+        const normalized = {
+          id: raw.id,
+          text: raw.text ?? raw.primary ?? "",
+          description: raw.description ?? raw.secondary ?? null,
+          status: raw.status,
+          subItems: raw.subItems
+        };
+        const itemId = normalized.id ?? `item-${depth}-${index}`;
+        const subItems = Array.isArray(normalized.subItems) ? normalized.subItems : [];
+        return /* @__PURE__ */ jsxs18(
+          motion19.li,
+          {
+            className: "flex flex-col",
+            initial: { opacity: 0, x: -10 },
+            animate: { opacity: 1, x: 0 },
+            transition: { delay: index * 0.05 },
+            children: [
+              /* @__PURE__ */ jsxs18(
+                "div",
+                {
+                  "data-selectable-item": true,
+                  "data-element-key": element.key,
+                  "data-item-id": itemId,
+                  className: cn(
+                    "flex items-center gap-2 px-3 py-2 rounded-lg",
+                    "bg-white/5 border border-white/10",
+                    "transition-colors hover:border-white/20 hover:bg-white/10",
+                    "motion-reduce:transition-none motion-reduce:animate-none"
+                  ),
+                  style: {
+                    marginLeft: `${depth * 16}px`
+                  },
+                  children: [
+                    /* @__PURE__ */ jsx17(
+                      "div",
+                      {
+                        className: "w-2 h-2 rounded-full bg-foreground/60 shrink-0",
+                        "aria-hidden": "true"
+                      }
+                    ),
+                    /* @__PURE__ */ jsxs18("div", { className: "flex-1 min-w-0", children: [
+                      /* @__PURE__ */ jsx17("div", { className: "text-sm font-medium truncate text-foreground", children: normalized.text }),
+                      normalized.description && /* @__PURE__ */ jsx17("div", { className: "text-xs text-muted-foreground truncate", children: normalized.description })
+                    ] }),
+                    normalized.status && /* @__PURE__ */ jsx17("span", { className: "text-xs text-muted-foreground shrink-0", children: normalized.status })
+                  ]
+                }
+              ),
+              subItems.length > 0 && renderItems(subItems, depth + 1)
+            ]
+          },
+          itemId
+        );
+      })
+    }
+  );
+  return /* @__PURE__ */ jsxs18("nav", { "aria-label": "List navigation", children: [
     listData && listData.length > 0 && renderItems(listData),
     children
   ] });

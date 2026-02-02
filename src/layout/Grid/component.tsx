@@ -97,11 +97,15 @@ export const Grid = memo(function Grid({
   if (Children.count(children) === 0) {
     return (
       <motion.div
+        role="status"
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl sm:rounded-2xl bg-zinc-900/20 text-muted-foreground"
+        className={cn(
+          "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+          "motion-reduce:animate-none",
+        )}
       >
-        <LayoutGrid className="w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" />
+        <LayoutGrid className="w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" aria-hidden="true" />
         <p className="font-mono text-[0.625rem] sm:text-xs uppercase tracking-widest opacity-50">
           Empty Grid
         </p>
@@ -111,6 +115,8 @@ export const Grid = memo(function Grid({
 
   return (
     <motion.div
+      role="grid"
+      aria-label="Grid layout"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -122,6 +128,7 @@ export const Grid = memo(function Grid({
           ? "grid-cols-1"
           : "grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(20rem,1fr))]",
         gapClass,
+        "motion-reduce:animate-none",
       )}
     >
       <AnimatePresence mode="popLayout">
@@ -133,10 +140,12 @@ export const Grid = memo(function Grid({
           return (
             <motion.div 
               key={childKey}
+              role="gridcell"
               variants={itemVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
+              className="motion-reduce:animate-none"
             >
               {child}
             </motion.div>

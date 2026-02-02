@@ -266,11 +266,15 @@ var Grid = (0, import_react2.memo)(function Grid2({
     return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
       import_framer_motion2.motion.div,
       {
+        role: "status",
         initial: { opacity: 0, scale: 0.98 },
         animate: { opacity: 1, scale: 1 },
-        className: "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+        className: (0, import_utils.cn)(
+          "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+          "motion-reduce:animate-none"
+        ),
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_lucide_react.LayoutGrid, { className: "w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" }),
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_lucide_react.LayoutGrid, { className: "w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3", "aria-hidden": "true" }),
           /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("p", { className: "font-mono text-[0.625rem] sm:text-xs uppercase tracking-widest opacity-50", children: "Empty Grid" })
         ]
       }
@@ -279,6 +283,8 @@ var Grid = (0, import_react2.memo)(function Grid2({
   return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
     import_framer_motion2.motion.div,
     {
+      role: "grid",
+      "aria-label": "Grid layout",
       variants: containerVariants,
       initial: "hidden",
       animate: "visible",
@@ -287,17 +293,20 @@ var Grid = (0, import_react2.memo)(function Grid2({
         "grid w-full min-w-0 max-w-full items-stretch justify-items-stretch",
         // Mobile-first: 1 column, then responsive based on content
         forceSingleColumn ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))] lg:grid-cols-[repeat(auto-fit,minmax(20rem,1fr))]",
-        gapClass
+        gapClass,
+        "motion-reduce:animate-none"
       ),
       children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_framer_motion2.AnimatePresence, { mode: "popLayout", children: import_react2.Children.map(children, (child, index) => {
         const childKey = (0, import_react2.isValidElement)(child) ? child.key ?? `grid-item-${index}` : `grid-item-${index}`;
         return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
           import_framer_motion2.motion.div,
           {
+            role: "gridcell",
             variants: itemVariants,
             initial: "hidden",
             animate: "visible",
             exit: "exit",
+            className: "motion-reduce:animate-none",
             children: child
           },
           childKey
@@ -386,6 +395,8 @@ var Stack = (0, import_react3.memo)(function Stack2({
   return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(
     import_framer_motion3.motion.div,
     {
+      role: "group",
+      "aria-label": "Stack layout",
       variants: stackVariants,
       initial: "hidden",
       animate: "visible",
@@ -395,7 +406,8 @@ var Stack = (0, import_react3.memo)(function Stack2({
         effectiveDirection,
         shouldWrap && !forceVertical ? "sm:flex-wrap" : "flex-nowrap",
         GAP_CLASSES2[gap || "md"] || GAP_CLASSES2.md,
-        ALIGN_CLASSES[align || "stretch"] || ALIGN_CLASSES.stretch
+        ALIGN_CLASSES[align || "stretch"] || ALIGN_CLASSES.stretch,
+        "motion-reduce:animate-none"
       ),
       children
     }
@@ -441,13 +453,15 @@ var Divider = (0, import_react4.memo)(function Divider2({
     return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
       import_framer_motion4.motion.div,
       {
+        role: "separator",
+        "aria-orientation": "vertical",
         variants: verticalVariants,
         initial: "hidden",
         animate: "visible",
         transition: { duration: 0.3, ease: "easeOut" },
-        className: "flex flex-col h-full",
+        className: (0, import_utils.cn)("flex flex-col h-full", "motion-reduce:animate-none"),
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-px bg-white/10 self-stretch h-full" }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "w-px bg-white/10 self-stretch h-full", "aria-hidden": "true" }),
           children
         ]
       }
@@ -457,15 +471,20 @@ var Divider = (0, import_react4.memo)(function Divider2({
     return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
       import_framer_motion4.motion.div,
       {
+        role: "separator",
+        "aria-orientation": "horizontal",
         variants: labelledVariants,
         initial: "hidden",
         animate: "visible",
         transition: { duration: 0.3, ease: "easeOut" },
-        className: "flex items-center gap-2 sm:gap-3 my-3 sm:my-4 w-full",
+        className: (0, import_utils.cn)(
+          "flex items-center gap-2 sm:gap-3 my-3 sm:my-4 w-full",
+          "motion-reduce:animate-none"
+        ),
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex-1 h-px bg-white/10" }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex-1 h-px bg-white/10", "aria-hidden": "true" }),
           /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("span", { className: "text-[0.5625rem] sm:text-[0.625rem] uppercase font-bold tracking-wider text-muted-foreground whitespace-nowrap", children: label }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex-1 h-px bg-white/10" }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "flex-1 h-px bg-white/10", "aria-hidden": "true" }),
           children
         ]
       }
@@ -474,13 +493,15 @@ var Divider = (0, import_react4.memo)(function Divider2({
   return /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
     import_framer_motion4.motion.div,
     {
+      role: "separator",
+      "aria-orientation": "horizontal",
       variants: horizontalVariants,
       initial: "hidden",
       animate: "visible",
       transition: { duration: 0.3, ease: "easeOut" },
-      className: "w-full",
+      className: (0, import_utils.cn)("w-full", "motion-reduce:animate-none"),
       children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "divider-perforated" }),
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)("div", { className: "divider-perforated", "aria-hidden": "true" }),
         children
       ]
     }
@@ -947,12 +968,14 @@ var Badge = (0, import_react9.memo)(function Badge2({
   return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(
     import_framer_motion9.motion.span,
     {
+      role: "status",
       variants: badgeVariants,
       initial: "hidden",
       animate: "visible",
       whileHover: "hover",
       className: (0, import_utils.cn)(
         "inline-flex items-center gap-1 sm:gap-1.5 transition-all text-[0.5625rem] sm:text-[0.625rem]",
+        "motion-reduce:transition-none motion-reduce:animate-none",
         STATUS_CLASSES[tone] || STATUS_CLASSES.default
       ),
       children: [
@@ -962,7 +985,8 @@ var Badge = (0, import_react9.memo)(function Badge2({
             className: (0, import_utils.cn)(
               "w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full flex-shrink-0",
               DOT_CLASSES[tone] || DOT_CLASSES.default
-            )
+            ),
+            "aria-hidden": "true"
           }
         ),
         resolvedText,
@@ -1008,6 +1032,12 @@ var TONE_CLASSES = {
   warning: "bg-amber-500/10 border-amber-500/20 text-amber-500",
   error: "bg-rose-500/10 border-rose-500/20 text-rose-500"
 };
+var ARIA_ROLES = {
+  info: "status",
+  success: "status",
+  warning: "alert",
+  error: "alert"
+};
 var Alert = (0, import_react11.memo)(function Alert2({
   element,
   children
@@ -1016,12 +1046,17 @@ var Alert = (0, import_react11.memo)(function Alert2({
   const { data } = (0, import_react12.useData)();
   const resolvedMessage = (0, import_utils2.resolveValueProp)(data, message ?? null);
   const [dismissed, setDismissed] = (0, import_react11.useState)(false);
+  const titleId = (0, import_react11.useId)();
   const tone = type ?? variant ?? "info";
   const hasMessage = resolvedMessage !== void 0 && resolvedMessage !== null;
   const Icon = ICON_MAP[tone] || import_lucide_react4.Info;
+  const ariaRole = ARIA_ROLES[tone] ?? "status";
   return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_framer_motion10.AnimatePresence, { children: !dismissed && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
     import_framer_motion10.motion.div,
     {
+      role: ariaRole,
+      "aria-live": ariaRole === "alert" ? "assertive" : "polite",
+      "aria-labelledby": title ? titleId : void 0,
       variants: alertVariants,
       initial: "hidden",
       animate: "visible",
@@ -1029,25 +1064,41 @@ var Alert = (0, import_react11.memo)(function Alert2({
       transition: { duration: 0.2 },
       className: (0, import_utils.cn)(
         "relative w-full rounded-lg sm:rounded-xl border p-3 sm:p-4 text-xs sm:text-sm shadow-lg backdrop-blur-md overflow-hidden",
+        "motion-reduce:transition-none motion-reduce:animate-none",
         TONE_CLASSES[tone] || TONE_CLASSES.info
       ),
       children: /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex gap-2 sm:gap-3", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Icon, { className: "w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5" }),
+        /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+          Icon,
+          {
+            className: "w-4 h-4 sm:w-5 sm:h-5 shrink-0 mt-0.5",
+            "aria-hidden": "true"
+          }
+        ),
         /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex-1 space-y-0.5 sm:space-y-1 min-w-0", children: [
-          title && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("h5", { className: "font-semibold leading-tight tracking-tight text-xs sm:text-sm", children: title }),
+          title && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+            "h5",
+            {
+              id: titleId,
+              className: "font-semibold leading-tight tracking-tight text-xs sm:text-sm",
+              children: title
+            }
+          ),
           hasMessage && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("div", { className: "text-xs sm:text-sm opacity-90 leading-relaxed", children: String(resolvedMessage) }),
           children
         ] }),
         dismissible && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
           "button",
           {
+            type: "button",
             onClick: () => setDismissed(true),
+            "aria-label": "Dismiss alert",
             className: (0, import_utils.cn)(
               "absolute top-2 right-2 sm:top-3 sm:right-3 p-1 rounded-md opacity-70 hover:opacity-100 transition-opacity",
-              "hover:bg-black/5 dark:hover:bg-white/10 min-h-[2rem] min-w-[2rem] flex items-center justify-center"
+              "hover:bg-black/5 dark:hover:bg-white/10 min-h-[2rem] min-w-[2rem] flex items-center justify-center",
+              "motion-reduce:transition-none"
             ),
-            title: "Dismiss",
-            children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react4.X, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4" })
+            children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react4.X, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4", "aria-hidden": "true" })
           }
         )
       ] })
@@ -1084,17 +1135,23 @@ var Empty = (0, import_react13.memo)(function Empty2({
   return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
     import_framer_motion11.motion.div,
     {
+      role: "status",
+      "aria-label": title,
       initial: { opacity: 0, scale: 0.95 },
       animate: { opacity: 1, scale: 1 },
-      className: "flex flex-col items-center justify-center p-10 text-center",
+      className: (0, import_utils.cn)(
+        "flex flex-col items-center justify-center p-10 text-center",
+        "motion-reduce:animate-none"
+      ),
       children: [
         /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("h3", { className: "mb-2 text-base font-semibold tracking-tight text-foreground", children: title }),
         description && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("p", { className: "m-0 text-sm text-muted-foreground", children: description }),
         resolvedAction && actionLabel && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
           "button",
           {
+            type: "button",
             onClick: () => onAction?.(resolvedAction),
-            className: (0, import_utils.cn)("mt-4 btn-secondary"),
+            className: (0, import_utils.cn)("mt-4 btn-secondary", "motion-reduce:transition-none"),
             children: actionLabel
           }
         ),
@@ -1471,14 +1528,17 @@ var Select = (0, import_react18.memo)(function Select2({
   element,
   children
 }) {
-  const { label, bindPath, valuePath, value, options, placeholder } = element.props;
+  const { label, bindPath, valuePath, value, options, placeholder, required, disabled, error } = element.props;
   const { data, set } = (0, import_react19.useData)();
+  const selectId = (0, import_react18.useId)();
+  const errorId = (0, import_react18.useId)();
   const resolvedPath = bindPath ?? valuePath ?? null;
   const resolvedValue = (0, import_utils2.resolveValueProp)(
     data,
     value ?? null,
     resolvedPath
   );
+  const hasError = Boolean(error);
   return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(
     import_framer_motion15.motion.div,
     {
@@ -1486,20 +1546,41 @@ var Select = (0, import_react18.memo)(function Select2({
       initial: "hidden",
       animate: "visible",
       transition: { duration: 0.2 },
-      className: "flex flex-col gap-1 sm:gap-1.5 w-full",
+      className: (0, import_utils.cn)(
+        "flex flex-col gap-1 sm:gap-1.5 w-full",
+        "motion-reduce:transition-none motion-reduce:animate-none"
+      ),
       children: [
-        label && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("label", { className: "text-label text-[0.5625rem] sm:text-[0.625rem]", children: label }),
+        label && /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(
+          "label",
+          {
+            htmlFor: selectId,
+            className: "text-label text-[0.5625rem] sm:text-[0.625rem]",
+            children: [
+              label,
+              required && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("span", { className: "text-destructive ml-0.5", children: "*" })
+            ]
+          }
+        ),
         /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(
           "select",
           {
+            id: selectId,
             value: resolvedValue ?? "",
             onChange: (e) => resolvedPath && set(resolvedPath, e.target.value),
+            required,
+            disabled,
+            "aria-invalid": hasError || void 0,
+            "aria-describedby": hasError ? errorId : void 0,
+            "aria-required": required || void 0,
             className: (0, import_utils.cn)(
               "glass-surface flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground",
               "min-h-[2.75rem] sm:h-10",
               "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50",
               "disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 appearance-none touch-manipulation",
-              !resolvedValue && "text-muted-foreground"
+              "motion-reduce:transition-none",
+              !resolvedValue && "text-muted-foreground",
+              hasError && "border-destructive focus:ring-destructive/50"
             ),
             children: [
               placeholder && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("option", { value: "", disabled: true, children: placeholder }),
@@ -1513,6 +1594,15 @@ var Select = (0, import_react18.memo)(function Select2({
                 opt.value
               ))
             ]
+          }
+        ),
+        error && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
+          "span",
+          {
+            id: errorId,
+            role: "alert",
+            className: "text-destructive text-[0.5625rem] sm:text-[0.625rem]",
+            children: error
           }
         ),
         children
@@ -1719,17 +1809,23 @@ var Table = (0, import_react24.memo)(function Table2({
   }));
   const { data } = (0, import_react25.useData)();
   const tableRows = (0, import_utils2.resolveArrayProp)(data, rows, dataPath);
+  const titleId = (0, import_react24.useId)();
+  const tableId = (0, import_react24.useId)();
   if (!tableRows || tableRows.length === 0) {
-    return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "w-full", children: [
-      title && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("h4", { className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight", children: title }),
+    return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "w-full", role: "region", "aria-labelledby": title ? titleId : void 0, children: [
+      title && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("h4", { id: titleId, className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight", children: title }),
       /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(
         import_framer_motion18.motion.div,
         {
+          role: "status",
           initial: { opacity: 0 },
           animate: { opacity: 1 },
-          className: "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-lg sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+          className: (0, import_utils.cn)(
+            "py-8 sm:py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-lg sm:rounded-2xl bg-zinc-900/20 text-muted-foreground",
+            "motion-reduce:animate-none"
+          ),
           children: [
-            /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react5.Table, { className: "w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3" }),
+            /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(import_lucide_react5.Table, { className: "w-8 h-8 sm:w-10 sm:h-10 opacity-20 mb-2 sm:mb-3", "aria-hidden": "true" }),
             /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("p", { className: "font-mono text-[0.625rem] sm:text-xs uppercase tracking-widest opacity-50", children: "No data available" })
           ]
         }
@@ -1766,7 +1862,10 @@ var Table = (0, import_react24.memo)(function Table2({
         "data-selectable-item": true,
         "data-element-key": element.key,
         "data-item-id": rowKey,
-        className: "border-b border-white/5 transition-colors hover:bg-white/5 data-[state=selected]:bg-white/10",
+        className: (0, import_utils.cn)(
+          "border-b border-white/5 transition-colors hover:bg-white/5 data-[state=selected]:bg-white/10",
+          "motion-reduce:transition-none"
+        ),
         children: columns.map((col, colIndex) => /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
           "td",
           {
@@ -1784,19 +1883,25 @@ var Table = (0, import_react24.memo)(function Table2({
     );
     return [renderedRow, ...renderRows(subRows, depth + 1)];
   });
-  return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "w-full", children: [
-    title && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("h4", { className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight text-foreground", children: title }),
+  return /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)("div", { className: "w-full", role: "region", "aria-labelledby": title ? titleId : void 0, children: [
+    title && /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("h4", { id: titleId, className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight text-foreground", children: title }),
     /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("div", { className: "relative w-full overflow-x-auto rounded-lg sm:rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm -mx-1 px-1 sm:mx-0 sm:px-0", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsxs)(
       import_framer_motion18.motion.table,
       {
+        id: tableId,
+        "aria-label": title ?? "Data table",
         variants: containerVariants4,
         initial: "hidden",
         animate: "visible",
-        className: "w-full min-w-[20rem] caption-bottom text-xs sm:text-sm border-collapse",
+        className: (0, import_utils.cn)(
+          "w-full min-w-[20rem] caption-bottom text-xs sm:text-sm border-collapse",
+          "motion-reduce:animate-none"
+        ),
         children: [
           /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("thead", { className: "[&_tr]:border-b border-white/10", children: /* @__PURE__ */ (0, import_jsx_runtime18.jsx)("tr", { className: "border-b border-white/10 transition-colors", children: columns.map((col, index) => /* @__PURE__ */ (0, import_jsx_runtime18.jsx)(
             "th",
             {
+              scope: "col",
               className: "h-10 sm:h-12 px-2.5 sm:px-4 text-left align-middle font-medium text-muted-foreground text-[0.625rem] sm:text-xs uppercase tracking-wider",
               children: col.label
             },
@@ -1858,61 +1963,83 @@ var List = (0, import_react26.memo)(function List2({
   const { data } = (0, import_react27.useData)();
   const listData = (0, import_utils2.resolveArrayProp)(data, items, dataPath);
   if ((!listData || listData.length === 0) && !children) {
-    return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react6.List, { className: "w-10 h-10 opacity-20 mb-3" }),
-      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: emptyMessage ?? "No items" })
-    ] });
-  }
-  const renderItems = (itemsToRender, depth = 0) => /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "flex flex-col gap-2", children: itemsToRender.map((item, index) => {
-    const raw = typeof item === "string" ? { text: item } : item;
-    const normalized = {
-      id: raw.id,
-      text: raw.text ?? raw.primary ?? "",
-      description: raw.description ?? raw.secondary ?? null,
-      status: raw.status,
-      subItems: raw.subItems
-    };
-    const itemId = normalized.id ?? `item-${depth}-${index}`;
-    const subItems = Array.isArray(normalized.subItems) ? normalized.subItems : [];
     return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(
-      import_framer_motion19.motion.div,
+      "div",
       {
-        className: "flex flex-col",
-        initial: { opacity: 0, x: -10 },
-        animate: { opacity: 1, x: 0 },
-        transition: { delay: index * 0.05 },
+        role: "status",
+        className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground",
         children: [
-          /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(
-            "div",
-            {
-              "data-selectable-item": true,
-              "data-element-key": element.key,
-              "data-item-id": itemId,
-              className: (0, import_utils.cn)(
-                "flex items-center gap-2 px-3 py-2 rounded-lg",
-                "bg-white/5 border border-white/10",
-                "transition-colors hover:border-white/20 hover:bg-white/10"
-              ),
-              style: {
-                marginLeft: `${depth * 16}px`
-              },
-              children: [
-                /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "w-2 h-2 rounded-full bg-foreground/60 shrink-0" }),
-                /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex-1 min-w-0", children: [
-                  /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-sm font-medium truncate text-foreground", children: normalized.text }),
-                  normalized.description && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-xs text-muted-foreground truncate", children: normalized.description })
-                ] }),
-                normalized.status && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "text-xs text-muted-foreground shrink-0", children: normalized.status })
-              ]
-            }
-          ),
-          subItems.length > 0 && renderItems(subItems, depth + 1)
+          /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(import_lucide_react6.List, { className: "w-10 h-10 opacity-20 mb-3", "aria-hidden": "true" }),
+          /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: emptyMessage ?? "No items" })
         ]
-      },
-      itemId
+      }
     );
-  }) });
-  return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { children: [
+  }
+  const renderItems = (itemsToRender, depth = 0) => /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
+    "ul",
+    {
+      role: "list",
+      className: "flex flex-col gap-2",
+      "aria-label": depth === 0 ? "List items" : void 0,
+      children: itemsToRender.map((item, index) => {
+        const raw = typeof item === "string" ? { text: item } : item;
+        const normalized = {
+          id: raw.id,
+          text: raw.text ?? raw.primary ?? "",
+          description: raw.description ?? raw.secondary ?? null,
+          status: raw.status,
+          subItems: raw.subItems
+        };
+        const itemId = normalized.id ?? `item-${depth}-${index}`;
+        const subItems = Array.isArray(normalized.subItems) ? normalized.subItems : [];
+        return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(
+          import_framer_motion19.motion.li,
+          {
+            className: "flex flex-col",
+            initial: { opacity: 0, x: -10 },
+            animate: { opacity: 1, x: 0 },
+            transition: { delay: index * 0.05 },
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)(
+                "div",
+                {
+                  "data-selectable-item": true,
+                  "data-element-key": element.key,
+                  "data-item-id": itemId,
+                  className: (0, import_utils.cn)(
+                    "flex items-center gap-2 px-3 py-2 rounded-lg",
+                    "bg-white/5 border border-white/10",
+                    "transition-colors hover:border-white/20 hover:bg-white/10",
+                    "motion-reduce:transition-none motion-reduce:animate-none"
+                  ),
+                  style: {
+                    marginLeft: `${depth * 16}px`
+                  },
+                  children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsx)(
+                      "div",
+                      {
+                        className: "w-2 h-2 rounded-full bg-foreground/60 shrink-0",
+                        "aria-hidden": "true"
+                      }
+                    ),
+                    /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("div", { className: "flex-1 min-w-0", children: [
+                      /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-sm font-medium truncate text-foreground", children: normalized.text }),
+                      normalized.description && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("div", { className: "text-xs text-muted-foreground truncate", children: normalized.description })
+                    ] }),
+                    normalized.status && /* @__PURE__ */ (0, import_jsx_runtime19.jsx)("span", { className: "text-xs text-muted-foreground shrink-0", children: normalized.status })
+                  ]
+                }
+              ),
+              subItems.length > 0 && renderItems(subItems, depth + 1)
+            ]
+          },
+          itemId
+        );
+      })
+    }
+  );
+  return /* @__PURE__ */ (0, import_jsx_runtime19.jsxs)("nav", { "aria-label": "List navigation", children: [
     listData && listData.length > 0 && renderItems(listData),
     children
   ] });
