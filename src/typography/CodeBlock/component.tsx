@@ -44,31 +44,33 @@ export const CodeBlock = memo(function CodeBlock({
 
   if (!snippets || snippets.length === 0) {
     return (
-      <div className="text-muted-foreground text-xs sm:text-sm italic p-3 sm:p-4">
+      <div role="status" className="text-muted-foreground text-xs sm:text-sm italic p-3 sm:p-4">
         No code snippets
       </div>
     );
   }
 
   return (
-    <motion.div
+    <motion.section
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="flex flex-col gap-3 sm:gap-4"
+      className="flex flex-col gap-3 sm:gap-4 motion-reduce:animate-none"
+      aria-label={title ?? "Code snippets"}
     >
       {title && (
         <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0">
           {title}
         </h3>
       )}
-      <div className="flex flex-col gap-2 sm:gap-3">
+      <div className="flex flex-col gap-2 sm:gap-3" role="list">
         <AnimatePresence mode="popLayout">
           {snippets.map((snippet, index) => {
             const snippetId = snippet.id ?? `${index}`;
             const isExpanded = expandedId === snippetId;
             return (
-              <motion.div
+              <motion.article
+                role="listitem"
                 variants={itemVariants}
                 initial="hidden"
                 animate="visible"
@@ -77,19 +79,21 @@ export const CodeBlock = memo(function CodeBlock({
                 data-selectable-item
                 data-element-key={element.key}
                 data-item-id={snippetId}
-                className="rounded-lg sm:rounded-xl border border-white/10 card-glass overflow-hidden shadow-lg"
+                className="rounded-lg sm:rounded-xl border border-white/10 card-glass overflow-hidden shadow-lg motion-reduce:animate-none"
               >
                 <button
                   type="button"
                   onClick={() => setExpandedId(isExpanded ? null : snippetId)}
+                  aria-expanded={isExpanded}
+                  aria-controls={`snippet-content-${snippetId}`}
                   className={cn(
-                    "w-full flex items-center justify-between p-3 sm:p-4 text-left border-0 bg-transparent cursor-pointer transition-colors hover:bg-white/5 min-h-[2.75rem]",
+                    "w-full flex items-center justify-between p-3 sm:p-4 text-left border-0 bg-transparent cursor-pointer transition-colors hover:bg-white/5 min-h-[2.75rem] motion-reduce:transition-none",
                     isExpanded && "bg-white/5",
                   )}
                 >
                 <div className="flex flex-col gap-0.5 sm:gap-1 min-w-0 flex-1">
                   <span className="text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground truncate">
-                    <Code2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
+                    <Code2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" aria-hidden="true" />
                     <span className="truncate">
                       {snippet.title ?? "Untitled snippet"}
                     </span>
@@ -105,9 +109,9 @@ export const CodeBlock = memo(function CodeBlock({
                     {snippet.language ?? "Code"}
                   </span>
                   {isExpanded ? (
-                    <ChevronUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
+                    <ChevronUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" aria-hidden="true" />
                   ) : (
-                    <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
+                    <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" aria-hidden="true" />
                   )}
                 </div>
               </button>
@@ -115,12 +119,13 @@ export const CodeBlock = memo(function CodeBlock({
               <AnimatePresence>
                 {isExpanded && (
                   <motion.div
+                    id={`snippet-content-${snippetId}`}
                     variants={expandVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
                     transition={{ duration: 0.2 }}
-                    className="relative border-t border-white/10 bg-black/20"
+                    className="relative border-t border-white/10 bg-black/20 motion-reduce:animate-none"
                   >
                     <pre className="m-0 p-3 sm:p-4 text-[0.625rem] sm:text-xs overflow-x-auto font-mono leading-relaxed text-foreground">
                       <code>{snippet.content}</code>
@@ -128,12 +133,12 @@ export const CodeBlock = memo(function CodeBlock({
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </motion.article>
           );
         })}
         </AnimatePresence>
       </div>
       {children}
-    </motion.div>
+    </motion.section>
   );
 });

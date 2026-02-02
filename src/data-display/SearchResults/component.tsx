@@ -47,20 +47,20 @@ export const SearchResults = memo(function SearchResults({
       }) || [];
 
   return (
-    <div className="flex flex-col w-full">
+    <section className="flex flex-col w-full" aria-label={`Search results for "${query}"`}>
       {/* AI-style header */}
-      <div className="flex items-center gap-2 mb-4">
+      <header className="flex items-center gap-2 mb-4">
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/20 to-violet-500/20 border border-primary/30">
-          <Sparkles size={14} className="text-primary" />
+          <Sparkles size={14} className="text-primary" aria-hidden="true" />
           <span className="text-xs font-medium text-primary">Web Search</span>
         </div>
-        <span className="text-sm text-muted-foreground">{query}</span>
-      </div>
+        <span className="text-sm text-muted-foreground" aria-label={`Query: ${query}`}>{query}</span>
+      </header>
 
       {/* Responsive two-column layout */}
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
         {/* Main content */}
-        <div className="flex-1 min-w-0 order-1">
+        <main className="flex-1 min-w-0 order-1">
           {/* AI Synthesis (Perplexity-style) */}
           {hasSynthesis && (
             <SynthesisSection synthesis={synthesis} sources={sources || []} />
@@ -71,10 +71,11 @@ export const SearchResults = memo(function SearchResults({
 
           {/* Results */}
           {resultCount > 0 ? (
-            <div className="flex flex-col divide-y divide-white/5">
+            <div className="flex flex-col divide-y divide-white/5" role="list" aria-label="Search results">
               {results.map((result, index) => (
                 <div
                   key={result.url || index}
+                  role="listitem"
                   className="py-4 first:pt-0 last:pb-0"
                 >
                   <RichResultCard result={result} index={index} />
@@ -82,8 +83,8 @@ export const SearchResults = memo(function SearchResults({
               ))}
             </div>
           ) : !hasSynthesis ? (
-            <div className="p-8 text-center">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-white/5 flex items-center justify-center">
+            <div className="p-8 text-center" role="status">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-white/5 flex items-center justify-center" aria-hidden="true">
                 <Globe size={20} className="text-white/30" />
               </div>
               <p className="text-muted-foreground">
@@ -94,39 +95,39 @@ export const SearchResults = memo(function SearchResults({
 
           {/* Footer stats */}
           {resultCount > 0 && (
-            <div className="mt-4 pt-4 border-t border-white/5">
+            <footer className="mt-4 pt-4 border-t border-white/5" aria-label="Search statistics">
               <div className="flex items-center gap-4 text-xs text-muted-foreground/60">
                 <span>{totalResults ?? resultCount} results</span>
                 {searchTime && <span>{(searchTime / 1000).toFixed(2)}s</span>}
               </div>
-            </div>
+            </footer>
           )}
-        </div>
+        </main>
 
         {/* Sources sidebar - responsive width */}
         {hasSources && (
-          <div className="hidden lg:block w-[240px] xl:w-[280px] shrink-0 order-2">
+          <aside className="hidden lg:block w-[240px] xl:w-[280px] shrink-0 order-2" aria-label="Sources">
             <SourcesSidebar
               sources={sources}
               expanded={sourcesExpanded}
               onToggle={() => setSourcesExpanded(!sourcesExpanded)}
             />
-          </div>
+          </aside>
         )}
       </div>
 
       {/* Mobile sources */}
       {hasSources && (
-        <div className="lg:hidden mt-6 pt-4 border-t border-white/10">
+        <aside className="lg:hidden mt-6 pt-4 border-t border-white/10" aria-label="Sources">
           <SourcesSidebar
             sources={sources}
             expanded={sourcesExpanded}
             onToggle={() => setSourcesExpanded(!sourcesExpanded)}
           />
-        </div>
+        </aside>
       )}
 
       {children}
-    </div>
+    </section>
   );
 });

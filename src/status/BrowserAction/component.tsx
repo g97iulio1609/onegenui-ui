@@ -45,10 +45,13 @@ export const BrowserAction = memo(function BrowserAction({
 
   return (
     <motion.div
+      role="status"
+      aria-live="polite"
+      aria-label={`${actionInfo!.label}: ${displayText}${isError && error ? `. Error: ${error}` : ""}`}
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-opacity duration-300 border backdrop-blur-md",
+        "flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-opacity duration-300 border backdrop-blur-md motion-reduce:animate-none motion-reduce:transition-none",
         isError
           ? "bg-red-500/10 border-red-500/30 text-foreground"
           : "glass-surface text-foreground",
@@ -56,7 +59,7 @@ export const BrowserAction = memo(function BrowserAction({
       )}
     >
       {/* Action Icon */}
-      <span className="text-base">{actionInfo!.icon}</span>
+      <span className="text-base" aria-hidden="true">{actionInfo!.icon}</span>
 
       {/* Action Label */}
       <span
@@ -72,17 +75,18 @@ export const BrowserAction = memo(function BrowserAction({
       </span>
 
       {/* Target/URL */}
-      <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-muted-foreground">
+      <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-muted-foreground" aria-hidden="true">
         {displayText}
       </span>
 
       {/* Error message */}
       {isError && error && (
-        <span className="text-destructive text-xs">{error}</span>
+        <span className="text-destructive text-xs" role="alert">{error}</span>
       )}
 
       {/* Status Icon */}
       <span
+        aria-hidden="true"
         className={cn(
           "text-sm flex items-center justify-center",
           isError
@@ -91,7 +95,7 @@ export const BrowserAction = memo(function BrowserAction({
               ? "text-green-500"
               : "text-muted-foreground",
           // Map the animation string roughly to classes or keep it simple
-          isLoading && "animate-spin",
+          isLoading && "animate-spin motion-reduce:animate-none",
         )}
       >
         {statusInfo!.icon}

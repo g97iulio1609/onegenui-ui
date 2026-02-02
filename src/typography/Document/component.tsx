@@ -46,17 +46,18 @@ export const Document = memo(function Document({
 
   if (!documents || documents.length === 0) {
     return (
-      <motion.div
+      <motion.article
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass"
+        role="status"
+        className="flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass motion-reduce:animate-none"
       >
         {title && (
           <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0">
             {render(title, { inline: true })}
           </h3>
         )}
-        <div className="flex flex-col gap-2 sm:gap-3 animate-pulse">
+        <div className="flex flex-col gap-2 sm:gap-3 animate-pulse motion-reduce:animate-none" aria-hidden="true">
           <div className="h-3 sm:h-4 bg-white/10 rounded w-3/4" />
           <div className="h-3 sm:h-4 bg-white/5 rounded w-1/2" />
           <div className="h-3 sm:h-4 bg-white/5 rounded w-2/3" />
@@ -64,23 +65,24 @@ export const Document = memo(function Document({
         <p className="text-[0.625rem] sm:text-xs text-muted-foreground italic">
           Document content is loading or was not provided by the AI...
         </p>
-      </motion.div>
+      </motion.article>
     );
   }
 
   return (
-    <motion.div
+    <motion.section
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="flex flex-col gap-3 sm:gap-4"
+      className="flex flex-col gap-3 sm:gap-4 motion-reduce:animate-none"
+      aria-label={title ?? "Documents"}
     >
       {title && (
         <h3 className="text-base sm:text-lg font-semibold tracking-tight m-0">
           {render(title, { inline: true })}
         </h3>
       )}
-      <div className="flex flex-col gap-3 sm:gap-4">
+      <div className="flex flex-col gap-3 sm:gap-4" role="list">
         <AnimatePresence mode="popLayout">
           {documents.map((rawDoc, index) => {
             const doc = {
@@ -93,7 +95,8 @@ export const Document = memo(function Document({
             };
 
             return (
-              <motion.div
+              <motion.article
+                role="listitem"
                 variants={itemVariants}
                 initial="hidden"
                 animate="visible"
@@ -102,14 +105,15 @@ export const Document = memo(function Document({
                 data-selectable-item
                 data-element-key={element.key}
                 data-item-id={doc.id ?? `${index}`}
-                className="flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass shadow-lg hover:shadow-xl transition-shadow"
+                className="flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass shadow-lg hover:shadow-xl transition-shadow motion-reduce:animate-none motion-reduce:transition-none"
+                aria-labelledby={`doc-title-${index}`}
               >
               {/* Header - stacks on mobile */}
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4">
+              <header className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4">
                 <div className="flex-1 space-y-1 min-w-0">
                   <div className="flex items-center gap-1.5 sm:gap-2">
-                    <FileText className="w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem] text-primary/70 flex-shrink-0" />
-                    <h4 className="text-sm sm:text-base font-semibold leading-tight text-foreground truncate">
+                    <FileText className="w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem] text-primary/70 flex-shrink-0" aria-hidden="true" />
+                    <h4 id={`doc-title-${index}`} className="text-sm sm:text-base font-semibold leading-tight text-foreground truncate">
                       {render(doc.title, { inline: true })}
                     </h4>
                   </div>
@@ -123,28 +127,29 @@ export const Document = memo(function Document({
                 <div className="text-[0.625rem] sm:text-xs text-muted-foreground flex sm:flex-col items-center sm:items-end gap-2 sm:gap-1 flex-shrink-0">
                   {doc.author && (
                     <div className="flex items-center gap-1 sm:gap-1.5">
-                      <User className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                      <User className="w-2.5 h-2.5 sm:w-3 sm:h-3" aria-hidden="true" />
                       <span>{doc.author}</span>
                     </div>
                   )}
                   {doc.createdAt && (
                     <div className="flex items-center gap-1 sm:gap-1.5 opacity-80">
-                      <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                      <span>{doc.createdAt}</span>
+                      <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3" aria-hidden="true" />
+                      <time>{doc.createdAt}</time>
                     </div>
                   )}
                 </div>
-              </div>
+              </header>
 
               {/* Sections */}
               {doc.sections && doc.sections.length > 0 && (
                 <div className="flex flex-col gap-3 sm:gap-4 mt-1 sm:mt-2 pl-2 sm:pl-1 border-l-2 border-white/10 ml-1 sm:ml-2">
                   {doc.sections.map((section, sectionIndex) => (
-                    <div
+                    <section
                       key={section.id ?? `${sectionIndex}`}
                       className="pl-3 sm:pl-4"
+                      aria-labelledby={`section-title-${index}-${sectionIndex}`}
                     >
-                      <h5 className="text-xs sm:text-sm font-semibold mb-1 text-foreground">
+                      <h5 id={`section-title-${index}-${sectionIndex}`} className="text-xs sm:text-sm font-semibold mb-1 text-foreground">
                         {render(section.title, { inline: true })}
                       </h5>
                       {section.content && (
@@ -164,30 +169,30 @@ export const Document = memo(function Document({
                           ))}
                         </ul>
                       )}
-                    </div>
+                    </section>
                   ))}
                 </div>
               )}
 
               {/* Tags */}
               {doc.tags && doc.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
+                <ul className="flex flex-wrap gap-1.5 sm:gap-2 mt-0.5 sm:mt-1 list-none p-0" role="list" aria-label="Tags">
                   {doc.tags.map((tag) => (
-                    <span
+                    <li
                       key={tag}
                       className="px-2 sm:px-2.5 py-0.5 rounded-full bg-white/5 text-muted-foreground text-[0.5625rem] sm:text-[0.625rem] font-medium uppercase tracking-wide border border-white/10"
                     >
                       {tag}
-                    </span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
-            </motion.div>
+            </motion.article>
             );
           })}
         </AnimatePresence>
       </div>
       {children}
-    </motion.div>
+    </motion.section>
   );
 });

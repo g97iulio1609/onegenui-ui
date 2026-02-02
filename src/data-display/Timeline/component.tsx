@@ -35,8 +35,14 @@ export const Timeline = memo(function Timeline({
 
   if (!timelineData || timelineData.length === 0) {
     return (
-      <div className="py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground">
-        <GitCommitVertical className="w-10 h-10 opacity-20 mb-3" />
+      <div
+        role="status"
+        className={cn(
+          "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground",
+          "motion-reduce:animate-none",
+        )}
+      >
+        <GitCommitVertical className="w-10 h-10 opacity-20 mb-3" aria-hidden="true" />
         <p className="font-mono text-xs uppercase tracking-widest opacity-50">
           No timeline data
         </p>
@@ -45,7 +51,11 @@ export const Timeline = memo(function Timeline({
   }
 
   const renderItems = (itemsToRender: TimelineItem[], depth = 0) => (
-    <div className={cn(depth === 0 ? "py-4" : "py-2")}>
+    <ol
+      role="list"
+      aria-label={depth === 0 ? "Timeline events" : undefined}
+      className={cn(depth === 0 ? "py-4" : "py-2")}
+    >
       {itemsToRender.map((item, index) => {
         const titleValue = titleKey ? item[titleKey] : item.title;
         const dateValue = dateKey ? item[dateKey] : item.date;
@@ -64,7 +74,7 @@ export const Timeline = memo(function Timeline({
         const itemId = item.id || `item-${depth}-${index}`;
 
         return (
-          <motion.div
+          <motion.li
             key={itemId}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
@@ -75,6 +85,7 @@ export const Timeline = memo(function Timeline({
             className={cn(
               "flex gap-4 mb-6 relative p-2 rounded-lg transition-all",
               "cursor-pointer hover:bg-white/5",
+              "motion-reduce:animate-none motion-reduce:transition-none",
             )}
             style={
               {
@@ -83,7 +94,7 @@ export const Timeline = memo(function Timeline({
             }
           >
             {index !== itemsToRender.length - 1 && depth === 0 && (
-              <div className="absolute left-[22px] top-8 -bottom-4 w-[2px] bg-white/10" />
+              <div className="absolute left-[22px] top-8 -bottom-4 w-[2px] bg-white/10" aria-hidden="true" />
             )}
 
             <div
@@ -91,6 +102,7 @@ export const Timeline = memo(function Timeline({
                 "w-3.5 h-3.5 rounded-full border-2 border-background ring-1 ring-white/10 mt-1.5 shrink-0 z-10",
                 isCompleted ? "bg-primary" : "bg-zinc-700",
               )}
+              aria-hidden="true"
             />
 
             <div className="flex-1 min-w-0">
@@ -101,9 +113,9 @@ export const Timeline = memo(function Timeline({
                   </div>
                 )}
                 {dateText && (
-                  <div className="text-xs text-muted-foreground whitespace-nowrap">
+                  <time className="text-xs text-muted-foreground whitespace-nowrap">
                     {dateText}
-                  </div>
+                  </time>
                 )}
               </div>
 
@@ -115,7 +127,10 @@ export const Timeline = memo(function Timeline({
 
               {statusText && (
                 <div className="mt-2">
-                  <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/10 font-medium text-muted-foreground">
+                  <span
+                    role="status"
+                    className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/10 font-medium text-muted-foreground"
+                  >
                     {statusText}
                   </span>
                 </div>
@@ -123,16 +138,16 @@ export const Timeline = memo(function Timeline({
 
               {subItems.length > 0 && renderItems(subItems, depth + 1)}
             </div>
-          </motion.div>
+          </motion.li>
         );
       })}
-    </div>
+    </ol>
   );
 
   return (
-    <div className="w-full min-w-0 max-w-full">
+    <nav aria-label="Timeline" className="w-full min-w-0 max-w-full">
       {renderItems(timelineData)}
       {children}
-    </div>
+    </nav>
   );
 });

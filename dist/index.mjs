@@ -475,7 +475,8 @@ var Heading = memo5(function Heading2({
       transition: { duration: 0.25, ease: "easeOut" },
       className: cn(
         "font-semibold tracking-tight mb-3 sm:mb-4 text-foreground",
-        HEADING_SIZES[normalizedLevel]
+        HEADING_SIZES[normalizedLevel],
+        "motion-reduce:animate-none"
       ),
       children: [
         render(text, { inline: true }),
@@ -517,7 +518,7 @@ var Text = memo6(function Text2({
   const resolvedVariant = variant || "body";
   const resolvedColor = color || "default";
   return /* @__PURE__ */ jsxs5(
-    motion6.div,
+    motion6.p,
     {
       variants: textVariants,
       initial: "hidden",
@@ -526,7 +527,8 @@ var Text = memo6(function Text2({
       className: cn(
         "m-0 leading-relaxed",
         VARIANT_CLASSES[resolvedVariant] || VARIANT_CLASSES.body,
-        COLOR_CLASSES[resolvedColor] || COLOR_CLASSES.default
+        COLOR_CLASSES[resolvedColor] || COLOR_CLASSES.default,
+        "motion-reduce:animate-none"
       ),
       children: [
         render(content, { inline: true }),
@@ -562,23 +564,25 @@ var CodeBlock = memo7(function CodeBlock2({
   const { title, snippets = [] } = element.props;
   const [expandedId, setExpandedId] = useState3(null);
   if (!snippets || snippets.length === 0) {
-    return /* @__PURE__ */ jsx5("div", { className: "text-muted-foreground text-xs sm:text-sm italic p-3 sm:p-4", children: "No code snippets" });
+    return /* @__PURE__ */ jsx5("div", { role: "status", className: "text-muted-foreground text-xs sm:text-sm italic p-3 sm:p-4", children: "No code snippets" });
   }
   return /* @__PURE__ */ jsxs6(
-    motion7.div,
+    motion7.section,
     {
       variants: containerVariants2,
       initial: "hidden",
       animate: "visible",
-      className: "flex flex-col gap-3 sm:gap-4",
+      className: "flex flex-col gap-3 sm:gap-4 motion-reduce:animate-none",
+      "aria-label": title ?? "Code snippets",
       children: [
         title && /* @__PURE__ */ jsx5("h3", { className: "text-base sm:text-lg font-semibold tracking-tight m-0", children: title }),
-        /* @__PURE__ */ jsx5("div", { className: "flex flex-col gap-2 sm:gap-3", children: /* @__PURE__ */ jsx5(AnimatePresence2, { mode: "popLayout", children: snippets.map((snippet, index) => {
+        /* @__PURE__ */ jsx5("div", { className: "flex flex-col gap-2 sm:gap-3", role: "list", children: /* @__PURE__ */ jsx5(AnimatePresence2, { mode: "popLayout", children: snippets.map((snippet, index) => {
           const snippetId = snippet.id ?? `${index}`;
           const isExpanded = expandedId === snippetId;
           return /* @__PURE__ */ jsxs6(
-            motion7.div,
+            motion7.article,
             {
+              role: "listitem",
               variants: itemVariants2,
               initial: "hidden",
               animate: "visible",
@@ -586,28 +590,30 @@ var CodeBlock = memo7(function CodeBlock2({
               "data-selectable-item": true,
               "data-element-key": element.key,
               "data-item-id": snippetId,
-              className: "rounded-lg sm:rounded-xl border border-white/10 card-glass overflow-hidden shadow-lg",
+              className: "rounded-lg sm:rounded-xl border border-white/10 card-glass overflow-hidden shadow-lg motion-reduce:animate-none",
               children: [
                 /* @__PURE__ */ jsxs6(
                   "button",
                   {
                     type: "button",
                     onClick: () => setExpandedId(isExpanded ? null : snippetId),
+                    "aria-expanded": isExpanded,
+                    "aria-controls": `snippet-content-${snippetId}`,
                     className: cn(
-                      "w-full flex items-center justify-between p-3 sm:p-4 text-left border-0 bg-transparent cursor-pointer transition-colors hover:bg-white/5 min-h-[2.75rem]",
+                      "w-full flex items-center justify-between p-3 sm:p-4 text-left border-0 bg-transparent cursor-pointer transition-colors hover:bg-white/5 min-h-[2.75rem] motion-reduce:transition-none",
                       isExpanded && "bg-white/5"
                     ),
                     children: [
                       /* @__PURE__ */ jsxs6("div", { className: "flex flex-col gap-0.5 sm:gap-1 min-w-0 flex-1", children: [
                         /* @__PURE__ */ jsxs6("span", { className: "text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 text-foreground truncate", children: [
-                          /* @__PURE__ */ jsx5(Code2, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" }),
+                          /* @__PURE__ */ jsx5(Code2, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0", "aria-hidden": "true" }),
                           /* @__PURE__ */ jsx5("span", { className: "truncate", children: snippet.title ?? "Untitled snippet" })
                         ] }),
                         snippet.summary && /* @__PURE__ */ jsx5("span", { className: "text-[0.625rem] sm:text-xs text-muted-foreground line-clamp-1", children: snippet.summary })
                       ] }),
                       /* @__PURE__ */ jsxs6("div", { className: "flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-2", children: [
                         /* @__PURE__ */ jsx5("span", { className: "hidden sm:inline text-[0.5625rem] sm:text-[0.625rem] font-bold uppercase tracking-wider text-muted-foreground bg-white/5 px-1.5 sm:px-2 py-0.5 rounded-full border border-white/10", children: snippet.language ?? "Code" }),
-                        isExpanded ? /* @__PURE__ */ jsx5(ChevronUp, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" }) : /* @__PURE__ */ jsx5(ChevronDown, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" })
+                        isExpanded ? /* @__PURE__ */ jsx5(ChevronUp, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground", "aria-hidden": "true" }) : /* @__PURE__ */ jsx5(ChevronDown, { className: "w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground", "aria-hidden": "true" })
                       ] })
                     ]
                   }
@@ -615,12 +621,13 @@ var CodeBlock = memo7(function CodeBlock2({
                 /* @__PURE__ */ jsx5(AnimatePresence2, { children: isExpanded && /* @__PURE__ */ jsx5(
                   motion7.div,
                   {
+                    id: `snippet-content-${snippetId}`,
                     variants: expandVariants,
                     initial: "hidden",
                     animate: "visible",
                     exit: "exit",
                     transition: { duration: 0.2 },
-                    className: "relative border-t border-white/10 bg-black/20",
+                    className: "relative border-t border-white/10 bg-black/20 motion-reduce:animate-none",
                     children: /* @__PURE__ */ jsx5("pre", { className: "m-0 p-3 sm:p-4 text-[0.625rem] sm:text-xs overflow-x-auto font-mono leading-relaxed text-foreground", children: /* @__PURE__ */ jsx5("code", { children: snippet.content }) })
                   }
                 ) })
@@ -658,14 +665,15 @@ var Document = memo8(function Document2({
   const render = renderText ?? ((value) => value);
   if (!documents || documents.length === 0) {
     return /* @__PURE__ */ jsxs7(
-      motion8.div,
+      motion8.article,
       {
         initial: { opacity: 0 },
         animate: { opacity: 1 },
-        className: "flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass",
+        role: "status",
+        className: "flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass motion-reduce:animate-none",
         children: [
           title && /* @__PURE__ */ jsx6("h3", { className: "text-base sm:text-lg font-semibold tracking-tight m-0", children: render(title, { inline: true }) }),
-          /* @__PURE__ */ jsxs7("div", { className: "flex flex-col gap-2 sm:gap-3 animate-pulse", children: [
+          /* @__PURE__ */ jsxs7("div", { className: "flex flex-col gap-2 sm:gap-3 animate-pulse motion-reduce:animate-none", "aria-hidden": "true", children: [
             /* @__PURE__ */ jsx6("div", { className: "h-3 sm:h-4 bg-white/10 rounded w-3/4" }),
             /* @__PURE__ */ jsx6("div", { className: "h-3 sm:h-4 bg-white/5 rounded w-1/2" }),
             /* @__PURE__ */ jsx6("div", { className: "h-3 sm:h-4 bg-white/5 rounded w-2/3" })
@@ -676,22 +684,24 @@ var Document = memo8(function Document2({
     );
   }
   return /* @__PURE__ */ jsxs7(
-    motion8.div,
+    motion8.section,
     {
       variants: containerVariants3,
       initial: "hidden",
       animate: "visible",
-      className: "flex flex-col gap-3 sm:gap-4",
+      className: "flex flex-col gap-3 sm:gap-4 motion-reduce:animate-none",
+      "aria-label": title ?? "Documents",
       children: [
         title && /* @__PURE__ */ jsx6("h3", { className: "text-base sm:text-lg font-semibold tracking-tight m-0", children: render(title, { inline: true }) }),
-        /* @__PURE__ */ jsx6("div", { className: "flex flex-col gap-3 sm:gap-4", children: /* @__PURE__ */ jsx6(AnimatePresence3, { mode: "popLayout", children: documents.map((rawDoc, index) => {
+        /* @__PURE__ */ jsx6("div", { className: "flex flex-col gap-3 sm:gap-4", role: "list", children: /* @__PURE__ */ jsx6(AnimatePresence3, { mode: "popLayout", children: documents.map((rawDoc, index) => {
           const doc = {
             ...rawDoc,
             sections: rawDoc.sections?.length ? rawDoc.sections : rawDoc.content ? [{ title: "Overview", content: rawDoc.content }] : []
           };
           return /* @__PURE__ */ jsxs7(
-            motion8.div,
+            motion8.article,
             {
+              role: "listitem",
               variants: itemVariants3,
               initial: "hidden",
               animate: "visible",
@@ -699,33 +709,35 @@ var Document = memo8(function Document2({
               "data-selectable-item": true,
               "data-element-key": element.key,
               "data-item-id": doc.id ?? `${index}`,
-              className: "flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass shadow-lg hover:shadow-xl transition-shadow",
+              className: "flex flex-col gap-3 sm:gap-4 p-4 sm:p-5 rounded-lg sm:rounded-xl border border-white/10 card-glass shadow-lg hover:shadow-xl transition-shadow motion-reduce:animate-none motion-reduce:transition-none",
+              "aria-labelledby": `doc-title-${index}`,
               children: [
-                /* @__PURE__ */ jsxs7("div", { className: "flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4", children: [
+                /* @__PURE__ */ jsxs7("header", { className: "flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4", children: [
                   /* @__PURE__ */ jsxs7("div", { className: "flex-1 space-y-1 min-w-0", children: [
                     /* @__PURE__ */ jsxs7("div", { className: "flex items-center gap-1.5 sm:gap-2", children: [
-                      /* @__PURE__ */ jsx6(FileText, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem] text-primary/70 flex-shrink-0" }),
-                      /* @__PURE__ */ jsx6("h4", { className: "text-sm sm:text-base font-semibold leading-tight text-foreground truncate", children: render(doc.title, { inline: true }) })
+                      /* @__PURE__ */ jsx6(FileText, { className: "w-4 h-4 sm:w-[1.125rem] sm:h-[1.125rem] text-primary/70 flex-shrink-0", "aria-hidden": "true" }),
+                      /* @__PURE__ */ jsx6("h4", { id: `doc-title-${index}`, className: "text-sm sm:text-base font-semibold leading-tight text-foreground truncate", children: render(doc.title, { inline: true }) })
                     ] }),
                     doc.summary && /* @__PURE__ */ jsx6("div", { className: "text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2 sm:line-clamp-none", children: render(doc.summary) })
                   ] }),
                   /* @__PURE__ */ jsxs7("div", { className: "text-[0.625rem] sm:text-xs text-muted-foreground flex sm:flex-col items-center sm:items-end gap-2 sm:gap-1 flex-shrink-0", children: [
                     doc.author && /* @__PURE__ */ jsxs7("div", { className: "flex items-center gap-1 sm:gap-1.5", children: [
-                      /* @__PURE__ */ jsx6(User, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3" }),
+                      /* @__PURE__ */ jsx6(User, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3", "aria-hidden": "true" }),
                       /* @__PURE__ */ jsx6("span", { children: doc.author })
                     ] }),
                     doc.createdAt && /* @__PURE__ */ jsxs7("div", { className: "flex items-center gap-1 sm:gap-1.5 opacity-80", children: [
-                      /* @__PURE__ */ jsx6(Calendar, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3" }),
-                      /* @__PURE__ */ jsx6("span", { children: doc.createdAt })
+                      /* @__PURE__ */ jsx6(Calendar, { className: "w-2.5 h-2.5 sm:w-3 sm:h-3", "aria-hidden": "true" }),
+                      /* @__PURE__ */ jsx6("time", { children: doc.createdAt })
                     ] })
                   ] })
                 ] }),
                 doc.sections && doc.sections.length > 0 && /* @__PURE__ */ jsx6("div", { className: "flex flex-col gap-3 sm:gap-4 mt-1 sm:mt-2 pl-2 sm:pl-1 border-l-2 border-white/10 ml-1 sm:ml-2", children: doc.sections.map((section, sectionIndex) => /* @__PURE__ */ jsxs7(
-                  "div",
+                  "section",
                   {
                     className: "pl-3 sm:pl-4",
+                    "aria-labelledby": `section-title-${index}-${sectionIndex}`,
                     children: [
-                      /* @__PURE__ */ jsx6("h5", { className: "text-xs sm:text-sm font-semibold mb-1 text-foreground", children: render(section.title, { inline: true }) }),
+                      /* @__PURE__ */ jsx6("h5", { id: `section-title-${index}-${sectionIndex}`, className: "text-xs sm:text-sm font-semibold mb-1 text-foreground", children: render(section.title, { inline: true }) }),
                       section.content && /* @__PURE__ */ jsx6("div", { className: "text-xs sm:text-sm text-muted-foreground leading-relaxed", children: render(section.content) }),
                       section.highlights && section.highlights.length > 0 && /* @__PURE__ */ jsx6("ul", { className: "mt-1.5 sm:mt-2 list-disc list-outside pl-3 sm:pl-4 space-y-0.5 sm:space-y-1", children: section.highlights.map((item) => /* @__PURE__ */ jsx6(
                         "li",
@@ -739,8 +751,8 @@ var Document = memo8(function Document2({
                   },
                   section.id ?? `${sectionIndex}`
                 )) }),
-                doc.tags && doc.tags.length > 0 && /* @__PURE__ */ jsx6("div", { className: "flex flex-wrap gap-1.5 sm:gap-2 mt-0.5 sm:mt-1", children: doc.tags.map((tag) => /* @__PURE__ */ jsx6(
-                  "span",
+                doc.tags && doc.tags.length > 0 && /* @__PURE__ */ jsx6("ul", { className: "flex flex-wrap gap-1.5 sm:gap-2 mt-0.5 sm:mt-1 list-none p-0", role: "list", "aria-label": "Tags", children: doc.tags.map((tag) => /* @__PURE__ */ jsx6(
+                  "li",
                   {
                     className: "px-2 sm:px-2.5 py-0.5 rounded-full bg-white/5 text-muted-foreground text-[0.5625rem] sm:text-[0.625rem] font-medium uppercase tracking-wide border border-white/10",
                     children: tag
@@ -1006,15 +1018,18 @@ var BrowserAction = memo12(function BrowserAction2({
   return /* @__PURE__ */ jsxs11(
     motion12.div,
     {
+      role: "status",
+      "aria-live": "polite",
+      "aria-label": `${actionInfo.label}: ${displayText}${isError && error ? `. Error: ${error}` : ""}`,
       initial: { opacity: 0, y: 5 },
       animate: { opacity: 1, y: 0 },
       className: cn(
-        "flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-opacity duration-300 border backdrop-blur-md",
+        "flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-opacity duration-300 border backdrop-blur-md motion-reduce:animate-none motion-reduce:transition-none",
         isError ? "bg-red-500/10 border-red-500/30 text-foreground" : "glass-surface text-foreground",
         isComplete ? "opacity-70" : "opacity-100"
       ),
       children: [
-        /* @__PURE__ */ jsx10("span", { className: "text-base", children: actionInfo.icon }),
+        /* @__PURE__ */ jsx10("span", { className: "text-base", "aria-hidden": "true", children: actionInfo.icon }),
         /* @__PURE__ */ jsx10(
           "span",
           {
@@ -1025,16 +1040,17 @@ var BrowserAction = memo12(function BrowserAction2({
             children: actionInfo.label
           }
         ),
-        /* @__PURE__ */ jsx10("span", { className: "flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-muted-foreground", children: displayText }),
-        isError && error && /* @__PURE__ */ jsx10("span", { className: "text-destructive text-xs", children: error }),
+        /* @__PURE__ */ jsx10("span", { className: "flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-muted-foreground", "aria-hidden": "true", children: displayText }),
+        isError && error && /* @__PURE__ */ jsx10("span", { className: "text-destructive text-xs", role: "alert", children: error }),
         /* @__PURE__ */ jsx10(
           "span",
           {
+            "aria-hidden": "true",
             className: cn(
               "text-sm flex items-center justify-center",
               isError ? "text-destructive" : isComplete ? "text-green-500" : "text-muted-foreground",
               // Map the animation string roughly to classes or keep it simple
-              isLoading && "animate-spin"
+              isLoading && "animate-spin motion-reduce:animate-none"
             ),
             children: statusInfo.icon
           }
@@ -1345,7 +1361,7 @@ var Select = memo15(function Select2({
 });
 
 // src/forms/DatePicker/component.tsx
-import { memo as memo16 } from "react";
+import { memo as memo16, useId as useId5 } from "react";
 import { useData as useData5 } from "@onegenui/react";
 import { motion as motion16 } from "framer-motion";
 import { jsx as jsx14, jsxs as jsxs15 } from "react/jsx-runtime";
@@ -1357,14 +1373,17 @@ var DatePicker = memo16(function DatePicker2({
   element,
   children
 }) {
-  const { label, bindPath, valuePath, value, placeholder } = element.props;
+  const { label, bindPath, valuePath, value, placeholder, required, disabled, error } = element.props;
   const { data, set } = useData5();
+  const inputId = useId5();
+  const errorId = useId5();
   const resolvedPath = bindPath ?? valuePath ?? null;
   const resolvedValue = resolveValueProp(
     data,
     value ?? null,
     resolvedPath
   );
+  const hasError = Boolean(error);
   return /* @__PURE__ */ jsxs15(
     motion16.div,
     {
@@ -1372,21 +1391,51 @@ var DatePicker = memo16(function DatePicker2({
       initial: "hidden",
       animate: "visible",
       transition: { duration: 0.2 },
-      className: "flex flex-col gap-1 sm:gap-1.5 w-full",
+      className: cn(
+        "flex flex-col gap-1 sm:gap-1.5 w-full",
+        "motion-reduce:animate-none"
+      ),
       children: [
-        label && /* @__PURE__ */ jsx14("label", { className: "text-label text-[0.5625rem] sm:text-[0.625rem]", children: label }),
+        label && /* @__PURE__ */ jsxs15(
+          "label",
+          {
+            htmlFor: inputId,
+            className: "text-label text-[0.5625rem] sm:text-[0.625rem]",
+            children: [
+              label,
+              required && /* @__PURE__ */ jsx14("span", { className: "text-destructive ml-0.5", children: "*" })
+            ]
+          }
+        ),
         /* @__PURE__ */ jsx14(
           "input",
           {
+            id: inputId,
             type: "date",
             value: resolvedValue ?? "",
             placeholder: placeholder ?? "",
             onChange: (e) => resolvedPath && set(resolvedPath, e.target.value),
+            required,
+            disabled,
+            "aria-invalid": hasError || void 0,
+            "aria-describedby": hasError ? errorId : void 0,
+            "aria-required": required || void 0,
             className: cn(
               "glass-surface flex min-h-[2.75rem] sm:h-10 w-full rounded-lg px-3 py-2 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary/50",
-              "disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 touch-manipulation"
+              "disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 touch-manipulation",
+              "motion-reduce:transition-none",
+              hasError && "border-destructive focus:ring-destructive/50"
             )
+          }
+        ),
+        error && /* @__PURE__ */ jsx14(
+          "span",
+          {
+            id: errorId,
+            role: "alert",
+            className: "text-destructive text-[0.5625rem] sm:text-[0.625rem]",
+            children: error
           }
         ),
         children
@@ -1396,7 +1445,7 @@ var DatePicker = memo16(function DatePicker2({
 });
 
 // src/data-display/Metric/component.tsx
-import { memo as memo17 } from "react";
+import { memo as memo17, useId as useId6 } from "react";
 import { useData as useData6 } from "@onegenui/react";
 import { motion as motion17 } from "framer-motion";
 import { jsx as jsx15, jsxs as jsxs16 } from "react/jsx-runtime";
@@ -1410,6 +1459,7 @@ var Metric = memo17(function Metric2({
 }) {
   const { label, value, valuePath, format, trend, trendValue } = element.props;
   const { data } = useData6();
+  const labelId = useId6();
   const rawValue = resolveValueProp(data, value, valuePath);
   let displayValue = String(rawValue ?? "-");
   if (format === "currency" && typeof rawValue === "number") {
@@ -1426,25 +1476,38 @@ var Metric = memo17(function Metric2({
     displayValue = new Intl.NumberFormat("en-US").format(rawValue);
   }
   return /* @__PURE__ */ jsxs16(
-    motion17.div,
+    motion17.figure,
     {
+      role: "group",
+      "aria-labelledby": labelId,
       variants: metricVariants,
       initial: "hidden",
       animate: "visible",
       transition: { duration: 0.2 },
-      className: "flex flex-col gap-0.5 sm:gap-1 w-full min-w-0",
+      className: cn(
+        "flex flex-col gap-0.5 sm:gap-1 w-full min-w-0",
+        "motion-reduce:animate-none"
+      ),
       children: [
-        /* @__PURE__ */ jsx15("span", { className: "text-label text-[0.5625rem] sm:text-[0.625rem]", children: label }),
-        /* @__PURE__ */ jsx15("span", { className: "text-display text-xl sm:text-2xl", children: displayValue }),
+        /* @__PURE__ */ jsx15(
+          "figcaption",
+          {
+            id: labelId,
+            className: "text-label text-[0.5625rem] sm:text-[0.625rem]",
+            children: label
+          }
+        ),
+        /* @__PURE__ */ jsx15("span", { className: "text-display text-xl sm:text-2xl", "aria-live": "polite", children: displayValue }),
         (trend || trendValue) && /* @__PURE__ */ jsxs16(
           "span",
           {
+            "aria-label": `Trend: ${trend === "up" ? "increasing" : trend === "down" ? "decreasing" : "neutral"} ${trendValue ?? ""}`,
             className: cn(
               "text-[0.625rem] sm:text-xs font-medium flex items-center gap-1",
               trend === "up" ? "text-emerald-400" : trend === "down" ? "text-rose-400" : "text-muted-foreground"
             ),
             children: [
-              trend === "up" ? "+" : trend === "down" ? "-" : "",
+              /* @__PURE__ */ jsx15("span", { "aria-hidden": "true", children: trend === "up" ? "+" : trend === "down" ? "-" : "" }),
               trendValue
             ]
           }
@@ -1456,7 +1519,7 @@ var Metric = memo17(function Metric2({
 });
 
 // src/data-display/Table/component.tsx
-import { memo as memo18, useId as useId5 } from "react";
+import { memo as memo18, useId as useId7 } from "react";
 import { useData as useData7 } from "@onegenui/react";
 import { motion as motion18, AnimatePresence as AnimatePresence5 } from "framer-motion";
 import { Table as TableIcon } from "lucide-react";
@@ -1487,8 +1550,8 @@ var Table = memo18(function Table2({
   }));
   const { data } = useData7();
   const tableRows = resolveArrayProp(data, rows, dataPath);
-  const titleId = useId5();
-  const tableId = useId5();
+  const titleId = useId7();
+  const tableId = useId7();
   if (!tableRows || tableRows.length === 0) {
     return /* @__PURE__ */ jsxs17("div", { className: "w-full", role: "region", "aria-labelledby": title ? titleId : void 0, children: [
       title && /* @__PURE__ */ jsx16("h4", { id: titleId, className: "mb-3 sm:mb-4 text-xs sm:text-sm font-semibold leading-none tracking-tight", children: title }),
@@ -1703,65 +1766,92 @@ var Timeline = memo20(function Timeline2({
   const { data } = useData9();
   const timelineData = resolveArrayProp(data, items, dataPath);
   if (!timelineData || timelineData.length === 0) {
-    return /* @__PURE__ */ jsxs19("div", { className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground", children: [
-      /* @__PURE__ */ jsx18(GitCommitVertical, { className: "w-10 h-10 opacity-20 mb-3" }),
-      /* @__PURE__ */ jsx18("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No timeline data" })
-    ] });
-  }
-  const renderItems = (itemsToRender, depth = 0) => /* @__PURE__ */ jsx18("div", { className: cn(depth === 0 ? "py-4" : "py-2"), children: itemsToRender.map((item, index) => {
-    const titleValue = titleKey ? item[titleKey] : item.title;
-    const dateValue = dateKey ? item[dateKey] : item.date;
-    const descriptionValue = descriptionKey ? item[descriptionKey] : item.description;
-    const statusValue = statusKey ? item[statusKey] : item.status;
-    const titleText = resolveString(titleValue);
-    const dateText = resolveString(dateValue);
-    const descriptionText = resolveString(descriptionValue);
-    const statusText = resolveString(statusValue);
-    const isCompleted = statusText === "completed" || statusText === "done";
-    const subItems = Array.isArray(item.subItems) ? item.subItems : [];
-    const itemId = item.id || `item-${depth}-${index}`;
     return /* @__PURE__ */ jsxs19(
-      motion20.div,
+      "div",
       {
-        initial: { opacity: 0, x: -10 },
-        animate: { opacity: 1, x: 0 },
-        transition: { delay: index * 0.1 },
-        "data-selectable-item": true,
-        "data-element-key": element.key,
-        "data-item-id": itemId,
+        role: "status",
         className: cn(
-          "flex gap-4 mb-6 relative p-2 rounded-lg transition-all",
-          "cursor-pointer hover:bg-white/5"
+          "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground",
+          "motion-reduce:animate-none"
         ),
-        style: {
-          marginLeft: `${depth * 16}px`
-        },
         children: [
-          index !== itemsToRender.length - 1 && depth === 0 && /* @__PURE__ */ jsx18("div", { className: "absolute left-[22px] top-8 -bottom-4 w-[2px] bg-white/10" }),
-          /* @__PURE__ */ jsx18(
-            "div",
-            {
-              className: cn(
-                "w-3.5 h-3.5 rounded-full border-2 border-background ring-1 ring-white/10 mt-1.5 shrink-0 z-10",
-                isCompleted ? "bg-primary" : "bg-zinc-700"
-              )
-            }
-          ),
-          /* @__PURE__ */ jsxs19("div", { className: "flex-1 min-w-0", children: [
-            /* @__PURE__ */ jsxs19("div", { className: "flex justify-between items-start mb-1 gap-2", children: [
-              titleText && /* @__PURE__ */ jsx18("div", { className: "font-semibold text-sm text-foreground", children: titleText }),
-              dateText && /* @__PURE__ */ jsx18("div", { className: "text-xs text-muted-foreground whitespace-nowrap", children: dateText })
-            ] }),
-            descriptionText && /* @__PURE__ */ jsx18("div", { className: "text-sm text-muted-foreground", children: descriptionText }),
-            statusText && /* @__PURE__ */ jsx18("div", { className: "mt-2", children: /* @__PURE__ */ jsx18("span", { className: "text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/10 font-medium text-muted-foreground", children: statusText }) }),
-            subItems.length > 0 && renderItems(subItems, depth + 1)
-          ] })
+          /* @__PURE__ */ jsx18(GitCommitVertical, { className: "w-10 h-10 opacity-20 mb-3", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx18("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No timeline data" })
         ]
-      },
-      itemId
+      }
     );
-  }) });
-  return /* @__PURE__ */ jsxs19("div", { className: "w-full min-w-0 max-w-full", children: [
+  }
+  const renderItems = (itemsToRender, depth = 0) => /* @__PURE__ */ jsx18(
+    "ol",
+    {
+      role: "list",
+      "aria-label": depth === 0 ? "Timeline events" : void 0,
+      className: cn(depth === 0 ? "py-4" : "py-2"),
+      children: itemsToRender.map((item, index) => {
+        const titleValue = titleKey ? item[titleKey] : item.title;
+        const dateValue = dateKey ? item[dateKey] : item.date;
+        const descriptionValue = descriptionKey ? item[descriptionKey] : item.description;
+        const statusValue = statusKey ? item[statusKey] : item.status;
+        const titleText = resolveString(titleValue);
+        const dateText = resolveString(dateValue);
+        const descriptionText = resolveString(descriptionValue);
+        const statusText = resolveString(statusValue);
+        const isCompleted = statusText === "completed" || statusText === "done";
+        const subItems = Array.isArray(item.subItems) ? item.subItems : [];
+        const itemId = item.id || `item-${depth}-${index}`;
+        return /* @__PURE__ */ jsxs19(
+          motion20.li,
+          {
+            initial: { opacity: 0, x: -10 },
+            animate: { opacity: 1, x: 0 },
+            transition: { delay: index * 0.1 },
+            "data-selectable-item": true,
+            "data-element-key": element.key,
+            "data-item-id": itemId,
+            className: cn(
+              "flex gap-4 mb-6 relative p-2 rounded-lg transition-all",
+              "cursor-pointer hover:bg-white/5",
+              "motion-reduce:animate-none motion-reduce:transition-none"
+            ),
+            style: {
+              marginLeft: `${depth * 16}px`
+            },
+            children: [
+              index !== itemsToRender.length - 1 && depth === 0 && /* @__PURE__ */ jsx18("div", { className: "absolute left-[22px] top-8 -bottom-4 w-[2px] bg-white/10", "aria-hidden": "true" }),
+              /* @__PURE__ */ jsx18(
+                "div",
+                {
+                  className: cn(
+                    "w-3.5 h-3.5 rounded-full border-2 border-background ring-1 ring-white/10 mt-1.5 shrink-0 z-10",
+                    isCompleted ? "bg-primary" : "bg-zinc-700"
+                  ),
+                  "aria-hidden": "true"
+                }
+              ),
+              /* @__PURE__ */ jsxs19("div", { className: "flex-1 min-w-0", children: [
+                /* @__PURE__ */ jsxs19("div", { className: "flex justify-between items-start mb-1 gap-2", children: [
+                  titleText && /* @__PURE__ */ jsx18("div", { className: "font-semibold text-sm text-foreground", children: titleText }),
+                  dateText && /* @__PURE__ */ jsx18("time", { className: "text-xs text-muted-foreground whitespace-nowrap", children: dateText })
+                ] }),
+                descriptionText && /* @__PURE__ */ jsx18("div", { className: "text-sm text-muted-foreground", children: descriptionText }),
+                statusText && /* @__PURE__ */ jsx18("div", { className: "mt-2", children: /* @__PURE__ */ jsx18(
+                  "span",
+                  {
+                    role: "status",
+                    className: "text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/10 font-medium text-muted-foreground",
+                    children: statusText
+                  }
+                ) }),
+                subItems.length > 0 && renderItems(subItems, depth + 1)
+              ] })
+            ]
+          },
+          itemId
+        );
+      })
+    }
+  );
+  return /* @__PURE__ */ jsxs19("nav", { "aria-label": "Timeline", className: "w-full min-w-0 max-w-full", children: [
     renderItems(timelineData),
     children
   ] });
@@ -2424,34 +2514,35 @@ var SearchResults = memo28(function SearchResults2({
       source: r.source || void 0
     };
   }) || [];
-  return /* @__PURE__ */ jsxs26("div", { className: "flex flex-col w-full", children: [
-    /* @__PURE__ */ jsxs26("div", { className: "flex items-center gap-2 mb-4", children: [
+  return /* @__PURE__ */ jsxs26("section", { className: "flex flex-col w-full", "aria-label": `Search results for "${query}"`, children: [
+    /* @__PURE__ */ jsxs26("header", { className: "flex items-center gap-2 mb-4", children: [
       /* @__PURE__ */ jsxs26("div", { className: "flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/20 to-violet-500/20 border border-primary/30", children: [
-        /* @__PURE__ */ jsx26(Sparkles, { size: 14, className: "text-primary" }),
+        /* @__PURE__ */ jsx26(Sparkles, { size: 14, className: "text-primary", "aria-hidden": "true" }),
         /* @__PURE__ */ jsx26("span", { className: "text-xs font-medium text-primary", children: "Web Search" })
       ] }),
-      /* @__PURE__ */ jsx26("span", { className: "text-sm text-muted-foreground", children: query })
+      /* @__PURE__ */ jsx26("span", { className: "text-sm text-muted-foreground", "aria-label": `Query: ${query}`, children: query })
     ] }),
     /* @__PURE__ */ jsxs26("div", { className: "flex flex-col lg:flex-row gap-4 lg:gap-6", children: [
-      /* @__PURE__ */ jsxs26("div", { className: "flex-1 min-w-0 order-1", children: [
+      /* @__PURE__ */ jsxs26("main", { className: "flex-1 min-w-0 order-1", children: [
         hasSynthesis && /* @__PURE__ */ jsx26(SynthesisSection, { synthesis, sources: sources || [] }),
         carouselMedia.length > 0 && /* @__PURE__ */ jsx26(MediaGallery, { items: carouselMedia }),
-        resultCount > 0 ? /* @__PURE__ */ jsx26("div", { className: "flex flex-col divide-y divide-white/5", children: results.map((result, index) => /* @__PURE__ */ jsx26(
+        resultCount > 0 ? /* @__PURE__ */ jsx26("div", { className: "flex flex-col divide-y divide-white/5", role: "list", "aria-label": "Search results", children: results.map((result, index) => /* @__PURE__ */ jsx26(
           "div",
           {
+            role: "listitem",
             className: "py-4 first:pt-0 last:pb-0",
             children: /* @__PURE__ */ jsx26(RichResultCard, { result, index })
           },
           result.url || index
-        )) }) : !hasSynthesis ? /* @__PURE__ */ jsxs26("div", { className: "p-8 text-center", children: [
-          /* @__PURE__ */ jsx26("div", { className: "w-12 h-12 mx-auto mb-3 rounded-full bg-white/5 flex items-center justify-center", children: /* @__PURE__ */ jsx26(Globe4, { size: 20, className: "text-white/30" }) }),
+        )) }) : !hasSynthesis ? /* @__PURE__ */ jsxs26("div", { className: "p-8 text-center", role: "status", children: [
+          /* @__PURE__ */ jsx26("div", { className: "w-12 h-12 mx-auto mb-3 rounded-full bg-white/5 flex items-center justify-center", "aria-hidden": "true", children: /* @__PURE__ */ jsx26(Globe4, { size: 20, className: "text-white/30" }) }),
           /* @__PURE__ */ jsxs26("p", { className: "text-muted-foreground", children: [
             'No results found for "',
             query,
             '"'
           ] })
         ] }) : null,
-        resultCount > 0 && /* @__PURE__ */ jsx26("div", { className: "mt-4 pt-4 border-t border-white/5", children: /* @__PURE__ */ jsxs26("div", { className: "flex items-center gap-4 text-xs text-muted-foreground/60", children: [
+        resultCount > 0 && /* @__PURE__ */ jsx26("footer", { className: "mt-4 pt-4 border-t border-white/5", "aria-label": "Search statistics", children: /* @__PURE__ */ jsxs26("div", { className: "flex items-center gap-4 text-xs text-muted-foreground/60", children: [
           /* @__PURE__ */ jsxs26("span", { children: [
             totalResults ?? resultCount,
             " results"
@@ -2462,7 +2553,7 @@ var SearchResults = memo28(function SearchResults2({
           ] })
         ] }) })
       ] }),
-      hasSources && /* @__PURE__ */ jsx26("div", { className: "hidden lg:block w-[240px] xl:w-[280px] shrink-0 order-2", children: /* @__PURE__ */ jsx26(
+      hasSources && /* @__PURE__ */ jsx26("aside", { className: "hidden lg:block w-[240px] xl:w-[280px] shrink-0 order-2", "aria-label": "Sources", children: /* @__PURE__ */ jsx26(
         SourcesSidebar,
         {
           sources,
@@ -2471,7 +2562,7 @@ var SearchResults = memo28(function SearchResults2({
         }
       ) })
     ] }),
-    hasSources && /* @__PURE__ */ jsx26("div", { className: "lg:hidden mt-6 pt-4 border-t border-white/10", children: /* @__PURE__ */ jsx26(
+    hasSources && /* @__PURE__ */ jsx26("aside", { className: "lg:hidden mt-6 pt-4 border-t border-white/10", "aria-label": "Sources", children: /* @__PURE__ */ jsx26(
       SourcesSidebar,
       {
         sources,
@@ -2493,31 +2584,47 @@ var DriveFile = memo29(function DriveFile2({
   children
 }) {
   const { name, thumbnailLink, webViewLink, iconLink, modifiedTime, owners } = element.props;
+  const handleClick = () => {
+    if (webViewLink) {
+      window.open(webViewLink, "_blank", "noopener,noreferrer");
+    }
+  };
+  const handleKeyDown = (e) => {
+    if (webViewLink && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      window.open(webViewLink, "_blank", "noopener,noreferrer");
+    }
+  };
   return /* @__PURE__ */ jsxs27(
-    motion26.div,
+    motion26.article,
     {
       whileHover: { scale: 1.02 },
       whileTap: { scale: 0.98 },
       className: cn(
         "card-glass flex flex-col w-full max-w-[300px]",
-        "overflow-hidden cursor-pointer",
-        webViewLink ? "hover:shadow-2xl" : "cursor-default"
+        "overflow-hidden motion-reduce:animate-none",
+        webViewLink ? "hover:shadow-2xl cursor-pointer" : "cursor-default"
       ),
-      onClick: () => webViewLink && window.open(webViewLink, "_blank"),
+      role: webViewLink ? "link" : void 0,
+      tabIndex: webViewLink ? 0 : void 0,
+      "aria-label": name,
+      onClick: handleClick,
+      onKeyDown: handleKeyDown,
       children: [
         thumbnailLink ? /* @__PURE__ */ jsx27("div", { className: "h-40 w-full overflow-hidden bg-zinc-900/50 flex items-center justify-center", children: /* @__PURE__ */ jsx27(
           "img",
           {
             src: thumbnailLink,
-            alt: name,
+            alt: `Preview of ${name}`,
+            loading: "lazy",
             className: "w-full h-full object-cover"
           }
-        ) }) : /* @__PURE__ */ jsx27("div", { className: "h-40 w-full bg-zinc-900/50 flex items-center justify-center", children: /* @__PURE__ */ jsx27(File, { size: 48, className: "text-muted-foreground" }) }),
+        ) }) : /* @__PURE__ */ jsx27("div", { className: "h-40 w-full bg-zinc-900/50 flex items-center justify-center", "aria-hidden": "true", children: /* @__PURE__ */ jsx27(File, { size: 48, className: "text-muted-foreground" }) }),
         /* @__PURE__ */ jsxs27("div", { className: "p-4", children: [
           /* @__PURE__ */ jsxs27("div", { className: "flex items-center gap-2 mb-2", children: [
-            iconLink ? /* @__PURE__ */ jsx27("img", { src: iconLink, alt: "", className: "w-4 h-4" }) : /* @__PURE__ */ jsx27(File, { size: 16 }),
+            iconLink ? /* @__PURE__ */ jsx27("img", { src: iconLink, alt: "", "aria-hidden": "true", className: "w-4 h-4" }) : /* @__PURE__ */ jsx27(File, { size: 16, "aria-hidden": "true" }),
             /* @__PURE__ */ jsx27(
-              "div",
+              "h3",
               {
                 className: "font-medium text-sm whitespace-nowrap overflow-hidden text-ellipsis text-foreground",
                 title: name,
@@ -2527,12 +2634,12 @@ var DriveFile = memo29(function DriveFile2({
           ] }),
           /* @__PURE__ */ jsxs27("div", { className: "flex flex-col gap-1.5 text-xs text-muted-foreground", children: [
             modifiedTime && /* @__PURE__ */ jsxs27("div", { className: "flex items-center gap-1.5", children: [
-              /* @__PURE__ */ jsx27(Clock, { size: 12 }),
-              new Date(modifiedTime).toLocaleDateString()
+              /* @__PURE__ */ jsx27(Clock, { size: 12, "aria-hidden": "true" }),
+              /* @__PURE__ */ jsx27("time", { dateTime: modifiedTime, children: new Date(modifiedTime).toLocaleDateString() })
             ] }),
             owners && owners[0] && /* @__PURE__ */ jsxs27("div", { className: "flex items-center gap-1.5", children: [
-              /* @__PURE__ */ jsx27(User2, { size: 12 }),
-              owners[0].displayName
+              /* @__PURE__ */ jsx27(User2, { size: 12, "aria-hidden": "true" }),
+              /* @__PURE__ */ jsx27("span", { children: owners[0].displayName })
             ] })
           ] })
         ] }),
@@ -2868,89 +2975,102 @@ var DriveFileList = memo31(function DriveFileList2({
   });
   const handleOpenFile = (file) => {
     if (file.webViewLink) {
-      window.open(file.webViewLink, "_blank");
+      window.open(file.webViewLink, "_blank", "noopener,noreferrer");
     }
   };
-  return /* @__PURE__ */ jsxs30("div", { className: "card-glass w-full h-full min-h-[400px] flex flex-col overflow-hidden", children: [
-    /* @__PURE__ */ jsxs30("div", { className: "flex justify-between items-center p-5 border-b border-white/10 bg-black/20", children: [
-      /* @__PURE__ */ jsxs30("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ jsx30("div", { className: "w-9 h-9 rounded-xl flex items-center justify-center shadow-lg bg-gradient-to-br from-amber-400 to-amber-600 shadow-amber-500/20", children: /* @__PURE__ */ jsx30(DriveIcon, {}) }),
-        /* @__PURE__ */ jsxs30("div", { children: [
-          /* @__PURE__ */ jsx30("h3", { className: "m-0 text-base font-semibold text-foreground", children: title || "Google Drive" }),
-          description && /* @__PURE__ */ jsx30("div", { className: "text-xs text-muted-foreground mt-0.5", children: description })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs30("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ jsxs30("span", { className: "text-xs text-muted-foreground px-2.5 py-1 bg-white/5 rounded-full", children: [
-          files.length,
-          " element",
-          files.length !== 1 ? "i" : "o"
+  return /* @__PURE__ */ jsxs30(
+    "section",
+    {
+      className: "card-glass w-full h-full min-h-[400px] flex flex-col overflow-hidden",
+      "aria-label": title || "Google Drive Files",
+      children: [
+        /* @__PURE__ */ jsxs30("header", { className: "flex justify-between items-center p-5 border-b border-white/10 bg-black/20", children: [
+          /* @__PURE__ */ jsxs30("div", { className: "flex items-center gap-3", children: [
+            /* @__PURE__ */ jsx30("div", { className: "w-9 h-9 rounded-xl flex items-center justify-center shadow-lg bg-gradient-to-br from-amber-400 to-amber-600 shadow-amber-500/20", "aria-hidden": "true", children: /* @__PURE__ */ jsx30(DriveIcon, {}) }),
+            /* @__PURE__ */ jsxs30("div", { children: [
+              /* @__PURE__ */ jsx30("h2", { className: "m-0 text-base font-semibold text-foreground", children: title || "Google Drive" }),
+              description && /* @__PURE__ */ jsx30("p", { className: "text-xs text-muted-foreground mt-0.5", children: description })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs30("div", { className: "flex items-center gap-3", children: [
+            /* @__PURE__ */ jsxs30("span", { className: "text-xs text-muted-foreground px-2.5 py-1 bg-white/5 rounded-full", role: "status", children: [
+              files.length,
+              " element",
+              files.length !== 1 ? "i" : "o"
+            ] }),
+            /* @__PURE__ */ jsxs30("div", { className: "flex gap-1 p-1 bg-black/20 rounded-xl", role: "group", "aria-label": "View mode", children: [
+              /* @__PURE__ */ jsx30(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => setViewMode("grid"),
+                  "aria-pressed": viewMode === "grid",
+                  className: cn(
+                    "flex items-center justify-center p-2 rounded-lg border-0 cursor-pointer transition-all motion-reduce:transition-none",
+                    viewMode === "grid" ? "bg-white/10 text-foreground" : "bg-transparent text-muted-foreground hover:bg-white/5"
+                  ),
+                  "aria-label": "Grid view",
+                  children: /* @__PURE__ */ jsx30(GridIcon, {})
+                }
+              ),
+              /* @__PURE__ */ jsx30(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => setViewMode("list"),
+                  "aria-pressed": viewMode === "list",
+                  className: cn(
+                    "flex items-center justify-center p-2 rounded-lg border-0 cursor-pointer transition-all motion-reduce:transition-none",
+                    viewMode === "list" ? "bg-white/10 text-foreground" : "bg-transparent text-muted-foreground hover:bg-white/5"
+                  ),
+                  "aria-label": "List view",
+                  children: /* @__PURE__ */ jsx30(ListIcon2, {})
+                }
+              )
+            ] })
+          ] })
         ] }),
-        /* @__PURE__ */ jsxs30("div", { className: "flex gap-1 p-1 bg-black/20 rounded-xl", children: [
-          /* @__PURE__ */ jsx30(
-            "button",
-            {
-              onClick: () => setViewMode("grid"),
-              className: cn(
-                "flex items-center justify-center p-2 rounded-lg border-0 cursor-pointer transition-all",
-                viewMode === "grid" ? "bg-white/10 text-foreground" : "bg-transparent text-muted-foreground hover:bg-white/5"
-              ),
-              title: "Vista griglia",
-              children: /* @__PURE__ */ jsx30(GridIcon, {})
-            }
-          ),
-          /* @__PURE__ */ jsx30(
-            "button",
-            {
-              onClick: () => setViewMode("list"),
-              className: cn(
-                "flex items-center justify-center p-2 rounded-lg border-0 cursor-pointer transition-all",
-                viewMode === "list" ? "bg-white/10 text-foreground" : "bg-transparent text-muted-foreground hover:bg-white/5"
-              ),
-              title: "Vista lista",
-              children: /* @__PURE__ */ jsx30(ListIcon2, {})
-            }
-          )
-        ] })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsx30("div", { className: "flex-1 overflow-auto", children: files.length === 0 ? /* @__PURE__ */ jsxs30("div", { className: "p-16 text-center text-muted-foreground", children: [
-      /* @__PURE__ */ jsx30("div", { className: "text-5xl mb-4 opacity-30", children: "\u{1F4C1}" }),
-      /* @__PURE__ */ jsx30("div", { className: "text-lg font-medium mb-2", children: "Nessun file" }),
-      /* @__PURE__ */ jsx30("div", { className: "text-sm opacity-70", children: "Questa cartella \xE8 vuota" })
-    ] }) : viewMode === "grid" ? /* @__PURE__ */ jsx30(
-      motion28.div,
-      {
-        layout: true,
-        className: "grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4 p-5",
-        children: /* @__PURE__ */ jsx30(AnimatePresence7, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
-          FileGridCard,
+        /* @__PURE__ */ jsx30("div", { className: "flex-1 overflow-auto", children: files.length === 0 ? /* @__PURE__ */ jsxs30("div", { className: "p-16 text-center text-muted-foreground", role: "status", children: [
+          /* @__PURE__ */ jsx30("div", { className: "text-5xl mb-4 opacity-30", "aria-hidden": "true", children: "\u{1F4C1}" }),
+          /* @__PURE__ */ jsx30("p", { className: "text-lg font-medium mb-2", children: "Nessun file" }),
+          /* @__PURE__ */ jsx30("p", { className: "text-sm opacity-70", children: "Questa cartella \xE8 vuota" })
+        ] }) : viewMode === "grid" ? /* @__PURE__ */ jsx30(
+          motion28.div,
           {
-            file,
-            onOpen: handleOpenFile
-          },
-          file.id
-        )) })
-      }
-    ) : /* @__PURE__ */ jsxs30("div", { children: [
-      /* @__PURE__ */ jsxs30("div", { className: "flex items-center gap-3.5 px-5 py-2.5 border-b border-white/5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider", children: [
-        /* @__PURE__ */ jsx30("div", { className: "w-10" }),
-        /* @__PURE__ */ jsx30("div", { className: "flex-1", children: "Nome" }),
-        /* @__PURE__ */ jsx30("div", { className: "min-w-20 text-right", children: "Dimensione" }),
-        /* @__PURE__ */ jsx30("div", { className: "min-w-24 text-right", children: "Modificato" }),
-        /* @__PURE__ */ jsx30("div", { className: "w-20" })
-      ] }),
-      /* @__PURE__ */ jsx30(AnimatePresence7, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
-        FileListRow,
-        {
-          file,
-          onOpen: handleOpenFile
-        },
-        file.id
-      )) })
-    ] }) }),
-    children
-  ] });
+            layout: true,
+            role: "list",
+            "aria-label": "Files grid",
+            className: "grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4 p-5 motion-reduce:animate-none",
+            children: /* @__PURE__ */ jsx30(AnimatePresence7, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
+              FileGridCard,
+              {
+                file,
+                onOpen: handleOpenFile
+              },
+              file.id
+            )) })
+          }
+        ) : /* @__PURE__ */ jsxs30("div", { role: "table", "aria-label": "Files list", children: [
+          /* @__PURE__ */ jsx30("div", { role: "rowgroup", children: /* @__PURE__ */ jsxs30("div", { role: "row", className: "flex items-center gap-3.5 px-5 py-2.5 border-b border-white/5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider", children: [
+            /* @__PURE__ */ jsx30("div", { role: "columnheader", className: "w-10", "aria-label": "Icon" }),
+            /* @__PURE__ */ jsx30("div", { role: "columnheader", className: "flex-1", children: "Nome" }),
+            /* @__PURE__ */ jsx30("div", { role: "columnheader", className: "min-w-20 text-right", children: "Dimensione" }),
+            /* @__PURE__ */ jsx30("div", { role: "columnheader", className: "min-w-24 text-right", children: "Modificato" }),
+            /* @__PURE__ */ jsx30("div", { role: "columnheader", className: "w-20", "aria-label": "Actions" })
+          ] }) }),
+          /* @__PURE__ */ jsx30("div", { role: "rowgroup", children: /* @__PURE__ */ jsx30(AnimatePresence7, { children: sortedFiles.map((file) => /* @__PURE__ */ jsx30(
+            FileListRow,
+            {
+              file,
+              onOpen: handleOpenFile
+            },
+            file.id
+          )) }) })
+        ] }) }),
+        children
+      ]
+    }
+  );
 });
 
 // src/data-display/Weather/component.tsx
@@ -3044,53 +3164,61 @@ var Weather = memo32(function Weather2({
   } = element.props;
   const accent = getAccentColor(accentColor ?? void 0);
   if (!current) {
-    return /* @__PURE__ */ jsxs31("div", { className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground", children: [
-      /* @__PURE__ */ jsx31(CloudSun, { className: "w-10 h-10 opacity-20 mb-3" }),
-      /* @__PURE__ */ jsx31("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No weather data" })
-    ] });
+    return /* @__PURE__ */ jsxs31(
+      "div",
+      {
+        role: "status",
+        className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground motion-reduce:animate-none",
+        children: [
+          /* @__PURE__ */ jsx31(CloudSun, { className: "w-10 h-10 opacity-20 mb-3", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx31("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No weather data" })
+        ]
+      }
+    );
   }
   return /* @__PURE__ */ jsxs31(
-    motion29.div,
+    motion29.article,
     {
       initial: { opacity: 0, scale: 0.95 },
       animate: { opacity: 1, scale: 1 },
       "data-selectable-item": true,
       "data-element-key": element.key,
-      className: "flex flex-col gap-6 p-6 rounded-3xl border border-white/10 text-foreground relative overflow-hidden card-glass shadow-lg",
+      className: "flex flex-col gap-6 p-6 rounded-3xl border border-white/10 text-foreground relative overflow-hidden card-glass shadow-lg motion-reduce:animate-none",
+      "aria-label": `Weather for ${location}`,
       style: {
         background: `linear-gradient(135deg, color-mix(in srgb, ${accent || "var(--primary)"}, transparent 92%) 0%, var(--card) 100%)`
       },
       children: [
-        /* @__PURE__ */ jsxs31("div", { className: "flex justify-between items-start", children: [
+        /* @__PURE__ */ jsxs31("header", { className: "flex justify-between items-start", children: [
           /* @__PURE__ */ jsxs31("div", { children: [
-            /* @__PURE__ */ jsx31("div", { className: "text-2xl font-semibold mb-1", children: location }),
-            /* @__PURE__ */ jsx31("div", { className: "text-sm text-muted-foreground capitalize", children: current.condition }),
-            /* @__PURE__ */ jsxs31("div", { className: "text-6xl font-bold leading-none mt-3", children: [
+            /* @__PURE__ */ jsx31("h2", { className: "text-2xl font-semibold mb-1", children: location }),
+            /* @__PURE__ */ jsx31("p", { className: "text-sm text-muted-foreground capitalize", children: current.condition }),
+            /* @__PURE__ */ jsxs31("p", { className: "text-6xl font-bold leading-none mt-3", "aria-label": `Temperature ${Math.round(current.temp)} degrees`, children: [
               Math.round(current.temp),
               "\xB0"
             ] })
           ] }),
-          /* @__PURE__ */ jsx31("div", { className: "text-5xl", children: getIcon(current.condition) })
+          /* @__PURE__ */ jsx31("div", { className: "text-5xl", "aria-hidden": "true", children: getIcon(current.condition) })
         ] }),
-        /* @__PURE__ */ jsxs31("div", { className: "grid grid-cols-3 gap-3", children: [
-          current.windSpeed != null && /* @__PURE__ */ jsxs31("div", { className: "bg-white/5 p-3 rounded-xl flex flex-col items-center justify-center text-center gap-1", children: [
-            /* @__PURE__ */ jsx31("span", { className: "text-xl", children: "\u{1F4A8}" }),
+        /* @__PURE__ */ jsxs31("div", { className: "grid grid-cols-3 gap-3", role: "list", "aria-label": "Current conditions", children: [
+          current.windSpeed != null && /* @__PURE__ */ jsxs31("div", { role: "listitem", className: "bg-white/5 p-3 rounded-xl flex flex-col items-center justify-center text-center gap-1", children: [
+            /* @__PURE__ */ jsx31("span", { className: "text-xl", "aria-hidden": "true", children: "\u{1F4A8}" }),
             /* @__PURE__ */ jsxs31("span", { className: "text-sm font-medium", children: [
               current.windSpeed,
               " km/h"
             ] }),
             /* @__PURE__ */ jsx31("span", { className: "text-[10px] text-muted-foreground", children: "Wind" })
           ] }),
-          current.humidity != null && /* @__PURE__ */ jsxs31("div", { className: "bg-white/5 p-3 rounded-xl flex flex-col items-center justify-center text-center gap-1", children: [
-            /* @__PURE__ */ jsx31("span", { className: "text-xl", children: "\u{1F4A7}" }),
+          current.humidity != null && /* @__PURE__ */ jsxs31("div", { role: "listitem", className: "bg-white/5 p-3 rounded-xl flex flex-col items-center justify-center text-center gap-1", children: [
+            /* @__PURE__ */ jsx31("span", { className: "text-xl", "aria-hidden": "true", children: "\u{1F4A7}" }),
             /* @__PURE__ */ jsxs31("span", { className: "text-sm font-medium", children: [
               current.humidity,
               "%"
             ] }),
             /* @__PURE__ */ jsx31("span", { className: "text-[10px] text-muted-foreground", children: "Humidity" })
           ] }),
-          current.feelsLike != null && /* @__PURE__ */ jsxs31("div", { className: "bg-white/5 p-3 rounded-xl flex flex-col items-center justify-center text-center gap-1", children: [
-            /* @__PURE__ */ jsx31("span", { className: "text-xl", children: "\u{1F321}\uFE0F" }),
+          current.feelsLike != null && /* @__PURE__ */ jsxs31("div", { role: "listitem", className: "bg-white/5 p-3 rounded-xl flex flex-col items-center justify-center text-center gap-1", children: [
+            /* @__PURE__ */ jsx31("span", { className: "text-xl", "aria-hidden": "true", children: "\u{1F321}\uFE0F" }),
             /* @__PURE__ */ jsxs31("span", { className: "text-sm font-medium", children: [
               Math.round(current.feelsLike),
               "\xB0"
@@ -3098,19 +3226,19 @@ var Weather = memo32(function Weather2({
             /* @__PURE__ */ jsx31("span", { className: "text-[10px] text-muted-foreground", children: "Feels Like" })
           ] })
         ] }),
-        forecastHourly && forecastHourly.length > 0 && /* @__PURE__ */ jsxs31("div", { children: [
-          /* @__PURE__ */ jsx31("div", { className: "text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider", children: "Hourly Forecast" }),
-          /* @__PURE__ */ jsx31("div", { className: "flex gap-4 overflow-x-auto pb-4 -mb-4 scrollbar-hide", children: forecastHourly.map((hour, i) => /* @__PURE__ */ jsxs31(
-            "div",
+        forecastHourly && forecastHourly.length > 0 && /* @__PURE__ */ jsxs31("section", { "aria-labelledby": "hourly-forecast-title", children: [
+          /* @__PURE__ */ jsx31("h3", { id: "hourly-forecast-title", className: "text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider", children: "Hourly Forecast" }),
+          /* @__PURE__ */ jsx31("ul", { className: "flex gap-4 overflow-x-auto pb-4 -mb-4 scrollbar-hide list-none p-0", role: "list", children: forecastHourly.map((hour, i) => /* @__PURE__ */ jsxs31(
+            "li",
             {
-              className: "flex flex-col items-center gap-2 min-w-[50px] p-2 rounded-lg hover:bg-white/5 transition-colors",
+              className: "flex flex-col items-center gap-2 min-w-[50px] p-2 rounded-lg hover:bg-white/5 transition-colors motion-reduce:transition-none",
               children: [
-                /* @__PURE__ */ jsx31("span", { className: "text-xs text-muted-foreground whitespace-nowrap", children: new Date(hour.time).toLocaleTimeString([], {
+                /* @__PURE__ */ jsx31("time", { className: "text-xs text-muted-foreground whitespace-nowrap", children: new Date(hour.time).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit"
                 }) }),
-                /* @__PURE__ */ jsx31("span", { className: "text-2xl", children: getIcon(hour.condition, hour.icon) }),
-                /* @__PURE__ */ jsxs31("span", { className: "text-sm font-semibold", children: [
+                /* @__PURE__ */ jsx31("span", { className: "text-2xl", "aria-hidden": "true", children: getIcon(hour.condition, hour.icon) }),
+                /* @__PURE__ */ jsxs31("span", { className: "text-sm font-semibold", "aria-label": `${Math.round(hour.temp)} degrees`, children: [
                   Math.round(hour.temp),
                   "\xB0"
                 ] })
@@ -3119,26 +3247,26 @@ var Weather = memo32(function Weather2({
             i
           )) })
         ] }),
-        forecastDaily && forecastDaily.length > 0 && /* @__PURE__ */ jsxs31("div", { children: [
-          /* @__PURE__ */ jsx31("div", { className: "text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider", children: "5-Day Forecast" }),
-          /* @__PURE__ */ jsx31("div", { className: "flex flex-col gap-2", children: forecastDaily.map((day, i) => /* @__PURE__ */ jsxs31(
-            "div",
+        forecastDaily && forecastDaily.length > 0 && /* @__PURE__ */ jsxs31("section", { "aria-labelledby": "daily-forecast-title", children: [
+          /* @__PURE__ */ jsx31("h3", { id: "daily-forecast-title", className: "text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider", children: "5-Day Forecast" }),
+          /* @__PURE__ */ jsx31("ul", { className: "flex flex-col gap-2 list-none p-0", role: "list", children: forecastDaily.map((day, i) => /* @__PURE__ */ jsxs31(
+            "li",
             {
-              className: "flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors",
+              className: "flex items-center justify-between p-2 rounded-lg hover:bg-white/5 transition-colors motion-reduce:transition-none",
               children: [
-                /* @__PURE__ */ jsx31("div", { className: "w-16 font-medium", children: new Date(day.date).toLocaleDateString([], {
+                /* @__PURE__ */ jsx31("time", { className: "w-16 font-medium", children: new Date(day.date).toLocaleDateString([], {
                   weekday: "short"
                 }) }),
                 /* @__PURE__ */ jsxs31("div", { className: "flex items-center gap-3 flex-1 justify-center", children: [
-                  /* @__PURE__ */ jsx31("span", { className: "text-xl", children: getIcon(day.condition, day.icon) }),
+                  /* @__PURE__ */ jsx31("span", { className: "text-xl", "aria-hidden": "true", children: getIcon(day.condition, day.icon) }),
                   /* @__PURE__ */ jsx31("span", { className: "text-xs text-muted-foreground capitalize hidden sm:block", children: day.condition })
                 ] }),
                 /* @__PURE__ */ jsxs31("div", { className: "flex gap-4 w-24 justify-end", children: [
-                  /* @__PURE__ */ jsxs31("span", { className: "font-semibold", children: [
+                  /* @__PURE__ */ jsxs31("span", { className: "font-semibold", "aria-label": `High ${Math.round(day.tempMax)} degrees`, children: [
                     Math.round(day.tempMax),
                     "\xB0"
                   ] }),
-                  /* @__PURE__ */ jsxs31("span", { className: "text-muted-foreground", children: [
+                  /* @__PURE__ */ jsxs31("span", { className: "text-muted-foreground", "aria-label": `Low ${Math.round(day.tempMin)} degrees`, children: [
                     Math.round(day.tempMin),
                     "\xB0"
                   ] })
@@ -3209,60 +3337,72 @@ var DocumentIndex = memo33(function DocumentIndex2({
   const config = STATUS_CONFIG[currentStatus];
   const StatusIcon = config.icon;
   const isLoading = LOADING_STATUSES.has(currentStatus);
-  return /* @__PURE__ */ jsxs32("div", { className: "flex flex-col gap-4 w-full", children: [
-    /* @__PURE__ */ jsxs32("div", { className: "flex flex-col gap-3 p-4 rounded-xl border border-white/10 card-glass", children: [
-      /* @__PURE__ */ jsxs32("div", { className: "flex items-start justify-between gap-3", children: [
+  return /* @__PURE__ */ jsxs32("section", { className: "flex flex-col gap-4 w-full", "aria-label": `Document: ${fileName}`, children: [
+    /* @__PURE__ */ jsxs32("article", { className: "flex flex-col gap-3 p-4 rounded-xl border border-white/10 card-glass", children: [
+      /* @__PURE__ */ jsxs32("header", { className: "flex items-start justify-between gap-3", children: [
         /* @__PURE__ */ jsxs32("div", { className: "flex items-center gap-3 min-w-0", children: [
-          /* @__PURE__ */ jsx32("div", { className: "w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0", children: /* @__PURE__ */ jsx32(BookOpen2, { size: 20, className: "text-primary" }) }),
+          /* @__PURE__ */ jsx32("div", { className: "w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0", "aria-hidden": "true", children: /* @__PURE__ */ jsx32(BookOpen2, { size: 20, className: "text-primary" }) }),
           /* @__PURE__ */ jsxs32("div", { className: "min-w-0", children: [
-            /* @__PURE__ */ jsx32("h4", { className: "text-sm font-semibold text-foreground truncate m-0", children: fileName }),
+            /* @__PURE__ */ jsx32("h3", { className: "text-sm font-semibold text-foreground truncate m-0", children: fileName }),
             description && /* @__PURE__ */ jsx32("p", { className: "text-xs text-muted-foreground line-clamp-1 mt-0.5 m-0", children: description })
           ] })
         ] }),
         /* @__PURE__ */ jsxs32(
           "div",
           {
+            role: "status",
+            "aria-live": "polite",
             className: `flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.color} bg-white/5`,
             children: [
-              /* @__PURE__ */ jsx32(StatusIcon, { size: 12, className: isLoading ? "animate-spin" : "" }),
+              /* @__PURE__ */ jsx32(StatusIcon, { size: 12, className: isLoading ? "animate-spin motion-reduce:animate-none" : "", "aria-hidden": "true" }),
               /* @__PURE__ */ jsx32("span", { children: config.label })
             ]
           }
         )
       ] }),
-      isLoading && /* @__PURE__ */ jsxs32("div", { className: "space-y-1.5", children: [
+      isLoading && /* @__PURE__ */ jsxs32("div", { className: "space-y-1.5", role: "status", "aria-label": `Processing: ${progress != null ? `${Math.round(progress)}%` : "in progress"}`, children: [
         /* @__PURE__ */ jsxs32("div", { className: "flex justify-between text-xs text-muted-foreground", children: [
           /* @__PURE__ */ jsx32("span", { children: message || "Processing..." }),
-          progress != null && /* @__PURE__ */ jsxs32("span", { children: [
+          progress != null && /* @__PURE__ */ jsxs32("span", { "aria-hidden": "true", children: [
             Math.round(progress),
             "%"
           ] }),
-          currentPage != null && pageCount != null && /* @__PURE__ */ jsxs32("span", { children: [
+          currentPage != null && pageCount != null && /* @__PURE__ */ jsxs32("span", { "aria-hidden": "true", children: [
             "Page ",
             currentPage,
             " / ",
             pageCount
           ] })
         ] }),
-        /* @__PURE__ */ jsx32("div", { className: "h-1.5 bg-white/5 rounded-full overflow-hidden", children: /* @__PURE__ */ jsx32(
-          motion30.div,
+        /* @__PURE__ */ jsx32(
+          "div",
           {
-            className: "h-full bg-primary/60 rounded-full",
-            initial: { width: 0 },
-            animate: {
-              width: progress != null ? `${progress}%` : "30%"
-            },
-            transition: { duration: 0.3 },
-            style: progress == null ? {
-              animation: "indeterminate 1.5s infinite ease-in-out"
-            } : void 0
+            className: "h-1.5 bg-white/5 rounded-full overflow-hidden",
+            role: "progressbar",
+            "aria-valuemin": 0,
+            "aria-valuemax": 100,
+            "aria-valuenow": progress ?? void 0,
+            children: /* @__PURE__ */ jsx32(
+              motion30.div,
+              {
+                className: "h-full bg-primary/60 rounded-full motion-reduce:animate-none",
+                initial: { width: 0 },
+                animate: {
+                  width: progress != null ? `${progress}%` : "30%"
+                },
+                transition: { duration: 0.3 },
+                style: progress == null ? {
+                  animation: "indeterminate 1.5s infinite ease-in-out"
+                } : void 0
+              }
+            )
           }
-        ) })
+        )
       ] }),
-      error && /* @__PURE__ */ jsx32("div", { className: "px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400", children: error }),
-      nodes && nodes.length > 0 && /* @__PURE__ */ jsxs32("div", { className: "mt-2 border-t border-white/5 pt-3", children: [
+      error && /* @__PURE__ */ jsx32("div", { role: "alert", className: "px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400", children: error }),
+      nodes && nodes.length > 0 && /* @__PURE__ */ jsxs32("nav", { className: "mt-2 border-t border-white/5 pt-3", "aria-label": "Document structure", children: [
         /* @__PURE__ */ jsxs32("div", { className: "flex items-center gap-2 mb-2", children: [
-          /* @__PURE__ */ jsx32(Hash, { size: 14, className: "text-muted-foreground" }),
+          /* @__PURE__ */ jsx32(Hash, { size: 14, className: "text-muted-foreground", "aria-hidden": "true" }),
           /* @__PURE__ */ jsx32("span", { className: "text-xs font-medium text-muted-foreground uppercase tracking-wide", children: "Document Structure" }),
           pageCount && /* @__PURE__ */ jsxs32("span", { className: "text-xs text-muted-foreground/60", children: [
             "(",
@@ -3270,10 +3410,10 @@ var DocumentIndex = memo33(function DocumentIndex2({
             " pages)"
           ] })
         ] }),
-        /* @__PURE__ */ jsx32("div", { className: "space-y-0.5", children: /* @__PURE__ */ jsx32(AnimatePresence8, { mode: "popLayout", children: nodes.map((node, idx) => /* @__PURE__ */ jsx32(IndexNode, { node, depth: 0 }, node.id || idx)) }) })
+        /* @__PURE__ */ jsx32("ul", { className: "space-y-0.5 list-none p-0", role: "tree", children: /* @__PURE__ */ jsx32(AnimatePresence8, { mode: "popLayout", children: nodes.map((node, idx) => /* @__PURE__ */ jsx32(IndexNode, { node, depth: 0 }, node.id || idx)) }) })
       ] }),
-      currentStatus === "complete" && (!nodes || nodes.length === 0) && /* @__PURE__ */ jsxs32("div", { className: "py-8 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl", children: [
-        /* @__PURE__ */ jsx32(FileText2, { className: "w-10 h-10 opacity-20 mb-3" }),
+      currentStatus === "complete" && (!nodes || nodes.length === 0) && /* @__PURE__ */ jsxs32("div", { role: "status", className: "py-8 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl", children: [
+        /* @__PURE__ */ jsx32(FileText2, { className: "w-10 h-10 opacity-20 mb-3", "aria-hidden": "true" }),
         /* @__PURE__ */ jsx32("p", { className: "text-xs uppercase tracking-widest opacity-50 m-0", children: "No structure found" })
       ] })
     ] }),
@@ -3302,12 +3442,15 @@ var IndexNode = memo33(function IndexNode2({
     [hasChildren]
   );
   return /* @__PURE__ */ jsxs32(
-    motion30.div,
+    motion30.li,
     {
+      role: "treeitem",
+      "aria-expanded": hasChildren ? expanded : void 0,
       initial: { opacity: 0, x: -10 },
       animate: { opacity: 1, x: 0 },
       exit: { opacity: 0, x: -10 },
       transition: { duration: 0.2 },
+      className: "motion-reduce:animate-none",
       children: [
         /* @__PURE__ */ jsxs32(
           "div",
@@ -3316,13 +3459,12 @@ var IndexNode = memo33(function IndexNode2({
             tabIndex: hasChildren ? 0 : void 0,
             onClick: handleToggle,
             onKeyDown: handleKeyDown,
-            "aria-expanded": hasChildren ? expanded : void 0,
             className: `w-full flex items-center gap-2 py-1.5 px-2 rounded-md text-left
           ${hasChildren ? "hover:bg-white/5 cursor-pointer" : "cursor-default"}
-          transition-colors group`,
+          transition-colors motion-reduce:transition-none group`,
             style: { paddingLeft },
             children: [
-              /* @__PURE__ */ jsx32("span", { className: "w-4 h-4 flex items-center justify-center shrink-0", children: hasChildren ? expanded ? /* @__PURE__ */ jsx32(ChevronDown4, { size: 14, className: "text-muted-foreground" }) : /* @__PURE__ */ jsx32(ChevronRight2, { size: 14, className: "text-muted-foreground" }) : /* @__PURE__ */ jsx32("span", { className: "w-1.5 h-1.5 rounded-full bg-white/20" }) }),
+              /* @__PURE__ */ jsx32("span", { className: "w-4 h-4 flex items-center justify-center shrink-0", "aria-hidden": "true", children: hasChildren ? expanded ? /* @__PURE__ */ jsx32(ChevronDown4, { size: 14, className: "text-muted-foreground" }) : /* @__PURE__ */ jsx32(ChevronRight2, { size: 14, className: "text-muted-foreground" }) : /* @__PURE__ */ jsx32("span", { className: "w-1.5 h-1.5 rounded-full bg-white/20" }) }),
               /* @__PURE__ */ jsx32(
                 "span",
                 {
@@ -3340,18 +3482,20 @@ var IndexNode = memo33(function IndexNode2({
             initial: { opacity: 0, height: 0 },
             animate: { opacity: 1, height: "auto" },
             exit: { opacity: 0, height: 0 },
-            className: "text-xs text-muted-foreground/70 leading-relaxed pb-1",
+            className: "text-xs text-muted-foreground/70 leading-relaxed pb-1 motion-reduce:animate-none",
             style: { paddingLeft: paddingLeft + 24, paddingRight: 8 },
             children: node.summary
           }
         ) }),
         /* @__PURE__ */ jsx32(AnimatePresence8, { children: expanded && hasChildren && /* @__PURE__ */ jsx32(
-          motion30.div,
+          motion30.ul,
           {
+            role: "group",
             initial: { opacity: 0, height: 0 },
             animate: { opacity: 1, height: "auto" },
             exit: { opacity: 0, height: 0 },
             transition: { duration: 0.2 },
+            className: "list-none p-0 motion-reduce:animate-none",
             children: node.children.map((child, idx) => /* @__PURE__ */ jsx32(IndexNode2, { node: child, depth: depth + 1 }, child.id || idx))
           }
         ) })
@@ -3790,26 +3934,35 @@ var Video = memo36(function Video2({
   const { title, videos = [], accentColor } = element.props;
   const accent = getAccentColor(accentColor ?? void 0);
   if (!videos || videos.length === 0) {
-    return /* @__PURE__ */ jsxs35("div", { className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground", children: [
-      /* @__PURE__ */ jsx35(VideoIcon, { className: "w-10 h-10 opacity-20 mb-3" }),
-      /* @__PURE__ */ jsx35("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No videos available" })
-    ] });
+    return /* @__PURE__ */ jsxs35(
+      "div",
+      {
+        role: "status",
+        className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground motion-reduce:animate-none",
+        children: [
+          /* @__PURE__ */ jsx35(VideoIcon, { className: "w-10 h-10 opacity-20 mb-3", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx35("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No videos available" })
+        ]
+      }
+    );
   }
-  return /* @__PURE__ */ jsxs35("div", { className: "flex flex-col gap-4", children: [
-    title && /* @__PURE__ */ jsx35("h3", { className: "m-0 text-lg font-semibold", children: title }),
-    /* @__PURE__ */ jsx35("div", { className: "flex flex-col gap-4", children: videos.map((video, index) => {
+  return /* @__PURE__ */ jsxs35("figure", { className: "flex flex-col gap-4", role: "group", "aria-label": title ?? "Video gallery", children: [
+    title && /* @__PURE__ */ jsx35("figcaption", { className: "m-0 text-lg font-semibold", children: title }),
+    /* @__PURE__ */ jsx35("div", { className: "flex flex-col gap-4", role: "list", children: videos.map((video, index) => {
       const status = video.status?.status ?? "ready";
       const progress = getProgressPercent(video.status?.progress);
       const statusTone = getStatusTone(status);
       const statusLabel = buildStatusLabel(status);
       const videoSource = getVideoSource(video);
       return /* @__PURE__ */ jsxs35(
-        motion33.div,
+        motion33.article,
         {
+          role: "listitem",
           initial: { opacity: 0, y: 10 },
           animate: { opacity: 1, y: 0 },
           transition: { delay: index * 0.05 },
-          className: "grid grid-cols-1 md:grid-cols-[2fr_1.3fr] gap-0 overflow-hidden rounded-[18px] border border-white/10 bg-zinc-900 shadow-2xl bg-[linear-gradient(135deg,rgba(24,24,27,0.9)_0%,rgba(9,9,11,0.95)_100%)]",
+          className: "grid grid-cols-1 md:grid-cols-[2fr_1.3fr] gap-0 overflow-hidden rounded-[18px] border border-white/10 bg-zinc-900 shadow-2xl bg-[linear-gradient(135deg,rgba(24,24,27,0.9)_0%,rgba(9,9,11,0.95)_100%)] motion-reduce:animate-none",
+          "aria-label": video.title ?? `Video ${index + 1}`,
           children: [
             /* @__PURE__ */ jsx35(
               VideoPlayer,
@@ -3857,14 +4010,24 @@ var Image = memo37(function Image2({
   } = element.props;
   const accent = getAccentColor(accentColor ?? void 0);
   if (!images || images.length === 0) {
-    return /* @__PURE__ */ jsxs36("div", { className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground", children: [
-      /* @__PURE__ */ jsx36(ImageIcon, { className: "w-10 h-10 opacity-20 mb-3" }),
-      /* @__PURE__ */ jsx36("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No images available" })
-    ] });
+    return /* @__PURE__ */ jsxs36(
+      "div",
+      {
+        role: "status",
+        className: cn(
+          "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground",
+          "motion-reduce:animate-none"
+        ),
+        children: [
+          /* @__PURE__ */ jsx36(ImageIcon, { className: "w-10 h-10 opacity-20 mb-3", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx36("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No images available" })
+        ]
+      }
+    );
   }
-  return /* @__PURE__ */ jsxs36("div", { className: "flex flex-col gap-4", children: [
-    title && /* @__PURE__ */ jsx36("h3", { className: "m-0 text-lg font-semibold", children: title }),
-    /* @__PURE__ */ jsx36("div", { className: "grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4", children: images.map((image, index) => {
+  return /* @__PURE__ */ jsxs36("figure", { className: "flex flex-col gap-4", role: "group", "aria-label": title ?? "Image gallery", children: [
+    title && /* @__PURE__ */ jsx36("figcaption", { className: "m-0 text-lg font-semibold", children: title }),
+    /* @__PURE__ */ jsx36("div", { className: "grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4", role: "list", children: images.map((image, index) => {
       const status = image.status?.status ?? "ready";
       const progress = getProgressPercent(image.status?.progress);
       const statusTone = getStatusTone(status);
@@ -3896,20 +4059,24 @@ var Image = memo37(function Image2({
         metaItems.push({ label: "Style", value: image.metadata.style });
       }
       return /* @__PURE__ */ jsxs36(
-        motion34.div,
+        motion34.article,
         {
+          role: "listitem",
           initial: { opacity: 0, y: 10 },
           animate: { opacity: 1, y: 0 },
           transition: { delay: index * 0.05 },
           "data-selectable-item": true,
           "data-element-key": element.key,
           "data-item-id": image.id ?? `${index}`,
-          className: "flex flex-col min-w-0 overflow-hidden rounded-[18px] border border-white/10 bg-zinc-900 shadow-2xl transition-all bg-[linear-gradient(135deg,rgba(24,24,27,0.9)_0%,rgba(9,9,11,0.95)_100%)]",
+          className: "flex flex-col min-w-0 overflow-hidden rounded-[18px] border border-white/10 bg-zinc-900 shadow-2xl transition-all bg-[linear-gradient(135deg,rgba(24,24,27,0.9)_0%,rgba(9,9,11,0.95)_100%)] motion-reduce:animate-none motion-reduce:transition-none",
+          "aria-label": image.title ?? `Image ${index + 1}`,
           children: [
             /* @__PURE__ */ jsxs36("div", { className: "relative", children: [
               status !== "ready" && /* @__PURE__ */ jsx36("div", { className: "absolute top-4 left-4 flex gap-2 items-center z-[2]", children: /* @__PURE__ */ jsx36(
                 "span",
                 {
+                  role: "status",
+                  "aria-label": statusLabel,
                   className: cn(
                     "inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide border shadow-sm backdrop-blur-md",
                     {
@@ -3927,46 +4094,65 @@ var Image = memo37(function Image2({
                 {
                   src: imageSrc,
                   alt: image.alt ?? image.title ?? "AI generated image",
+                  loading: "lazy",
                   className: cn("w-full h-[220px] object-cover block", {
                     "opacity-40": status === "failed"
                   })
                 }
               ),
-              isStreaming && /* @__PURE__ */ jsx36("div", { className: "absolute inset-0 flex items-center justify-center bg-black/45 text-white text-sm font-semibold backdrop-blur-sm", children: "Streaming preview..." })
+              isStreaming && /* @__PURE__ */ jsx36(
+                "div",
+                {
+                  role: "status",
+                  "aria-live": "polite",
+                  className: "absolute inset-0 flex items-center justify-center bg-black/45 text-white text-sm font-semibold backdrop-blur-sm",
+                  children: "Streaming preview..."
+                }
+              )
             ] }),
             /* @__PURE__ */ jsxs36("div", { className: "p-4 flex flex-col gap-3", children: [
               /* @__PURE__ */ jsxs36("div", { className: "flex flex-col gap-1", children: [
                 /* @__PURE__ */ jsx36("div", { className: "text-[15px] font-semibold text-foreground", children: image.title || image.caption || image.alt || "" }),
                 image.caption && /* @__PURE__ */ jsx36("div", { className: "text-[13px] text-muted-foreground line-clamp-2", children: image.caption })
               ] }),
-              status === "generating" && /* @__PURE__ */ jsxs36("div", { className: "flex flex-col gap-1.5", children: [
-                /* @__PURE__ */ jsxs36("div", { className: "text-xs text-muted-foreground", children: [
+              status === "generating" && /* @__PURE__ */ jsxs36("div", { className: "flex flex-col gap-1.5", role: "status", "aria-label": `Rendering ${progress}%`, children: [
+                /* @__PURE__ */ jsxs36("div", { className: "text-xs text-muted-foreground", "aria-hidden": "true", children: [
                   "Rendering ",
                   progress,
                   "%"
                 ] }),
-                /* @__PURE__ */ jsx36("div", { className: "h-1.5 w-full rounded-full bg-muted/20 overflow-hidden", children: /* @__PURE__ */ jsx36(
-                  motion34.div,
+                /* @__PURE__ */ jsx36(
+                  "div",
                   {
-                    initial: { width: 0 },
-                    animate: { width: `${progress}%` },
-                    className: "h-full rounded-full bg-[var(--progress-color,var(--primary))]",
-                    style: {
-                      "--progress-color": accent !== "var(--primary)" ? accent : void 0
-                    }
+                    className: "h-1.5 w-full rounded-full bg-muted/20 overflow-hidden",
+                    role: "progressbar",
+                    "aria-valuemin": 0,
+                    "aria-valuemax": 100,
+                    "aria-valuenow": progress,
+                    children: /* @__PURE__ */ jsx36(
+                      motion34.div,
+                      {
+                        initial: { width: 0 },
+                        animate: { width: `${progress}%` },
+                        className: "h-full rounded-full bg-[var(--progress-color,var(--primary))] motion-reduce:animate-none",
+                        style: {
+                          "--progress-color": accent !== "var(--primary)" ? accent : void 0
+                        }
+                      }
+                    )
                   }
-                ) })
+                )
               ] }),
-              image.status?.errorMessage && /* @__PURE__ */ jsx36("div", { className: "text-xs text-destructive", children: image.status.errorMessage }),
+              image.status?.errorMessage && /* @__PURE__ */ jsx36("div", { className: "text-xs text-destructive", role: "alert", children: image.status.errorMessage }),
               image.metadata?.prompt && /* @__PURE__ */ jsx36("div", { className: "bg-white/5 border border-white/5 rounded-xl px-3 py-2.5 text-xs text-muted-foreground/90 font-medium leading-relaxed line-clamp-3", children: image.metadata.prompt }),
               /* @__PURE__ */ jsx36("div", { className: "grid grid-cols-2 gap-3 mt-auto", children: metaItems.map((meta) => /* @__PURE__ */ jsxs36("div", { className: "flex flex-col gap-0.5", children: [
                 /* @__PURE__ */ jsx36("span", { className: "text-[11px] text-muted-foreground uppercase tracking-wider font-semibold opacity-70", children: meta.label }),
                 /* @__PURE__ */ jsx36("span", { className: "text-[13px] text-foreground font-semibold truncate", children: meta.value })
               ] }, meta.label)) }),
-              (image.tags?.length ?? 0) > 0 && /* @__PURE__ */ jsx36("div", { className: "flex flex-wrap gap-1.5 mt-1", children: image.tags?.map((tag) => {
+              (image.tags?.length ?? 0) > 0 && /* @__PURE__ */ jsx36("ul", { className: "flex flex-wrap gap-1.5 mt-1 list-none p-0", role: "list", "aria-label": "Image tags", children: image.tags?.map((tag) => {
                 const tone = tag.tone ?? "default";
                 return /* @__PURE__ */ jsx36(
-                  "span",
+                  "li",
                   {
                     className: cn(
                       "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border",
@@ -4019,28 +4205,37 @@ var Gallery = memo38(function Gallery2({
   } = element.props;
   const accent = getAccentColor(accentColor ?? void 0);
   if (!items || items.length === 0) {
-    return /* @__PURE__ */ jsxs37("div", { className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground", children: [
-      /* @__PURE__ */ jsx37(Images, { className: "w-10 h-10 opacity-20 mb-3" }),
-      /* @__PURE__ */ jsx37("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No images in gallery" })
-    ] });
+    return /* @__PURE__ */ jsxs37(
+      "div",
+      {
+        role: "status",
+        className: "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground motion-reduce:animate-none",
+        children: [
+          /* @__PURE__ */ jsx37(Images, { className: "w-10 h-10 opacity-20 mb-3", "aria-hidden": "true" }),
+          /* @__PURE__ */ jsx37("p", { className: "font-mono text-xs uppercase tracking-widest opacity-50", children: "No images in gallery" })
+        ]
+      }
+    );
   }
-  return /* @__PURE__ */ jsxs37("div", { className: "flex flex-col gap-4", children: [
-    title && /* @__PURE__ */ jsx37("h3", { className: "m-0 text-lg font-semibold", children: title }),
-    /* @__PURE__ */ jsx37("div", { className: "grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3", children: items.map((item, index) => {
+  return /* @__PURE__ */ jsxs37("figure", { className: "flex flex-col gap-4", role: "group", "aria-label": title ?? "Image gallery", children: [
+    title && /* @__PURE__ */ jsx37("figcaption", { className: "m-0 text-lg font-semibold", children: title }),
+    /* @__PURE__ */ jsx37("div", { className: "grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3", role: "list", children: items.map((item, index) => {
       const status = item.status ?? "ready";
       const statusLabel = buildStatusLabel(status);
       const statusTone = getStatusTone(status);
       const progress = getProgressPercent(item.progress);
       return /* @__PURE__ */ jsxs37(
-        motion35.div,
+        motion35.article,
         {
+          role: "listitem",
           initial: { opacity: 0, scale: 0.9 },
           animate: { opacity: 1, scale: 1 },
           transition: { delay: index * 0.05 },
           "data-selectable-item": true,
           "data-element-key": element.key,
           "data-item-id": item.id ?? `${index}`,
-          className: "rounded-2xl overflow-hidden border border-[color:color-mix(in_srgb,var(--accent-color,var(--border)),transparent_86%)] card-glass relative min-h-[160px] hover:shadow-xl",
+          className: "rounded-2xl overflow-hidden border border-[color:color-mix(in_srgb,var(--accent-color,var(--border)),transparent_86%)] card-glass relative min-h-[160px] hover:shadow-xl motion-reduce:animate-none motion-reduce:transition-none",
+          "aria-label": item.title ?? `Image ${index + 1}`,
           style: {
             "--accent-color": accent
           },
@@ -4050,6 +4245,7 @@ var Gallery = memo38(function Gallery2({
               {
                 src: item.src ?? "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80",
                 alt: item.title ?? "AI image",
+                loading: "lazy",
                 className: "w-full h-[180px] object-cover"
               }
             ),
@@ -4057,6 +4253,8 @@ var Gallery = memo38(function Gallery2({
               /* @__PURE__ */ jsx37(
                 "span",
                 {
+                  role: "status",
+                  "aria-label": statusLabel,
                   className: cn(
                     "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border shadow-sm backdrop-blur-md",
                     {
@@ -4069,18 +4267,26 @@ var Gallery = memo38(function Gallery2({
                   children: statusLabel
                 }
               ),
-              status === "generating" && /* @__PURE__ */ jsxs37("span", { className: "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border shadow-sm backdrop-blur-md bg-white/10 text-white border-white/10", children: [
-                progress,
-                "%"
-              ] })
+              status === "generating" && /* @__PURE__ */ jsxs37(
+                "span",
+                {
+                  role: "status",
+                  "aria-label": `${progress}% complete`,
+                  className: "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border shadow-sm backdrop-blur-md bg-white/10 text-white border-white/10",
+                  children: [
+                    progress,
+                    "%"
+                  ]
+                }
+              )
             ] }),
             /* @__PURE__ */ jsxs37("div", { className: "p-3 flex flex-col gap-1.5", children: [
               /* @__PURE__ */ jsx37("div", { className: "font-semibold text-[13px] text-foreground truncate", children: item.title ?? "Untitled" }),
               item.prompt && /* @__PURE__ */ jsx37("div", { className: "text-xs text-muted-foreground line-clamp-2", children: item.prompt }),
-              item.tags && item.tags.length > 0 && /* @__PURE__ */ jsx37("div", { className: "flex flex-wrap gap-1.5 mt-1", children: item.tags.map((tag) => {
+              item.tags && item.tags.length > 0 && /* @__PURE__ */ jsx37("ul", { className: "flex flex-wrap gap-1.5 mt-1 list-none p-0", role: "list", "aria-label": "Tags", children: item.tags.map((tag) => {
                 const tone = tag.tone ?? "default";
                 return /* @__PURE__ */ jsx37(
-                  "span",
+                  "li",
                   {
                     className: cn(
                       "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border",

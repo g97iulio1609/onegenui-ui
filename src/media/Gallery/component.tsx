@@ -41,8 +41,11 @@ export const Gallery = memo(function Gallery({
 
   if (!items || items.length === 0) {
     return (
-      <div className="py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground">
-        <Images className="w-10 h-10 opacity-20 mb-3" />
+      <div
+        role="status"
+        className="py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground motion-reduce:animate-none"
+      >
+        <Images className="w-10 h-10 opacity-20 mb-3" aria-hidden="true" />
         <p className="font-mono text-xs uppercase tracking-widest opacity-50">
           No images in gallery
         </p>
@@ -51,9 +54,9 @@ export const Gallery = memo(function Gallery({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {title && <h3 className="m-0 text-lg font-semibold">{title}</h3>}
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3">
+    <figure className="flex flex-col gap-4" role="group" aria-label={title ?? "Image gallery"}>
+      {title && <figcaption className="m-0 text-lg font-semibold">{title}</figcaption>}
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3" role="list">
         {items.map((item, index) => {
           const status = item.status ?? "ready";
           const statusLabel = buildStatusLabel(status);
@@ -61,7 +64,8 @@ export const Gallery = memo(function Gallery({
           const progress = getProgressPercent(item.progress);
 
           return (
-            <motion.div
+            <motion.article
+              role="listitem"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.05 }}
@@ -69,7 +73,8 @@ export const Gallery = memo(function Gallery({
               data-selectable-item
               data-element-key={element.key}
               data-item-id={item.id ?? `${index}`}
-              className="rounded-2xl overflow-hidden border border-[color:color-mix(in_srgb,var(--accent-color,var(--border)),transparent_86%)] card-glass relative min-h-[160px] hover:shadow-xl"
+              className="rounded-2xl overflow-hidden border border-[color:color-mix(in_srgb,var(--accent-color,var(--border)),transparent_86%)] card-glass relative min-h-[160px] hover:shadow-xl motion-reduce:animate-none motion-reduce:transition-none"
+              aria-label={item.title ?? `Image ${index + 1}`}
               // Using CSS variable for dynamic accent color to avoid inline style for border color directly
               style={
                 {
@@ -83,10 +88,13 @@ export const Gallery = memo(function Gallery({
                   "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80"
                 }
                 alt={item.title ?? "AI image"}
+                loading="lazy"
                 className="w-full h-[180px] object-cover"
               />
               <div className="absolute top-3 left-3 flex gap-1.5 z-[2]">
                 <span
+                  role="status"
+                  aria-label={statusLabel}
                   className={cn(
                     "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border shadow-sm backdrop-blur-md",
                     {
@@ -104,7 +112,11 @@ export const Gallery = memo(function Gallery({
                   {statusLabel}
                 </span>
                 {status === "generating" && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border shadow-sm backdrop-blur-md bg-white/10 text-white border-white/10">
+                  <span
+                    role="status"
+                    aria-label={`${progress}% complete`}
+                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border shadow-sm backdrop-blur-md bg-white/10 text-white border-white/10"
+                  >
                     {progress}%
                   </span>
                 )}
@@ -120,11 +132,11 @@ export const Gallery = memo(function Gallery({
                   </div>
                 )}
                 {item.tags && item.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-1">
+                  <ul className="flex flex-wrap gap-1.5 mt-1 list-none p-0" role="list" aria-label="Tags">
                     {item.tags.map((tag) => {
                       const tone = tag.tone ?? "default";
                       return (
-                        <span
+                        <li
                           key={tag.label}
                           className={cn(
                             "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border",
@@ -141,17 +153,17 @@ export const Gallery = memo(function Gallery({
                           )}
                         >
                           {tag.label}
-                        </span>
+                        </li>
                       );
                     })}
-                  </div>
+                  </ul>
                 )}
               </div>
-            </motion.div>
+            </motion.article>
           );
         })}
       </div>
       {children}
-    </div>
+    </figure>
   );
 });

@@ -42,7 +42,7 @@ export const Text = memo(function Text({
   const resolvedColor = color || "default";
 
   return (
-    <motion.div
+    <motion.p
       variants={textVariants}
       initial="hidden"
       animate="visible"
@@ -51,10 +51,11 @@ export const Text = memo(function Text({
         "m-0 leading-relaxed",
         VARIANT_CLASSES[resolvedVariant] || VARIANT_CLASSES.body,
         COLOR_CLASSES[resolvedColor] || COLOR_CLASSES.default,
+        "motion-reduce:animate-none",
       )}
     >
       {render(content, { inline: true })}
       {children}
-    </motion.div>
+    </motion.p>
   );
 });

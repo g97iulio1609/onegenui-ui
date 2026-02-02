@@ -19,27 +19,45 @@ export const DriveFile = memo(function DriveFile({
       owners?: Array<{ displayName?: string; photoLink?: string }>;
     };
 
+  const handleClick = () => {
+    if (webViewLink) {
+      window.open(webViewLink, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (webViewLink && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      window.open(webViewLink, "_blank", "noopener,noreferrer");
+    }
+  };
+
   return (
-    <motion.div
+    <motion.article
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={cn(
         "card-glass flex flex-col w-full max-w-[300px]",
-        "overflow-hidden cursor-pointer",
-        webViewLink ? "hover:shadow-2xl" : "cursor-default",
+        "overflow-hidden motion-reduce:animate-none",
+        webViewLink ? "hover:shadow-2xl cursor-pointer" : "cursor-default",
       )}
-      onClick={() => webViewLink && window.open(webViewLink, "_blank")}
+      role={webViewLink ? "link" : undefined}
+      tabIndex={webViewLink ? 0 : undefined}
+      aria-label={name}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
     >
       {thumbnailLink ? (
         <div className="h-40 w-full overflow-hidden bg-zinc-900/50 flex items-center justify-center">
           <img
             src={thumbnailLink}
-            alt={name}
+            alt={`Preview of ${name}`}
+            loading="lazy"
             className="w-full h-full object-cover"
           />
         </div>
       ) : (
-        <div className="h-40 w-full bg-zinc-900/50 flex items-center justify-center">
+        <div className="h-40 w-full bg-zinc-900/50 flex items-center justify-center" aria-hidden="true">
           <File size={48} className="text-muted-foreground" />
         </div>
       )}
@@ -47,34 +65,34 @@ export const DriveFile = memo(function DriveFile({
       <div className="p-4">
         <div className="flex items-center gap-2 mb-2">
           {iconLink ? (
-            <img src={iconLink} alt="" className="w-4 h-4" />
+            <img src={iconLink} alt="" aria-hidden="true" className="w-4 h-4" />
           ) : (
-            <File size={16} />
+            <File size={16} aria-hidden="true" />
           )}
-          <div
+          <h3
             className="font-medium text-sm whitespace-nowrap overflow-hidden text-ellipsis text-foreground"
             title={name}
           >
             {name}
-          </div>
+          </h3>
         </div>
 
         <div className="flex flex-col gap-1.5 text-xs text-muted-foreground">
           {modifiedTime && (
             <div className="flex items-center gap-1.5">
-              <Clock size={12} />
-              {new Date(modifiedTime).toLocaleDateString()}
+              <Clock size={12} aria-hidden="true" />
+              <time dateTime={modifiedTime}>{new Date(modifiedTime).toLocaleDateString()}</time>
             </div>
           )}
           {owners && owners[0] && (
             <div className="flex items-center gap-1.5">
-              <User size={12} />
-              {owners[0].displayName}
+              <User size={12} aria-hidden="true" />
+              <span>{owners[0].displayName}</span>
             </div>
           )}
         </div>
       </div>
       {children}
-    </motion.div>
+    </motion.article>
   );
 });

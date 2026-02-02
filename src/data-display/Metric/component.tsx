@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useId } from "react";
 import { type ComponentRenderProps, useData } from "@onegenui/react";
 import { motion } from "framer-motion";
 import { resolveValueProp } from "../../utils/data-utils";
@@ -27,6 +27,7 @@ export const Metric = memo(function Metric({
     };
 
   const { data } = useData();
+  const labelId = useId();
   const rawValue = resolveValueProp<string | number>(data, value, valuePath);
 
   let displayValue = String(rawValue ?? "-");
@@ -45,19 +46,30 @@ export const Metric = memo(function Metric({
   }
 
   return (
-    <motion.div
+    <motion.figure
+      role="group"
+      aria-labelledby={labelId}
       variants={metricVariants}
       initial="hidden"
       animate="visible"
       transition={{ duration: 0.2 }}
-      className="flex flex-col gap-0.5 sm:gap-1 w-full min-w-0"
+      className={cn(
+        "flex flex-col gap-0.5 sm:gap-1 w-full min-w-0",
+        "motion-reduce:animate-none",
+      )}
     >
-      <span className="text-label text-[0.5625rem] sm:text-[0.625rem]">
+      <figcaption
+        id={labelId}
+        className="text-label text-[0.5625rem] sm:text-[0.625rem]"
+      >
         {label}
+      </figcaption>
+      <span className="text-display text-xl sm:text-2xl" aria-live="polite">
+        {displayValue}
       </span>
-      <span className="text-display text-xl sm:text-2xl">{displayValue}</span>
       {(trend || trendValue) && (
         <span
+          aria-label={`Trend: ${trend === "up" ? "increasing" : trend === "down" ? "decreasing" : "neutral"} ${trendValue ?? ""}`}
           className={cn(
             "text-[0.625rem] sm:text-xs font-medium flex items-center gap-1",
             trend === "up"
@@ -67,11 +79,13 @@ export const Metric = memo(function Metric({
                 : "text-muted-foreground",
           )}
         >
-          {trend === "up" ? "+" : trend === "down" ? "-" : ""}
+          <span aria-hidden="true">
+            {trend === "up" ? "+" : trend === "down" ? "-" : ""}
+          </span>
           {trendValue}
         </span>
       )}
       {children}
-    </motion.div>
+    </motion.figure>
   );
 });

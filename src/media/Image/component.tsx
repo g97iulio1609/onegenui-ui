@@ -78,8 +78,14 @@ export const Image = memo(function Image({
 
   if (!images || images.length === 0) {
     return (
-      <div className="py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground">
-        <ImageIcon className="w-10 h-10 opacity-20 mb-3" />
+      <div
+        role="status"
+        className={cn(
+          "py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl bg-zinc-900/20 text-muted-foreground",
+          "motion-reduce:animate-none",
+        )}
+      >
+        <ImageIcon className="w-10 h-10 opacity-20 mb-3" aria-hidden="true" />
         <p className="font-mono text-xs uppercase tracking-widest opacity-50">
           No images available
         </p>
@@ -88,9 +94,9 @@ export const Image = memo(function Image({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {title && <h3 className="m-0 text-lg font-semibold">{title}</h3>}
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4">
+    <figure className="flex flex-col gap-4" role="group" aria-label={title ?? "Image gallery"}>
+      {title && <figcaption className="m-0 text-lg font-semibold">{title}</figcaption>}
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4" role="list">
         {images.map((image, index) => {
           const status = image.status?.status ?? "ready";
           const progress = getProgressPercent(image.status?.progress);
@@ -130,7 +136,8 @@ export const Image = memo(function Image({
           }
 
           return (
-            <motion.div
+            <motion.article
+              role="listitem"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
@@ -138,13 +145,16 @@ export const Image = memo(function Image({
               data-selectable-item
               data-element-key={element.key}
               data-item-id={image.id ?? `${index}`}
-              className="flex flex-col min-w-0 overflow-hidden rounded-[18px] border border-white/10 bg-zinc-900 shadow-2xl transition-all bg-[linear-gradient(135deg,rgba(24,24,27,0.9)_0%,rgba(9,9,11,0.95)_100%)]"
+              className="flex flex-col min-w-0 overflow-hidden rounded-[18px] border border-white/10 bg-zinc-900 shadow-2xl transition-all bg-[linear-gradient(135deg,rgba(24,24,27,0.9)_0%,rgba(9,9,11,0.95)_100%)] motion-reduce:animate-none motion-reduce:transition-none"
+              aria-label={image.title ?? `Image ${index + 1}`}
             >
               <div className="relative">
                 {/* Only show status badge if not ready */}
                 {status !== "ready" && (
                   <div className="absolute top-4 left-4 flex gap-2 items-center z-[2]">
                     <span
+                      role="status"
+                      aria-label={statusLabel}
                       className={cn(
                         "inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide border shadow-sm backdrop-blur-md",
                         {
@@ -167,13 +177,18 @@ export const Image = memo(function Image({
                 <img
                   src={imageSrc}
                   alt={image.alt ?? image.title ?? "AI generated image"}
+                  loading="lazy"
                   className={cn("w-full h-[220px] object-cover block", {
                     "opacity-40": status === "failed",
                   })}
                 />
 
                 {isStreaming && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/45 text-white text-sm font-semibold backdrop-blur-sm">
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className="absolute inset-0 flex items-center justify-center bg-black/45 text-white text-sm font-semibold backdrop-blur-sm"
+                  >
                     Streaming preview...
                   </div>
                 )}
@@ -192,15 +207,21 @@ export const Image = memo(function Image({
                 </div>
 
                 {status === "generating" && (
-                  <div className="flex flex-col gap-1.5">
-                    <div className="text-xs text-muted-foreground">
+                  <div className="flex flex-col gap-1.5" role="status" aria-label={`Rendering ${progress}%`}>
+                    <div className="text-xs text-muted-foreground" aria-hidden="true">
                       Rendering {progress}%
                     </div>
-                    <div className="h-1.5 w-full rounded-full bg-muted/20 overflow-hidden">
+                    <div
+                      className="h-1.5 w-full rounded-full bg-muted/20 overflow-hidden"
+                      role="progressbar"
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={progress}
+                    >
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${progress}%` }}
-                        className="h-full rounded-full bg-[var(--progress-color,var(--primary))]"
+                        className="h-full rounded-full bg-[var(--progress-color,var(--primary))] motion-reduce:animate-none"
                         // Using inline style for dynamic progress width and color
                         style={
                           {
@@ -214,7 +235,7 @@ export const Image = memo(function Image({
                 )}
 
                 {image.status?.errorMessage && (
-                  <div className="text-xs text-destructive">
+                  <div className="text-xs text-destructive" role="alert">
                     {image.status.errorMessage}
                   </div>
                 )}
@@ -239,11 +260,11 @@ export const Image = memo(function Image({
                 </div>
 
                 {(image.tags?.length ?? 0) > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-1">
+                  <ul className="flex flex-wrap gap-1.5 mt-1 list-none p-0" role="list" aria-label="Image tags">
                     {image.tags?.map((tag) => {
                       const tone = tag.tone ?? "default";
                       return (
-                        <span
+                        <li
                           key={tag.label}
                           className={cn(
                             "inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border",
@@ -260,10 +281,10 @@ export const Image = memo(function Image({
                           )}
                         >
                           {tag.label}
-                        </span>
+                        </li>
                       );
                     })}
-                  </div>
+                  </ul>
                 )}
 
                 <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mt-2 pt-2 border-t border-white/5">
@@ -272,11 +293,11 @@ export const Image = memo(function Image({
                   {image.createdAt && <span>{image.createdAt}</span>}
                 </div>
               </div>
-            </motion.div>
+            </motion.article>
           );
         })}
       </div>
       {children}
-    </div>
+    </figure>
   );
 });

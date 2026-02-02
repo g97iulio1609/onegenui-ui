@@ -76,19 +76,19 @@ export const DocumentIndex = memo(function DocumentIndex({
   const isLoading = LOADING_STATUSES.has(currentStatus);
 
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <section className="flex flex-col gap-4 w-full" aria-label={`Document: ${fileName}`}>
       {/* Card container */}
-      <div className="flex flex-col gap-3 p-4 rounded-xl border border-white/10 card-glass">
+      <article className="flex flex-col gap-3 p-4 rounded-xl border border-white/10 card-glass">
         {/* Header */}
-        <div className="flex items-start justify-between gap-3">
+        <header className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0" aria-hidden="true">
               <BookOpen size={20} className="text-primary" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-sm font-semibold text-foreground truncate m-0">
+              <h3 className="text-sm font-semibold text-foreground truncate m-0">
                 {fileName}
-              </h4>
+              </h3>
               {description && (
                 <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5 m-0">
                   {description}
@@ -99,28 +99,36 @@ export const DocumentIndex = memo(function DocumentIndex({
 
           {/* Status badge */}
           <div
+            role="status"
+            aria-live="polite"
             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.color} bg-white/5`}
           >
-            <StatusIcon size={12} className={isLoading ? "animate-spin" : ""} />
+            <StatusIcon size={12} className={isLoading ? "animate-spin motion-reduce:animate-none" : ""} aria-hidden="true" />
             <span>{config.label}</span>
           </div>
-        </div>
+        </header>
 
         {/* Progress bar */}
         {isLoading && (
-          <div className="space-y-1.5">
+          <div className="space-y-1.5" role="status" aria-label={`Processing: ${progress != null ? `${Math.round(progress)}%` : "in progress"}`}>
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>{message || "Processing..."}</span>
-              {progress != null && <span>{Math.round(progress)}%</span>}
+              {progress != null && <span aria-hidden="true">{Math.round(progress)}%</span>}
               {currentPage != null && pageCount != null && (
-                <span>
+                <span aria-hidden="true">
                   Page {currentPage} / {pageCount}
                 </span>
               )}
             </div>
-            <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div
+              className="h-1.5 bg-white/5 rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={progress ?? undefined}
+            >
               <motion.div
-                className="h-full bg-primary/60 rounded-full"
+                className="h-full bg-primary/60 rounded-full motion-reduce:animate-none"
                 initial={{ width: 0 }}
                 animate={{
                   width: progress != null ? `${progress}%` : "30%",
@@ -140,16 +148,16 @@ export const DocumentIndex = memo(function DocumentIndex({
 
         {/* Error message */}
         {error && (
-          <div className="px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400">
+          <div role="alert" className="px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400">
             {error}
           </div>
         )}
 
         {/* Index tree */}
         {nodes && nodes.length > 0 && (
-          <div className="mt-2 border-t border-white/5 pt-3">
+          <nav className="mt-2 border-t border-white/5 pt-3" aria-label="Document structure">
             <div className="flex items-center gap-2 mb-2">
-              <Hash size={14} className="text-muted-foreground" />
+              <Hash size={14} className="text-muted-foreground" aria-hidden="true" />
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 Document Structure
               </span>
@@ -159,30 +167,30 @@ export const DocumentIndex = memo(function DocumentIndex({
                 </span>
               )}
             </div>
-            <div className="space-y-0.5">
+            <ul className="space-y-0.5 list-none p-0" role="tree">
               <AnimatePresence mode="popLayout">
                 {nodes.map((node, idx) => (
                   <IndexNode key={node.id || idx} node={node} depth={0} />
                 ))}
               </AnimatePresence>
-            </div>
-          </div>
+            </ul>
+          </nav>
         )}
 
         {/* Empty state when complete but no nodes */}
         {currentStatus === "complete" && (!nodes || nodes.length === 0) && (
-          <div className="py-8 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl">
-            <FileText className="w-10 h-10 opacity-20 mb-3" />
+          <div role="status" className="py-8 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-xl">
+            <FileText className="w-10 h-10 opacity-20 mb-3" aria-hidden="true" />
             <p className="text-xs uppercase tracking-widest opacity-50 m-0">
               No structure found
             </p>
           </div>
         )}
-      </div>
+      </article>
 
       {/* Children rendered last */}
       {children}
-    </div>
+    </section>
   );
 });
 
@@ -214,25 +222,27 @@ const IndexNode = memo(function IndexNode({
   );
 
   return (
-    <motion.div
+    <motion.li
+      role="treeitem"
+      aria-expanded={hasChildren ? expanded : undefined}
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -10 }}
       transition={{ duration: 0.2 }}
+      className="motion-reduce:animate-none"
     >
       <div
         role={hasChildren ? "button" : undefined}
         tabIndex={hasChildren ? 0 : undefined}
         onClick={handleToggle}
         onKeyDown={handleKeyDown}
-        aria-expanded={hasChildren ? expanded : undefined}
         className={`w-full flex items-center gap-2 py-1.5 px-2 rounded-md text-left
           ${hasChildren ? "hover:bg-white/5 cursor-pointer" : "cursor-default"}
-          transition-colors group`}
+          transition-colors motion-reduce:transition-none group`}
         style={{ paddingLeft }}
       >
         {/* Expand icon */}
-        <span className="w-4 h-4 flex items-center justify-center shrink-0">
+        <span className="w-4 h-4 flex items-center justify-center shrink-0" aria-hidden="true">
           {hasChildren ? (
             expanded ? (
               <ChevronDown size={14} className="text-muted-foreground" />
@@ -274,7 +284,7 @@ const IndexNode = memo(function IndexNode({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="text-xs text-muted-foreground/70 leading-relaxed pb-1"
+            className="text-xs text-muted-foreground/70 leading-relaxed pb-1 motion-reduce:animate-none"
             style={{ paddingLeft: paddingLeft + 24, paddingRight: 8 }}
           >
             {node.summary}
@@ -285,18 +295,20 @@ const IndexNode = memo(function IndexNode({
       {/* Children */}
       <AnimatePresence>
         {expanded && hasChildren && (
-          <motion.div
+          <motion.ul
+            role="group"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
+            className="list-none p-0 motion-reduce:animate-none"
           >
             {node.children!.map((child, idx) => (
               <IndexNode key={child.id || idx} node={child} depth={depth + 1} />
             ))}
-          </motion.div>
+          </motion.ul>
         )}
       </AnimatePresence>
-    </motion.div>
+    </motion.li>
   );
 });

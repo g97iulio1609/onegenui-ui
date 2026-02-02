@@ -60,6 +60,7 @@ export const Heading = memo(function Heading({
       className={cn(
         "font-semibold tracking-tight mb-3 sm:mb-4 text-foreground",
         HEADING_SIZES[normalizedLevel],
+        "motion-reduce:animate-none",
       )}
     >
       {render(text, { inline: true })}
