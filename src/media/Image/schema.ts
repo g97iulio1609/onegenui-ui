@@ -92,7 +92,7 @@ export const ImageItemSchema = z.object({
   metadata: ImageMetadataSchema.optional().nullable(),
   /** Generation/processing status */
   status: ImageStatusSchema.optional().nullable(),
-  /** Source location details (deprecated, use source instead) */
+  /** Source location details for streaming */
   location: ImageLocationSchema.optional().nullable(),
 });
 

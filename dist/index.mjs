@@ -58,7 +58,7 @@ import {
   VideoPropsSchema,
   WeatherDefinition,
   WeatherPropsSchema
-} from "./chunk-42KZEVSX.mjs";
+} from "./chunk-HQWIM4RE.mjs";
 
 // src/utils/cn.ts
 import { cn } from "@onegenui/utils";
