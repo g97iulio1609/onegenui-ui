@@ -2250,6 +2250,7 @@ var import_lucide_react13 = require("lucide-react");
 
 // src/data-display/SearchResults/components/citation-link.tsx
 var import_react30 = require("react");
+var import_utils3 = require("@onegenui/utils");
 var import_jsx_runtime21 = require("react/jsx-runtime");
 var CitationLink = (0, import_react30.memo)(function CitationLink2({
   id,
@@ -2288,7 +2289,7 @@ var CitationLink = (0, import_react30.memo)(function CitationLink2({
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isWebSource && !hasExcerpt) {
+    if (isWebSource && !hasExcerpt && (0, import_utils3.isSafeUrl)(source.url)) {
       window.open(source.url, "_blank", "noopener,noreferrer");
     } else {
       updatePosition();
@@ -2333,7 +2334,7 @@ var CitationLink = (0, import_react30.memo)(function CitationLink2({
           isWebSource && /* @__PURE__ */ (0, import_jsx_runtime21.jsxs)(
             "a",
             {
-              href: source.url,
+              href: (0, import_utils3.sanitizeUrl)(source.url),
               target: "_blank",
               rel: "noopener noreferrer",
               className: "mt-2 pt-2 border-t border-white/5 flex items-center gap-1 text-[10px] text-primary hover:underline",
@@ -2662,6 +2663,7 @@ var MediaGallery = (0, import_react33.memo)(function MediaGallery2({
 var import_react34 = require("react");
 var import_framer_motion23 = require("framer-motion");
 var import_lucide_react10 = require("lucide-react");
+var import_utils4 = require("@onegenui/utils");
 var import_jsx_runtime25 = require("react/jsx-runtime");
 var SourcesSidebar = (0, import_react34.memo)(function SourcesSidebar2({
   sources,
@@ -2699,7 +2701,7 @@ var SourcesSidebar = (0, import_react34.memo)(function SourcesSidebar2({
         initial: { opacity: 0, x: 10 },
         animate: { opacity: 1, x: 0 },
         transition: { delay: idx * 0.03 },
-        href: source.url,
+        href: (0, import_utils4.sanitizeUrl)(source.url),
         target: "_blank",
         rel: "noopener noreferrer",
         className: "group flex items-start gap-2.5 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-transparent hover:border-white/10 transition-all no-underline",
@@ -2745,6 +2747,7 @@ var SourcesSidebar = (0, import_react34.memo)(function SourcesSidebar2({
 var import_react35 = require("react");
 var import_framer_motion24 = require("framer-motion");
 var import_lucide_react11 = require("lucide-react");
+var import_utils5 = require("@onegenui/utils");
 var import_jsx_runtime26 = require("react/jsx-runtime");
 var RichResultCard = (0, import_react35.memo)(function RichResultCard2({
   result,
@@ -2770,7 +2773,7 @@ var RichResultCard = (0, import_react35.memo)(function RichResultCard2({
       children: /* @__PURE__ */ (0, import_jsx_runtime26.jsx)(
         "a",
         {
-          href: result.url,
+          href: (0, import_utils5.sanitizeUrl)(result.url),
           target: "_blank",
           rel: "noopener noreferrer",
           className: "block no-underline",
@@ -2829,6 +2832,7 @@ var RichResultCard = (0, import_react35.memo)(function RichResultCard2({
 var import_react36 = require("react");
 var import_framer_motion25 = require("framer-motion");
 var import_lucide_react12 = require("lucide-react");
+var import_utils6 = require("@onegenui/utils");
 var import_jsx_runtime27 = require("react/jsx-runtime");
 var InlineResult = (0, import_react36.memo)(function InlineResult2({
   result,
@@ -2841,7 +2845,7 @@ var InlineResult = (0, import_react36.memo)(function InlineResult2({
       initial: { opacity: 0, y: 4 },
       animate: { opacity: 1, y: 0 },
       transition: { delay: index * 0.02 },
-      href: result.url,
+      href: (0, import_utils6.sanitizeUrl)(result.url),
       target: "_blank",
       rel: "noopener noreferrer",
       className: "group flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition-all no-underline",
@@ -3128,11 +3132,11 @@ var DriveFileDefinition = {
 };
 
 // src/data-display/DriveFileList/component.tsx
-var import_react40 = require("react");
+var import_react41 = require("react");
 var import_framer_motion28 = require("framer-motion");
 
 // src/data-display/DriveFileList/components/file-views.tsx
-var import_react39 = require("react");
+var import_react40 = require("react");
 var import_framer_motion27 = require("framer-motion");
 
 // src/data-display/DriveFileList/components/types.ts
@@ -3178,47 +3182,52 @@ function isFolder(mimeType) {
 }
 
 // src/data-display/DriveFileList/components/icons.tsx
+var import_react39 = require("react");
 var import_jsx_runtime30 = require("react/jsx-runtime");
-var DriveIcon = () => /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("svg", { width: "18", height: "18", viewBox: "0 0 87.3 78", fill: "none", children: [
-  /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
-    "path",
-    {
-      d: "M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H0c0 1.55.4 3.1 1.2 4.5l5.4 9.35z",
-      fill: "#0066da"
-    }
-  ),
-  /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
-    "path",
-    {
-      d: "M43.65 25L29.9 0H21.6c-1.35.8-2.5 1.9-3.3 3.3L1.2 29.4c-.8 1.4-1.2 2.95-1.2 4.5h27.5L43.65 25z",
-      fill: "#00ac47"
-    }
-  ),
-  /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
-    "path",
-    {
-      d: "M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.85L73.55 76.8z",
-      fill: "#ea4335"
-    }
-  ),
-  /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("path", { d: "M43.65 25L57.4 0H29.9l13.75 23.8V25z", fill: "#00832d" }),
-  /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
-    "path",
-    {
-      d: "M59.85 53h27.5L70.9 23.85c-.8-1.4-1.95-2.5-3.3-3.3l-23.95 7.5L59.85 53z",
-      fill: "#2684fc"
-    }
-  ),
-  /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
-    "path",
-    {
-      d: "M27.5 53L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.4 4.5-1.2L59.85 53H27.5z",
-      fill: "#ffba00"
-    }
-  )
-] });
-var FolderIcon = () => /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "#fbbf24", children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("path", { d: "M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" }) });
-var FileIcon = ({ mimeType }) => {
+var DriveIcon = (0, import_react39.memo)(function DriveIcon2() {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)("svg", { width: "18", height: "18", viewBox: "0 0 87.3 78", fill: "none", children: [
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+      "path",
+      {
+        d: "M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H0c0 1.55.4 3.1 1.2 4.5l5.4 9.35z",
+        fill: "#0066da"
+      }
+    ),
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+      "path",
+      {
+        d: "M43.65 25L29.9 0H21.6c-1.35.8-2.5 1.9-3.3 3.3L1.2 29.4c-.8 1.4-1.2 2.95-1.2 4.5h27.5L43.65 25z",
+        fill: "#00ac47"
+      }
+    ),
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+      "path",
+      {
+        d: "M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.85L73.55 76.8z",
+        fill: "#ea4335"
+      }
+    ),
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("path", { d: "M43.65 25L57.4 0H29.9l13.75 23.8V25z", fill: "#00832d" }),
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+      "path",
+      {
+        d: "M59.85 53h27.5L70.9 23.85c-.8-1.4-1.95-2.5-3.3-3.3l-23.95 7.5L59.85 53z",
+        fill: "#2684fc"
+      }
+    ),
+    /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+      "path",
+      {
+        d: "M27.5 53L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.4 4.5-1.2L59.85 53H27.5z",
+        fill: "#ffba00"
+      }
+    )
+  ] });
+});
+var FolderIcon = (0, import_react39.memo)(function FolderIcon2() {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "#fbbf24", children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("path", { d: "M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" }) });
+});
+var FileIcon = (0, import_react39.memo)(function FileIcon2({ mimeType }) {
   const getColor = () => {
     if (mimeType.includes("document") || mimeType.includes("word"))
       return "#4285f4";
@@ -3233,93 +3242,103 @@ var FileIcon = ({ mimeType }) => {
     return "#757575";
   };
   return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: getColor(), children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("path", { d: "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" }) });
-};
-var GridIcon = () => /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(
-  "svg",
-  {
-    width: "16",
-    height: "16",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    children: [
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("rect", { x: "3", y: "3", width: "7", height: "7" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("rect", { x: "14", y: "3", width: "7", height: "7" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("rect", { x: "14", y: "14", width: "7", height: "7" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("rect", { x: "3", y: "14", width: "7", height: "7" })
-    ]
-  }
-);
-var ListIcon2 = () => /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(
-  "svg",
-  {
-    width: "16",
-    height: "16",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    children: [
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "8", y1: "6", x2: "21", y2: "6" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "8", y1: "12", x2: "21", y2: "12" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "8", y1: "18", x2: "21", y2: "18" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "3", y1: "6", x2: "3.01", y2: "6" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "3", y1: "12", x2: "3.01", y2: "12" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "3", y1: "18", x2: "3.01", y2: "18" })
-    ]
-  }
-);
-var ExternalLinkIcon = () => /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(
-  "svg",
-  {
-    width: "14",
-    height: "14",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    children: [
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("polyline", { points: "15 3 21 3 21 9" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "10", y1: "14", x2: "21", y2: "3" })
-    ]
-  }
-);
-var StarIcon = ({ filled }) => /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
-  "svg",
-  {
-    width: "14",
-    height: "14",
-    viewBox: "0 0 24 24",
-    fill: filled ? "currentColor" : "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("polygon", { points: "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" })
-  }
-);
-var ShareIcon = () => /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(
-  "svg",
-  {
-    width: "14",
-    height: "14",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    children: [
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("circle", { cx: "18", cy: "5", r: "3" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("circle", { cx: "6", cy: "12", r: "3" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("circle", { cx: "18", cy: "19", r: "3" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "8.59", y1: "13.51", x2: "15.42", y2: "17.49" }),
-      /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "15.41", y1: "6.51", x2: "8.59", y2: "10.49" })
-    ]
-  }
-);
+});
+var GridIcon = (0, import_react39.memo)(function GridIcon2() {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(
+    "svg",
+    {
+      width: "16",
+      height: "16",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("rect", { x: "3", y: "3", width: "7", height: "7" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("rect", { x: "14", y: "3", width: "7", height: "7" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("rect", { x: "14", y: "14", width: "7", height: "7" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("rect", { x: "3", y: "14", width: "7", height: "7" })
+      ]
+    }
+  );
+});
+var ListIcon2 = (0, import_react39.memo)(function ListIcon3() {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(
+    "svg",
+    {
+      width: "16",
+      height: "16",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "8", y1: "6", x2: "21", y2: "6" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "8", y1: "12", x2: "21", y2: "12" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "8", y1: "18", x2: "21", y2: "18" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "3", y1: "6", x2: "3.01", y2: "6" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "3", y1: "12", x2: "3.01", y2: "12" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "3", y1: "18", x2: "3.01", y2: "18" })
+      ]
+    }
+  );
+});
+var ExternalLinkIcon = (0, import_react39.memo)(function ExternalLinkIcon2() {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(
+    "svg",
+    {
+      width: "14",
+      height: "14",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("polyline", { points: "15 3 21 3 21 9" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "10", y1: "14", x2: "21", y2: "3" })
+      ]
+    }
+  );
+});
+var StarIcon = (0, import_react39.memo)(function StarIcon2({ filled }) {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsx)(
+    "svg",
+    {
+      width: "14",
+      height: "14",
+      viewBox: "0 0 24 24",
+      fill: filled ? "currentColor" : "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      children: /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("polygon", { points: "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" })
+    }
+  );
+});
+var ShareIcon = (0, import_react39.memo)(function ShareIcon2() {
+  return /* @__PURE__ */ (0, import_jsx_runtime30.jsxs)(
+    "svg",
+    {
+      width: "14",
+      height: "14",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("circle", { cx: "18", cy: "5", r: "3" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("circle", { cx: "6", cy: "12", r: "3" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("circle", { cx: "18", cy: "19", r: "3" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "8.59", y1: "13.51", x2: "15.42", y2: "17.49" }),
+        /* @__PURE__ */ (0, import_jsx_runtime30.jsx)("line", { x1: "15.41", y1: "6.51", x2: "8.59", y2: "10.49" })
+      ]
+    }
+  );
+});
 
 // src/data-display/DriveFileList/components/file-views.tsx
 var import_jsx_runtime31 = require("react/jsx-runtime");
-var FileGridCard = (0, import_react39.memo)(function FileGridCard2({
+var FileGridCard = (0, import_react40.memo)(function FileGridCard2({
   file,
   onOpen
 }) {
@@ -3369,7 +3388,7 @@ var FileGridCard = (0, import_react39.memo)(function FileGridCard2({
     }
   );
 });
-var FileListRow = (0, import_react39.memo)(function FileListRow2({
+var FileListRow = (0, import_react40.memo)(function FileListRow2({
   file,
   onOpen
 }) {
@@ -3432,7 +3451,7 @@ var FileListRow = (0, import_react39.memo)(function FileListRow2({
 
 // src/data-display/DriveFileList/component.tsx
 var import_jsx_runtime32 = require("react/jsx-runtime");
-var DriveFileList = (0, import_react40.memo)(function DriveFileList2({
+var DriveFileList = (0, import_react41.memo)(function DriveFileList2({
   element,
   children
 }) {
@@ -3442,7 +3461,7 @@ var DriveFileList = (0, import_react40.memo)(function DriveFileList2({
     files: initialFiles,
     viewMode: initialViewMode = "list"
   } = element.props;
-  const [viewMode, setViewMode] = (0, import_react40.useState)(initialViewMode);
+  const [viewMode, setViewMode] = (0, import_react41.useState)(initialViewMode);
   const files = initialFiles || [];
   const sortedFiles = [...files].sort((a, b) => {
     const aFolder = isFolder(a.mimeType);
@@ -3586,7 +3605,7 @@ var DriveFileListDefinition = {
 };
 
 // src/data-display/Weather/component.tsx
-var import_react41 = require("react");
+var import_react42 = require("react");
 var import_framer_motion29 = require("framer-motion");
 
 // src/utils/media-utils.ts
@@ -3663,7 +3682,7 @@ var getIcon = (condition, icon) => {
   if (lower.includes("fog") || lower.includes("mist")) return "\u{1F32B}\uFE0F";
   return "\u{1F321}\uFE0F";
 };
-var Weather = (0, import_react41.memo)(function Weather2({
+var Weather = (0, import_react42.memo)(function Weather2({
   element,
   children
 }) {
@@ -3837,7 +3856,7 @@ var WeatherDefinition = {
 };
 
 // src/data-display/DocumentIndex/component.tsx
-var import_react42 = require("react");
+var import_react43 = require("react");
 var import_framer_motion30 = require("framer-motion");
 var import_lucide_react16 = require("lucide-react");
 var import_jsx_runtime34 = require("react/jsx-runtime");
@@ -3862,7 +3881,7 @@ var LOADING_STATUSES = /* @__PURE__ */ new Set([
   "analyzing",
   "building"
 ]);
-var DocumentIndex = (0, import_react42.memo)(function DocumentIndex2({
+var DocumentIndex = (0, import_react43.memo)(function DocumentIndex2({
   element,
   children
 }) {
@@ -3965,19 +3984,19 @@ var DocumentIndex = (0, import_react42.memo)(function DocumentIndex2({
     children
   ] });
 });
-var IndexNode = (0, import_react42.memo)(function IndexNode2({
+var IndexNode = (0, import_react43.memo)(function IndexNode2({
   node,
   depth
 }) {
-  const [expanded, setExpanded] = (0, import_react42.useState)(depth < 2);
+  const [expanded, setExpanded] = (0, import_react43.useState)(depth < 2);
   const hasChildren = node.children && node.children.length > 0;
   const paddingLeft = depth * 16 + 8;
-  const handleToggle = (0, import_react42.useCallback)(() => {
+  const handleToggle = (0, import_react43.useCallback)(() => {
     if (hasChildren) {
       setExpanded((prev) => !prev);
     }
   }, [hasChildren]);
-  const handleKeyDown = (0, import_react42.useCallback)(
+  const handleKeyDown = (0, import_react43.useCallback)(
     (e) => {
       if ((e.key === "Enter" || e.key === " ") && hasChildren) {
         e.preventDefault();
@@ -4097,11 +4116,11 @@ var DocumentIndexDefinition = {
 };
 
 // src/media/Audio/component.tsx
-var import_react43 = require("react");
+var import_react44 = require("react");
 var import_framer_motion31 = require("framer-motion");
 var import_lucide_react17 = require("lucide-react");
 var import_jsx_runtime35 = require("react/jsx-runtime");
-var Audio = (0, import_react43.memo)(function Audio2({
+var Audio = (0, import_react44.memo)(function Audio2({
   element,
   children
 }) {
@@ -4218,7 +4237,7 @@ var AudioDefinition = {
 };
 
 // src/media/Video/component.tsx
-var import_react45 = require("react");
+var import_react46 = require("react");
 var import_framer_motion33 = require("framer-motion");
 var import_lucide_react18 = require("lucide-react");
 
@@ -4362,10 +4381,10 @@ function getProviderInfo(provider) {
 }
 
 // src/media/Video/components/video-card.tsx
-var import_react44 = require("react");
+var import_react45 = require("react");
 var import_framer_motion32 = require("framer-motion");
 var import_jsx_runtime36 = require("react/jsx-runtime");
-var VideoPlayer = (0, import_react44.memo)(function VideoPlayer2({
+var VideoPlayer = (0, import_react45.memo)(function VideoPlayer2({
   video,
   status,
   statusTone,
@@ -4426,7 +4445,7 @@ var VideoPlayer = (0, import_react44.memo)(function VideoPlayer2({
     isStreaming && /* @__PURE__ */ (0, import_jsx_runtime36.jsx)("div", { className: "absolute inset-0 flex items-center justify-center bg-black/40 text-white font-semibold text-sm backdrop-blur-sm", children: "Streaming video..." })
   ] });
 });
-var VideoMetadataPanel = (0, import_react44.memo)(function VideoMetadataPanel2({
+var VideoMetadataPanel = (0, import_react45.memo)(function VideoMetadataPanel2({
   video,
   elementKey,
   index,
@@ -4529,7 +4548,7 @@ var VideoMetadataPanel = (0, import_react44.memo)(function VideoMetadataPanel2({
 
 // src/media/Video/component.tsx
 var import_jsx_runtime37 = require("react/jsx-runtime");
-var Video = (0, import_react45.memo)(function Video2({
+var Video = (0, import_react46.memo)(function Video2({
   element,
   children
 }) {
@@ -4681,11 +4700,11 @@ var VideoDefinition = {
 };
 
 // src/media/Image/component.tsx
-var import_react46 = require("react");
+var import_react47 = require("react");
 var import_framer_motion34 = require("framer-motion");
 var import_lucide_react19 = require("lucide-react");
 var import_jsx_runtime38 = require("react/jsx-runtime");
-var Image = (0, import_react46.memo)(function Image2({
+var Image = (0, import_react47.memo)(function Image2({
   element,
   children
 }) {
@@ -4960,11 +4979,11 @@ var ImageDefinition = {
 };
 
 // src/media/Gallery/component.tsx
-var import_react47 = require("react");
+var import_react48 = require("react");
 var import_framer_motion35 = require("framer-motion");
 var import_lucide_react20 = require("lucide-react");
 var import_jsx_runtime39 = require("react/jsx-runtime");
-var Gallery = (0, import_react47.memo)(function Gallery2({
+var Gallery = (0, import_react48.memo)(function Gallery2({
   element,
   children
 }) {

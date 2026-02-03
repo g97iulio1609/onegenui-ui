@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import { motion } from "framer-motion";
 import { Globe, ChevronDown } from "lucide-react";
+import { sanitizeUrl } from "@onegenui/utils";
 import type { SourceCitation } from "../schema";
 import { cn } from "../../../utils/cn";
 
@@ -52,7 +53,7 @@ export const SourcesSidebar = memo(function SourcesSidebar({
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: idx * 0.03 }}
-            href={source.url}
+            href={sanitizeUrl(source.url)}
             target="_blank"
             rel="noopener noreferrer"
             className="group flex items-start gap-2.5 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-transparent hover:border-white/10 transition-all no-underline"

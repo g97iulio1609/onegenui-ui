@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import { motion } from "framer-motion";
 import { Globe, ChevronRight } from "lucide-react";
+import { sanitizeUrl } from "@onegenui/utils";
 import type { SearchResultItem } from "../schema";
 
 export const InlineResult = memo(function InlineResult({
@@ -17,7 +18,7 @@ export const InlineResult = memo(function InlineResult({
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.02 }}
-      href={result.url}
+      href={sanitizeUrl(result.url)}
       target="_blank"
       rel="noopener noreferrer"
       className="group flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition-all no-underline"

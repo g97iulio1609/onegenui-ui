@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import { motion } from "framer-motion";
 import { Globe, Play } from "lucide-react";
+import { sanitizeUrl } from "@onegenui/utils";
 import type { SearchResultItem } from "../schema";
 
 export const RichResultCard = memo(function RichResultCard({
@@ -30,7 +31,7 @@ export const RichResultCard = memo(function RichResultCard({
       className="group"
     >
       <a
-        href={result.url}
+        href={sanitizeUrl(result.url)}
         target="_blank"
         rel="noopener noreferrer"
         className="block no-underline"

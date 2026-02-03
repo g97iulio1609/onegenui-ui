@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useState, useRef, useEffect, useCallback } from "react";
+import { isSafeUrl, sanitizeUrl } from "@onegenui/utils";
 import type { SourceCitation } from "../schema";
 
 export const CitationLink = memo(function CitationLink({
@@ -51,7 +52,7 @@ export const CitationLink = memo(function CitationLink({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isWebSource && !hasExcerpt) {
+    if (isWebSource && !hasExcerpt && isSafeUrl(source.url)) {
       // Web source without excerpt - open URL
       window.open(source.url!, "_blank", "noopener,noreferrer");
     } else {
@@ -108,7 +109,7 @@ export const CitationLink = memo(function CitationLink({
           {/* Footer for web sources */}
           {isWebSource && (
             <a
-              href={source.url!}
+              href={sanitizeUrl(source.url)}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-2 pt-2 border-t border-white/5 flex items-center gap-1 text-[10px] text-primary hover:underline"

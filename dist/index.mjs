@@ -1863,6 +1863,7 @@ import { Globe as Globe4, Sparkles } from "lucide-react";
 
 // src/data-display/SearchResults/components/citation-link.tsx
 import { memo as memo21, useState as useState5, useRef as useRef3, useEffect as useEffect3, useCallback as useCallback3 } from "react";
+import { isSafeUrl, sanitizeUrl } from "@onegenui/utils";
 import { jsx as jsx19, jsxs as jsxs20 } from "react/jsx-runtime";
 var CitationLink = memo21(function CitationLink2({
   id,
@@ -1901,7 +1902,7 @@ var CitationLink = memo21(function CitationLink2({
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isWebSource && !hasExcerpt) {
+    if (isWebSource && !hasExcerpt && isSafeUrl(source.url)) {
       window.open(source.url, "_blank", "noopener,noreferrer");
     } else {
       updatePosition();
@@ -1946,7 +1947,7 @@ var CitationLink = memo21(function CitationLink2({
           isWebSource && /* @__PURE__ */ jsxs20(
             "a",
             {
-              href: source.url,
+              href: sanitizeUrl(source.url),
               target: "_blank",
               rel: "noopener noreferrer",
               className: "mt-2 pt-2 border-t border-white/5 flex items-center gap-1 text-[10px] text-primary hover:underline",
@@ -2275,6 +2276,7 @@ var MediaGallery = memo24(function MediaGallery2({
 import { memo as memo25, useState as useState8 } from "react";
 import { motion as motion23 } from "framer-motion";
 import { Globe, ChevronDown as ChevronDown3 } from "lucide-react";
+import { sanitizeUrl as sanitizeUrl2 } from "@onegenui/utils";
 import { jsx as jsx23, jsxs as jsxs23 } from "react/jsx-runtime";
 var SourcesSidebar = memo25(function SourcesSidebar2({
   sources,
@@ -2312,7 +2314,7 @@ var SourcesSidebar = memo25(function SourcesSidebar2({
         initial: { opacity: 0, x: 10 },
         animate: { opacity: 1, x: 0 },
         transition: { delay: idx * 0.03 },
-        href: source.url,
+        href: sanitizeUrl2(source.url),
         target: "_blank",
         rel: "noopener noreferrer",
         className: "group flex items-start gap-2.5 p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-transparent hover:border-white/10 transition-all no-underline",
@@ -2358,6 +2360,7 @@ var SourcesSidebar = memo25(function SourcesSidebar2({
 import { memo as memo26, useState as useState9 } from "react";
 import { motion as motion24 } from "framer-motion";
 import { Globe as Globe2, Play as Play2 } from "lucide-react";
+import { sanitizeUrl as sanitizeUrl3 } from "@onegenui/utils";
 import { Fragment as Fragment3, jsx as jsx24, jsxs as jsxs24 } from "react/jsx-runtime";
 var RichResultCard = memo26(function RichResultCard2({
   result,
@@ -2383,7 +2386,7 @@ var RichResultCard = memo26(function RichResultCard2({
       children: /* @__PURE__ */ jsx24(
         "a",
         {
-          href: result.url,
+          href: sanitizeUrl3(result.url),
           target: "_blank",
           rel: "noopener noreferrer",
           className: "block no-underline",
@@ -2442,6 +2445,7 @@ var RichResultCard = memo26(function RichResultCard2({
 import { memo as memo27, useState as useState10 } from "react";
 import { motion as motion25 } from "framer-motion";
 import { Globe as Globe3, ChevronRight } from "lucide-react";
+import { sanitizeUrl as sanitizeUrl4 } from "@onegenui/utils";
 import { jsx as jsx25, jsxs as jsxs25 } from "react/jsx-runtime";
 var InlineResult = memo27(function InlineResult2({
   result,
@@ -2454,7 +2458,7 @@ var InlineResult = memo27(function InlineResult2({
       initial: { opacity: 0, y: 4 },
       animate: { opacity: 1, y: 0 },
       transition: { delay: index * 0.02 },
-      href: result.url,
+      href: sanitizeUrl4(result.url),
       target: "_blank",
       rel: "noopener noreferrer",
       className: "group flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition-all no-underline",
@@ -2650,11 +2654,11 @@ var DriveFile = memo29(function DriveFile2({
 });
 
 // src/data-display/DriveFileList/component.tsx
-import { memo as memo31, useState as useState12 } from "react";
+import { memo as memo32, useState as useState12 } from "react";
 import { AnimatePresence as AnimatePresence7, motion as motion28 } from "framer-motion";
 
 // src/data-display/DriveFileList/components/file-views.tsx
-import { memo as memo30 } from "react";
+import { memo as memo31 } from "react";
 import { motion as motion27 } from "framer-motion";
 
 // src/data-display/DriveFileList/components/types.ts
@@ -2700,47 +2704,52 @@ function isFolder(mimeType) {
 }
 
 // src/data-display/DriveFileList/components/icons.tsx
+import { memo as memo30 } from "react";
 import { jsx as jsx28, jsxs as jsxs28 } from "react/jsx-runtime";
-var DriveIcon = () => /* @__PURE__ */ jsxs28("svg", { width: "18", height: "18", viewBox: "0 0 87.3 78", fill: "none", children: [
-  /* @__PURE__ */ jsx28(
-    "path",
-    {
-      d: "M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H0c0 1.55.4 3.1 1.2 4.5l5.4 9.35z",
-      fill: "#0066da"
-    }
-  ),
-  /* @__PURE__ */ jsx28(
-    "path",
-    {
-      d: "M43.65 25L29.9 0H21.6c-1.35.8-2.5 1.9-3.3 3.3L1.2 29.4c-.8 1.4-1.2 2.95-1.2 4.5h27.5L43.65 25z",
-      fill: "#00ac47"
-    }
-  ),
-  /* @__PURE__ */ jsx28(
-    "path",
-    {
-      d: "M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.85L73.55 76.8z",
-      fill: "#ea4335"
-    }
-  ),
-  /* @__PURE__ */ jsx28("path", { d: "M43.65 25L57.4 0H29.9l13.75 23.8V25z", fill: "#00832d" }),
-  /* @__PURE__ */ jsx28(
-    "path",
-    {
-      d: "M59.85 53h27.5L70.9 23.85c-.8-1.4-1.95-2.5-3.3-3.3l-23.95 7.5L59.85 53z",
-      fill: "#2684fc"
-    }
-  ),
-  /* @__PURE__ */ jsx28(
-    "path",
-    {
-      d: "M27.5 53L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.4 4.5-1.2L59.85 53H27.5z",
-      fill: "#ffba00"
-    }
-  )
-] });
-var FolderIcon = () => /* @__PURE__ */ jsx28("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "#fbbf24", children: /* @__PURE__ */ jsx28("path", { d: "M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" }) });
-var FileIcon = ({ mimeType }) => {
+var DriveIcon = memo30(function DriveIcon2() {
+  return /* @__PURE__ */ jsxs28("svg", { width: "18", height: "18", viewBox: "0 0 87.3 78", fill: "none", children: [
+    /* @__PURE__ */ jsx28(
+      "path",
+      {
+        d: "M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H0c0 1.55.4 3.1 1.2 4.5l5.4 9.35z",
+        fill: "#0066da"
+      }
+    ),
+    /* @__PURE__ */ jsx28(
+      "path",
+      {
+        d: "M43.65 25L29.9 0H21.6c-1.35.8-2.5 1.9-3.3 3.3L1.2 29.4c-.8 1.4-1.2 2.95-1.2 4.5h27.5L43.65 25z",
+        fill: "#00ac47"
+      }
+    ),
+    /* @__PURE__ */ jsx28(
+      "path",
+      {
+        d: "M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.85L73.55 76.8z",
+        fill: "#ea4335"
+      }
+    ),
+    /* @__PURE__ */ jsx28("path", { d: "M43.65 25L57.4 0H29.9l13.75 23.8V25z", fill: "#00832d" }),
+    /* @__PURE__ */ jsx28(
+      "path",
+      {
+        d: "M59.85 53h27.5L70.9 23.85c-.8-1.4-1.95-2.5-3.3-3.3l-23.95 7.5L59.85 53z",
+        fill: "#2684fc"
+      }
+    ),
+    /* @__PURE__ */ jsx28(
+      "path",
+      {
+        d: "M27.5 53L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.4 4.5-1.2L59.85 53H27.5z",
+        fill: "#ffba00"
+      }
+    )
+  ] });
+});
+var FolderIcon = memo30(function FolderIcon2() {
+  return /* @__PURE__ */ jsx28("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "#fbbf24", children: /* @__PURE__ */ jsx28("path", { d: "M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" }) });
+});
+var FileIcon = memo30(function FileIcon2({ mimeType }) {
   const getColor = () => {
     if (mimeType.includes("document") || mimeType.includes("word"))
       return "#4285f4";
@@ -2755,93 +2764,103 @@ var FileIcon = ({ mimeType }) => {
     return "#757575";
   };
   return /* @__PURE__ */ jsx28("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: getColor(), children: /* @__PURE__ */ jsx28("path", { d: "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" }) });
-};
-var GridIcon = () => /* @__PURE__ */ jsxs28(
-  "svg",
-  {
-    width: "16",
-    height: "16",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    children: [
-      /* @__PURE__ */ jsx28("rect", { x: "3", y: "3", width: "7", height: "7" }),
-      /* @__PURE__ */ jsx28("rect", { x: "14", y: "3", width: "7", height: "7" }),
-      /* @__PURE__ */ jsx28("rect", { x: "14", y: "14", width: "7", height: "7" }),
-      /* @__PURE__ */ jsx28("rect", { x: "3", y: "14", width: "7", height: "7" })
-    ]
-  }
-);
-var ListIcon2 = () => /* @__PURE__ */ jsxs28(
-  "svg",
-  {
-    width: "16",
-    height: "16",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    children: [
-      /* @__PURE__ */ jsx28("line", { x1: "8", y1: "6", x2: "21", y2: "6" }),
-      /* @__PURE__ */ jsx28("line", { x1: "8", y1: "12", x2: "21", y2: "12" }),
-      /* @__PURE__ */ jsx28("line", { x1: "8", y1: "18", x2: "21", y2: "18" }),
-      /* @__PURE__ */ jsx28("line", { x1: "3", y1: "6", x2: "3.01", y2: "6" }),
-      /* @__PURE__ */ jsx28("line", { x1: "3", y1: "12", x2: "3.01", y2: "12" }),
-      /* @__PURE__ */ jsx28("line", { x1: "3", y1: "18", x2: "3.01", y2: "18" })
-    ]
-  }
-);
-var ExternalLinkIcon = () => /* @__PURE__ */ jsxs28(
-  "svg",
-  {
-    width: "14",
-    height: "14",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    children: [
-      /* @__PURE__ */ jsx28("path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" }),
-      /* @__PURE__ */ jsx28("polyline", { points: "15 3 21 3 21 9" }),
-      /* @__PURE__ */ jsx28("line", { x1: "10", y1: "14", x2: "21", y2: "3" })
-    ]
-  }
-);
-var StarIcon = ({ filled }) => /* @__PURE__ */ jsx28(
-  "svg",
-  {
-    width: "14",
-    height: "14",
-    viewBox: "0 0 24 24",
-    fill: filled ? "currentColor" : "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    children: /* @__PURE__ */ jsx28("polygon", { points: "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" })
-  }
-);
-var ShareIcon = () => /* @__PURE__ */ jsxs28(
-  "svg",
-  {
-    width: "14",
-    height: "14",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: "2",
-    children: [
-      /* @__PURE__ */ jsx28("circle", { cx: "18", cy: "5", r: "3" }),
-      /* @__PURE__ */ jsx28("circle", { cx: "6", cy: "12", r: "3" }),
-      /* @__PURE__ */ jsx28("circle", { cx: "18", cy: "19", r: "3" }),
-      /* @__PURE__ */ jsx28("line", { x1: "8.59", y1: "13.51", x2: "15.42", y2: "17.49" }),
-      /* @__PURE__ */ jsx28("line", { x1: "15.41", y1: "6.51", x2: "8.59", y2: "10.49" })
-    ]
-  }
-);
+});
+var GridIcon = memo30(function GridIcon2() {
+  return /* @__PURE__ */ jsxs28(
+    "svg",
+    {
+      width: "16",
+      height: "16",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      children: [
+        /* @__PURE__ */ jsx28("rect", { x: "3", y: "3", width: "7", height: "7" }),
+        /* @__PURE__ */ jsx28("rect", { x: "14", y: "3", width: "7", height: "7" }),
+        /* @__PURE__ */ jsx28("rect", { x: "14", y: "14", width: "7", height: "7" }),
+        /* @__PURE__ */ jsx28("rect", { x: "3", y: "14", width: "7", height: "7" })
+      ]
+    }
+  );
+});
+var ListIcon2 = memo30(function ListIcon3() {
+  return /* @__PURE__ */ jsxs28(
+    "svg",
+    {
+      width: "16",
+      height: "16",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      children: [
+        /* @__PURE__ */ jsx28("line", { x1: "8", y1: "6", x2: "21", y2: "6" }),
+        /* @__PURE__ */ jsx28("line", { x1: "8", y1: "12", x2: "21", y2: "12" }),
+        /* @__PURE__ */ jsx28("line", { x1: "8", y1: "18", x2: "21", y2: "18" }),
+        /* @__PURE__ */ jsx28("line", { x1: "3", y1: "6", x2: "3.01", y2: "6" }),
+        /* @__PURE__ */ jsx28("line", { x1: "3", y1: "12", x2: "3.01", y2: "12" }),
+        /* @__PURE__ */ jsx28("line", { x1: "3", y1: "18", x2: "3.01", y2: "18" })
+      ]
+    }
+  );
+});
+var ExternalLinkIcon = memo30(function ExternalLinkIcon2() {
+  return /* @__PURE__ */ jsxs28(
+    "svg",
+    {
+      width: "14",
+      height: "14",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      children: [
+        /* @__PURE__ */ jsx28("path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" }),
+        /* @__PURE__ */ jsx28("polyline", { points: "15 3 21 3 21 9" }),
+        /* @__PURE__ */ jsx28("line", { x1: "10", y1: "14", x2: "21", y2: "3" })
+      ]
+    }
+  );
+});
+var StarIcon = memo30(function StarIcon2({ filled }) {
+  return /* @__PURE__ */ jsx28(
+    "svg",
+    {
+      width: "14",
+      height: "14",
+      viewBox: "0 0 24 24",
+      fill: filled ? "currentColor" : "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      children: /* @__PURE__ */ jsx28("polygon", { points: "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" })
+    }
+  );
+});
+var ShareIcon = memo30(function ShareIcon2() {
+  return /* @__PURE__ */ jsxs28(
+    "svg",
+    {
+      width: "14",
+      height: "14",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      children: [
+        /* @__PURE__ */ jsx28("circle", { cx: "18", cy: "5", r: "3" }),
+        /* @__PURE__ */ jsx28("circle", { cx: "6", cy: "12", r: "3" }),
+        /* @__PURE__ */ jsx28("circle", { cx: "18", cy: "19", r: "3" }),
+        /* @__PURE__ */ jsx28("line", { x1: "8.59", y1: "13.51", x2: "15.42", y2: "17.49" }),
+        /* @__PURE__ */ jsx28("line", { x1: "15.41", y1: "6.51", x2: "8.59", y2: "10.49" })
+      ]
+    }
+  );
+});
 
 // src/data-display/DriveFileList/components/file-views.tsx
 import { jsx as jsx29, jsxs as jsxs29 } from "react/jsx-runtime";
-var FileGridCard = memo30(function FileGridCard2({
+var FileGridCard = memo31(function FileGridCard2({
   file,
   onOpen
 }) {
@@ -2891,7 +2910,7 @@ var FileGridCard = memo30(function FileGridCard2({
     }
   );
 });
-var FileListRow = memo30(function FileListRow2({
+var FileListRow = memo31(function FileListRow2({
   file,
   onOpen
 }) {
@@ -2954,7 +2973,7 @@ var FileListRow = memo30(function FileListRow2({
 
 // src/data-display/DriveFileList/component.tsx
 import { jsx as jsx30, jsxs as jsxs30 } from "react/jsx-runtime";
-var DriveFileList = memo31(function DriveFileList2({
+var DriveFileList = memo32(function DriveFileList2({
   element,
   children
 }) {
@@ -3074,7 +3093,7 @@ var DriveFileList = memo31(function DriveFileList2({
 });
 
 // src/data-display/Weather/component.tsx
-import { memo as memo32 } from "react";
+import { memo as memo33 } from "react";
 import { motion as motion29 } from "framer-motion";
 
 // src/utils/media-utils.ts
@@ -3151,7 +3170,7 @@ var getIcon = (condition, icon) => {
   if (lower.includes("fog") || lower.includes("mist")) return "\u{1F32B}\uFE0F";
   return "\u{1F321}\uFE0F";
 };
-var Weather = memo32(function Weather2({
+var Weather = memo33(function Weather2({
   element,
   children
 }) {
@@ -3283,7 +3302,7 @@ var Weather = memo32(function Weather2({
 });
 
 // src/data-display/DocumentIndex/component.tsx
-import { memo as memo33, useState as useState13, useCallback as useCallback4 } from "react";
+import { memo as memo34, useState as useState13, useCallback as useCallback4 } from "react";
 import { motion as motion30, AnimatePresence as AnimatePresence8 } from "framer-motion";
 import {
   FileText as FileText2,
@@ -3317,7 +3336,7 @@ var LOADING_STATUSES = /* @__PURE__ */ new Set([
   "analyzing",
   "building"
 ]);
-var DocumentIndex = memo33(function DocumentIndex2({
+var DocumentIndex = memo34(function DocumentIndex2({
   element,
   children
 }) {
@@ -3420,7 +3439,7 @@ var DocumentIndex = memo33(function DocumentIndex2({
     children
   ] });
 });
-var IndexNode = memo33(function IndexNode2({
+var IndexNode = memo34(function IndexNode2({
   node,
   depth
 }) {
@@ -3505,11 +3524,11 @@ var IndexNode = memo33(function IndexNode2({
 });
 
 // src/media/Audio/component.tsx
-import { memo as memo34 } from "react";
+import { memo as memo35 } from "react";
 import { motion as motion31 } from "framer-motion";
 import { Music } from "lucide-react";
 import { jsx as jsx33, jsxs as jsxs33 } from "react/jsx-runtime";
-var Audio = memo34(function Audio2({
+var Audio = memo35(function Audio2({
   element,
   children
 }) {
@@ -3616,7 +3635,7 @@ var Audio = memo34(function Audio2({
 });
 
 // src/media/Video/component.tsx
-import { memo as memo36 } from "react";
+import { memo as memo37 } from "react";
 import { motion as motion33 } from "framer-motion";
 import { Video as VideoIcon } from "lucide-react";
 
@@ -3760,10 +3779,10 @@ function getProviderInfo(provider) {
 }
 
 // src/media/Video/components/video-card.tsx
-import { memo as memo35 } from "react";
+import { memo as memo36 } from "react";
 import { motion as motion32 } from "framer-motion";
 import { jsx as jsx34, jsxs as jsxs34 } from "react/jsx-runtime";
-var VideoPlayer = memo35(function VideoPlayer2({
+var VideoPlayer = memo36(function VideoPlayer2({
   video,
   status,
   statusTone,
@@ -3824,7 +3843,7 @@ var VideoPlayer = memo35(function VideoPlayer2({
     isStreaming && /* @__PURE__ */ jsx34("div", { className: "absolute inset-0 flex items-center justify-center bg-black/40 text-white font-semibold text-sm backdrop-blur-sm", children: "Streaming video..." })
   ] });
 });
-var VideoMetadataPanel = memo35(function VideoMetadataPanel2({
+var VideoMetadataPanel = memo36(function VideoMetadataPanel2({
   video,
   elementKey,
   index,
@@ -3927,7 +3946,7 @@ var VideoMetadataPanel = memo35(function VideoMetadataPanel2({
 
 // src/media/Video/component.tsx
 import { jsx as jsx35, jsxs as jsxs35 } from "react/jsx-runtime";
-var Video = memo36(function Video2({
+var Video = memo37(function Video2({
   element,
   children
 }) {
@@ -3995,11 +4014,11 @@ var Video = memo36(function Video2({
 });
 
 // src/media/Image/component.tsx
-import { memo as memo37 } from "react";
+import { memo as memo38 } from "react";
 import { motion as motion34 } from "framer-motion";
 import { Image as ImageIcon } from "lucide-react";
 import { jsx as jsx36, jsxs as jsxs36 } from "react/jsx-runtime";
-var Image = memo37(function Image2({
+var Image = memo38(function Image2({
   element,
   children
 }) {
@@ -4190,11 +4209,11 @@ var Image = memo37(function Image2({
 });
 
 // src/media/Gallery/component.tsx
-import { memo as memo38 } from "react";
+import { memo as memo39 } from "react";
 import { motion as motion35 } from "framer-motion";
 import { Images } from "lucide-react";
 import { jsx as jsx37, jsxs as jsxs37 } from "react/jsx-runtime";
-var Gallery = memo38(function Gallery2({
+var Gallery = memo39(function Gallery2({
   element,
   children
 }) {
