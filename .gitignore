@@ -39,3 +39,6 @@ logs/
 
 # TypeScript
 *.tsbuildinfo
+/node_modules
+/dist
+/.turbo
