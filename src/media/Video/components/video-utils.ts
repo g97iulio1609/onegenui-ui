@@ -123,16 +123,15 @@ export function getVideoSource(video: VideoItem): VideoSourceInfo {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const videoAny = video as any;
+  const videoRecord = video as unknown as Record<string, unknown>;
   const src =
     video.location?.src ||
     video.location?.streamUrl ||
     video.source ||
-    videoAny.url ||
-    videoAny.link ||
-    videoAny.videoUrl ||
-    videoAny.embedUrl ||
+    (videoRecord.url as string) ||
+    (videoRecord.link as string) ||
+    (videoRecord.videoUrl as string) ||
+    (videoRecord.embedUrl as string) ||
     "";
 
   const embedInfo = detectVideoEmbed(src);
